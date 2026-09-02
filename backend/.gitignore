@@ -1,0 +1,12 @@
+# Dependencies
+node_modules/
+
+# Environment & secrets
+.env
+*.local
+
+# Logs
+*.log
+
+# Coverage / test artifacts
+coverage/

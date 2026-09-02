@@ -1,0 +1,150 @@
+import MOU from '../models/MOU.js';
+import { uploadImage } from '../services/imageService.js';
+
+const listMOUs = async (req, res, next) => {
+  try {
+    const { status, search, tag } = req.query;
+    const query = {};
+
+    if (req.admin) query.status = status && status !== 'all' ? status : { $in: ['published', 'draft'] };
+    else query.status = 'published';
+
+    if (status && status !== 'all' && req.admin) query.status = status;
+
+    if (tag && tag !== 'All') query.tag = tag;
+
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { blurb: { $regex: search, $options: 'i' } },
+        { tag: { $regex: search, $options: 'i' } },
+      ];
+    }
+
+    const mous = await MOU.find(query)
+      .populate('createdBy', 'name email')
+      .populate('updatedBy', 'name email')
+      .sort('-updatedAt');
+
+    res.json({ success: true, count: mous.length, data: { mous } });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getMOU = async (req, res, next) => {
+  try {
+    const mou = await MOU.findById(req.params.id)
+      .populate('createdBy', 'name email')
+      .populate('updatedBy', 'name email');
+    if (!mou) return res.status(404).json({ success: false, message: 'MOU not found' });
+    if (!req.admin && mou.status !== 'published') {
+      return res.status(404).json({ success: false, message: 'MOU not found' });
+    }
+    res.json({ success: true, data: { mou } });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const normalizeSections = (sections) => {
+  if (!Array.isArray(sections)) return [];
+  return sections.map((s) => ({
+    heading: s.heading || '',
+    paragraphs: Array.isArray(s.paragraphs) ? s.paragraphs.filter(Boolean) : [],
+    list: Array.isArray(s.list) ? s.list.filter(Boolean) : [],
+    pathway: Array.isArray(s.pathway) ? s.pathway.filter(Boolean) : [],
+    note: s.note || '',
+  }));
+};
+
+const createMOU = async (req, res, next) => {
+  try {
+    const { tag, name, blurb, logo, images, sections, status } = req.body || {};
+    if (!tag || !name) {
+      return res.status(400).json({ success: false, message: 'Tag and name are required' });
+    }
+
+    const normalized = normalizeSections(sections);
+
+    const rawImages = Array.isArray(images) ? images.filter(Boolean) : [];
+    const normalizedImages = [];
+    for (const img of rawImages) {
+      normalizedImages.push(await uploadImage(img, 'qaroo/mou'));
+    }
+
+    const mou = await MOU.create({
+      tag,
+      name,
+      blurb: blurb || '',
+      logo: logo ? await uploadImage(logo, 'qaroo/mou') : '',
+      images: normalizedImages,
+      sections: normalized,
+      status: status === 'published' ? 'published' : 'draft',
+      createdBy: req.admin._id,
+      updatedBy: req.admin._id,
+    });
+
+    res.status(201).json({ success: true, message: 'MOU created successfully', data: { mou } });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const updateMOU = async (req, res, next) => {
+  try {
+    const mou = await MOU.findById(req.params.id);
+    if (!mou) return res.status(404).json({ success: false, message: 'MOU not found' });
+
+    const { tag, name, blurb, logo, images, sections, status } = req.body || {};
+
+    if (tag !== undefined) mou.tag = tag;
+    if (name !== undefined) mou.name = name;
+    if (blurb !== undefined) mou.blurb = blurb;
+    if (logo !== undefined) mou.logo = logo ? await uploadImage(logo, 'qaroo/mou') : '';
+    if (images !== undefined) {
+      const raw = Array.isArray(images) ? images.filter(Boolean) : [];
+      const uploaded = [];
+      for (const img of raw) uploaded.push(await uploadImage(img, 'qaroo/mou'));
+      mou.images = uploaded;
+    }
+    if (sections !== undefined) mou.sections = normalizeSections(sections);
+    if (status !== undefined) mou.status = status === 'published' ? 'published' : 'draft';
+    mou.updatedBy = req.admin._id;
+
+    await mou.save();
+    res.json({ success: true, message: 'MOU updated successfully', data: { mou } });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const deleteMOU = async (req, res, next) => {
+  try {
+    const mou = await MOU.findById(req.params.id);
+    if (!mou) return res.status(404).json({ success: false, message: 'MOU not found' });
+    await mou.deleteOne();
+    res.json({ success: true, message: 'MOU deleted successfully' });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const togglePublish = async (req, res, next) => {
+  try {
+    const mou = await MOU.findById(req.params.id);
+    if (!mou) return res.status(404).json({ success: false, message: 'MOU not found' });
+    mou.status = mou.status === 'published' ? 'draft' : 'published';
+    mou.updatedBy = req.admin._id;
+    await mou.save();
+    res.json({
+      success: true,
+      message: mou.status === 'published' ? 'MOU published' : 'MOU unpublished',
+      data: { mou },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export { listMOUs, getMOU, createMOU, updateMOU, deleteMOU, togglePublish };
