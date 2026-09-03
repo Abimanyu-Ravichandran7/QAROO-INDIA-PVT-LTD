@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { Container, Row, Col, Modal, Carousel, Badge } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Seo from '../components/Seo.jsx';
-import { LoadingState, EmptyState, ErrorState } from '../components/ui/States';
+import { Shimmer, EmptyState, ErrorState } from '../components/ui/States';
 import { mouApi } from '../api/mouApi.js';
 import { contentApi } from '../api/contentApi.js';
 
@@ -284,7 +284,7 @@ export default function MOUDirectory() {
       <Container style={{ maxWidth: '1140px', padding: '0 12px 80px' }}>
         <Row className="g-3">
           {loading ? (
-            <div style={{ width: '100%' }}><LoadingState label="Loading partners..." /></div>
+            <div style={{ width: '100%' }}><Shimmer /></div>
           ) : error ? (
             <div style={{ width: '100%' }}><ErrorState title="Couldn't load the directory" text={error} onRetry={reload} /></div>
           ) : filtered.length === 0 ? (

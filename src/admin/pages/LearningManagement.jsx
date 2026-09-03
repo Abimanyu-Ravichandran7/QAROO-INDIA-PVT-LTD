@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { learningApi } from '../../api/learningApi.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import PermissionGuard from '../components/PermissionGuard.jsx';
-import { LoadingState, EmptyState, ErrorState } from '../../components/ui/States';
+import { ShimmerPanel, EmptyState, ErrorState } from '../../components/ui/States';
 import { useToast } from '../../context/ToastContext';
 
 export default function LearningManagement() {
@@ -61,7 +61,7 @@ export default function LearningManagement() {
             <tr><th>Title</th><th>Category</th><th>Skills</th><th>Status</th><th>Actions</th></tr>
           </thead>
           <tbody>
-            {loading ? <tr><td colSpan="5"><LoadingState compact label="Loading programs..." /></td></tr>
+            {loading ? <tr><td colSpan="5"><ShimmerPanel variant="table" header={false} /></td></tr>
             : error ? <tr><td colSpan="5"><ErrorState compact title="Couldn't load programs" text={error} onRetry={fetchPrograms} /></td></tr>
             : programs.length === 0 ? <tr><td colSpan="5"><EmptyState compact title="No programs yet" text="Add your first learning program to start building the public career tracks." /></td></tr>
             : programs.map((p) => (

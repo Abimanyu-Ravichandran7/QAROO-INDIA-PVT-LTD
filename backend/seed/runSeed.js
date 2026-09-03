@@ -4,6 +4,7 @@ import { seedAdmin } from './seedAdmin.js';
 import { seedMous } from './seedMous.js';
 import { seedCSR } from './seedCSR.js';
 import { seedLearning } from './seedLearning.js';
+import { seedBusiness } from './seedBusiness.js';
 import { seedContent } from './seedContent.js';
 
 async function run() {
@@ -12,6 +13,7 @@ async function run() {
   await seedMous(admin);
   await seedCSR(admin);
   await seedLearning(admin);
+  await seedBusiness(admin);
   await seedContent(admin);
   console.log('\nSeeding complete.');
   process.exit(0);

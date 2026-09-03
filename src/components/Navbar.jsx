@@ -2,28 +2,30 @@ import { useState, useEffect } from 'react';
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
 import { COMPANY } from '../data/company.js';
+import { learningApi } from '../api/learningApi.js';
+import { businessSolutionApi } from '../api/businessSolutionApi.js';
 
 const DEFAULT_NAVBAR = {
   businessTitle: 'Business Solutions',
   businessLinks: [
-    { label: 'CRM Solutions', path: '/business-solutions' },
-    { label: 'Digital Marketing', path: '/business-solutions' },
-    { label: 'Graphic Design & Branding', path: '/business-solutions' },
-    { label: 'Web Development', path: '/business-solutions' },
-    { label: 'Software Development', path: '/business-solutions' },
-    { label: 'UI/UX Design', path: '/business-solutions' },
-    { label: 'UX Research', path: '/business-solutions' },
-    { label: 'Business Strategy', path: '/business-solutions' },
+    { label: 'CRM Solutions', path: '/business-solutions/crm-solutions' },
+    { label: 'Digital Marketing', path: '/business-solutions/digital-marketing' },
+    { label: 'Graphic Design & Branding', path: '/business-solutions/graphic-design-branding' },
+    { label: 'Web Development', path: '/business-solutions/web-development' },
+    { label: 'Software Development', path: '/business-solutions/software-development' },
+    { label: 'UI/UX Design', path: '/business-solutions/ui-ux-design' },
+    { label: 'UX Research', path: '/business-solutions/ux-research' },
+    { label: 'Business Strategy', path: '/business-solutions/business-strategy' },
   ],
   learningTitle: 'Learning',
   learningLinks: [
-    { label: 'Data Science & Business Analytics', path: '/learning-programs' },
-    { label: 'Full Stack Development', path: '/learning-programs' },
-    { label: 'UI/UX Design', path: '/learning-programs' },
-    { label: 'Cyber Security & Ethical Hacking', path: '/learning-programs' },
-    { label: 'AI & Machine Learning', path: '/learning-programs' },
-    { label: 'Graphic Design & Animation', path: '/learning-programs' },
-    { label: 'Software Testing', path: '/learning-programs' },
+    { label: 'Data Science & Business Analytics', path: '/learning-programs/data-science-business-analytics' },
+    { label: 'Full Stack Development', path: '/learning-programs/full-stack-development' },
+    { label: 'UI/UX Design', path: '/learning-programs/ui-ux-design' },
+    { label: 'Cyber Security & Ethical Hacking', path: '/learning-programs/cyber-security-ethical-hacking' },
+    { label: 'AI & Machine Learning', path: '/learning-programs/ai-machine-learning' },
+    { label: 'Graphic Design & Animation', path: '/learning-programs/graphic-design-animation' },
+    { label: 'Software Testing', path: '/learning-programs/software-testing' },
   ],
   csrTitle: 'CSR Projects',
   csrLinks: [
@@ -46,16 +48,44 @@ const splitHalf = (arr = []) => {
 };
 
 export default function NavigationBar() {
-  const cfg = DEFAULT_NAVBAR;
+  const [navLinks, setNavLinks] = useState(null);
   const [scrolled, setScrolled] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const location = useLocation();
+
+  const cfg = navLinks || DEFAULT_NAVBAR;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  // Load dynamic learning programs + business solutions for the dropdowns.
+  useEffect(() => {
+    let active = true;
+    Promise.all([
+      learningApi.list({}, { credentials: 'omit' }).catch(() => null),
+      businessSolutionApi.list({}, { credentials: 'omit' }).catch(() => null),
+    ]).then(([lres, bres]) => {
+      if (!active) return;
+      const programs = (lres?.data?.programs || [])
+        .filter((p) => p.status === 'published')
+        .map((p) => ({ label: p.title || p.pageName, path: `/learning-programs/${p.slug}` }));
+      const solutions = (bres?.data?.solutions || [])
+        .filter((s) => s.status === 'published')
+        .map((s) => ({ label: s.pageName || s.title, path: `/business-solutions/${s.slug}` }));
+      // Only override when we have real data; otherwise keep defaults.
+      if (programs.length === 0 && solutions.length === 0) return;
+      setNavLinks({
+        ...DEFAULT_NAVBAR,
+        learningLinks: programs.length ? programs : DEFAULT_NAVBAR.learningLinks,
+        businessLinks: solutions.length ? solutions : DEFAULT_NAVBAR.businessLinks,
+      });
+    });
+    return () => { active = false; };
+  }, []);
+
 
   useEffect(() => {
     setExpanded(false);
@@ -112,7 +142,7 @@ export default function NavigationBar() {
             <NavDropdown
               title={<span style={{ fontWeight: 600, fontSize: '14.5px', color: '#fff' }}>{cfg.businessTitle}</span>}
               id="business-dropdown"
-              className={isActive('/business-solutions') ? 'active' : ''}
+              className={location.pathname.startsWith('/business-solutions') ? 'active' : ''}
             >
               <div className="mega-grid">
                 <div>
@@ -207,7 +237,7 @@ export default function NavigationBar() {
             <NavDropdown
               title={<span style={{ fontWeight: 600, fontSize: '14.5px', color: '#fff' }}>{cfg.learningTitle}</span>}
               id="learning-dropdown"
-              className={isActive('/learning-programs') ? 'active' : ''}
+              className={location.pathname.startsWith('/learning-programs') ? 'active' : ''}
             >
               <div className="mega-grid">
                 <div>

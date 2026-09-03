@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { csrApi } from '../../api/csrApi.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import PermissionGuard from '../components/PermissionGuard.jsx';
-import { LoadingState, EmptyState, ErrorState } from '../../components/ui/States';
+import { ShimmerPanel, EmptyState, ErrorState } from '../../components/ui/States';
 import { useToast } from '../../context/ToastContext';
 
 export default function CSRManagement() {
@@ -72,7 +72,7 @@ export default function CSRManagement() {
             <tr><th>Title</th><th>Year</th><th>Tag</th><th>Status</th><th>Actions</th></tr>
           </thead>
           <tbody>
-            {loading ? <tr><td colSpan="5"><LoadingState compact label="Loading projects..." /></td></tr>
+            {loading ? <tr><td colSpan="5"><ShimmerPanel variant="table" header={false} /></td></tr>
             : error ? <tr><td colSpan="5"><ErrorState compact title="Couldn't load projects" text={error} onRetry={fetchProjects} /></td></tr>
             : projects.length === 0 ? <tr><td colSpan="5"><EmptyState compact title="No projects yet" text="Add your first CSR project to start building the public gallery." /></td></tr>
             : projects.map((p) => (

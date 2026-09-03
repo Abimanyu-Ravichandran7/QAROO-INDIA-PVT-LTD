@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/Sidebar.jsx';
 import AdminNavbar from '../components/AdminNavbar.jsx';
+import { ShimmerPanel } from '../../components/ui/States';
 
 export default function AdminLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -14,7 +15,9 @@ export default function AdminLayout() {
       <div className="admin-main">
         <AdminNavbar onMenuClick={() => setMobileOpen((o) => !o)} />
         <main className="admin-content">
-          <Outlet />
+          <Suspense fallback={<ShimmerPanel variant="table" />}>
+            <Outlet />
+          </Suspense>
         </main>
       </div>
     </div>

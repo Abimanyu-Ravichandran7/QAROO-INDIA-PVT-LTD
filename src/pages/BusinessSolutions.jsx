@@ -3,37 +3,44 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import ScrollExpand from '../components/ScrollExpand';
 import Seo from '../components/Seo.jsx';
-import { contentApi } from '../api/contentApi.js';
+import { businessSolutionApi } from '../api/businessSolutionApi.js';
 
 const DEFAULT_SERVICES = [
-  { idx: '01', title: 'CRM Solutions', desc: 'Strategy, implementation, customization and pipeline reporting built around how your sales team actually sells. We help you choose, configure, and adopt the right CRM for your workflow.' },
-  { idx: '02', title: 'Digital Marketing', desc: 'SEO, content and performance marketing built around measurable business growth, not vanity metrics. From keyword strategy to conversion optimization.' },
-  { idx: '03', title: 'Graphic Design & Branding', desc: 'Brand identity, collateral and creative systems that hold up across every channel you use. Logos, brand guidelines, social assets, and print-ready designs.' },
-  { idx: '04', title: 'Web Development', desc: 'Fast, SEO-friendly business websites — from landing pages to full e-commerce builds. React, WordPress, or custom stacks based on your needs.' },
-  { idx: '05', title: 'Software Development', desc: 'Custom software, internal tools and SaaS products built to solve one specific business problem well. End-to-end development with ongoing support.' },
-  { idx: '06', title: 'UI/UX Design', desc: 'Wireframes to design systems — usability and conversion, not just visual polish. We design experiences that users actually enjoy.' },
-  { idx: '07', title: 'UX Research', desc: 'User interviews, usability testing and journey mapping that inform product decisions before you build. Data-driven design thinking.' },
-  { idx: '08', title: 'Business Strategy', desc: 'Growth, go-to-market and digital transformation strategy with a clear discover-to-measure methodology. Roadmaps that actually get executed.' },
+  { idx: '01', title: 'CRM Solutions', desc: 'Strategy, implementation, customization and pipeline reporting built around how your sales team actually sells. We help you choose, configure, and adopt the right CRM for your workflow.', slug: 'crm-solutions' },
+  { idx: '02', title: 'Digital Marketing', desc: 'SEO, content and performance marketing built around measurable business growth, not vanity metrics. From keyword strategy to conversion optimization.', slug: 'digital-marketing' },
+  { idx: '03', title: 'Graphic Design & Branding', desc: 'Brand identity, collateral and creative systems that hold up across every channel you use. Logos, brand guidelines, social assets, and print-ready designs.', slug: 'graphic-design-branding' },
+  { idx: '04', title: 'Web Development', desc: 'Fast, SEO-friendly business websites — from landing pages to full e-commerce builds. React, WordPress, or custom stacks based on your needs.', slug: 'web-development' },
+  { idx: '05', title: 'Software Development', desc: 'Custom software, internal tools and SaaS products built to solve one specific business problem well. End-to-end development with ongoing support.', slug: 'software-development' },
+  { idx: '06', title: 'UI/UX Design', desc: 'Wireframes to design systems — usability and conversion, not just visual polish. We design experiences that users actually enjoy.', slug: 'ui-ux-design' },
+  { idx: '07', title: 'UX Research', desc: 'User interviews, usability testing and journey mapping that inform product decisions before you build. Data-driven design thinking.', slug: 'ux-research' },
+  { idx: '08', title: 'Business Strategy', desc: 'Growth, go-to-market and digital transformation strategy with a clear discover-to-measure methodology. Roadmaps that actually get executed.', slug: 'business-strategy' },
 ];
 
 export default function BusinessSolutions() {
   const [services, setServices] = useState(DEFAULT_SERVICES);
-  const [links, setLinks] = useState([]);
-  const [ctaTitle, setCtaTitle] = useState('');
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState('');
 
   useEffect(() => {
     let active = true;
-    contentApi
-      .get('business', { credentials: 'omit' })
+    businessSolutionApi
+      .list({}, { credentials: 'omit' })
       .then((res) => {
         if (!active) return;
-        const data = res?.data?.content?.data;
-        if (data?.services?.length) setServices(data.services);
-        if (Array.isArray(data?.links) && data.links.length) setLinks(data.links.filter(Boolean));
-        if (data?.ctaTitle) setCtaTitle(data.ctaTitle);
+        const list = res?.data?.solutions || [];
+        if (list.length) {
+          setServices(
+            list
+              .filter((s) => s.status === 'published')
+              .map((s, i) => ({
+                idx: String(i + 1).padStart(2, '0'),
+                title: s.pageName || s.title,
+                desc: s.shortDescription || s.fullDescription,
+                slug: s.slug,
+              }))
+          );
+        }
       })
-      .catch(() => { if (active) setError('Some content could not be loaded and may be out of date.'); });
+      .catch(() => { if (active) setErrors('Some content could not be loaded and may be out of date.'); });
     return () => { active = false; };
   }, []);
 
@@ -67,7 +74,7 @@ export default function BusinessSolutions() {
       </ScrollExpand>
 
       <Container className="page-section">
-        {error && (
+        {errors && (
           <div style={{
             background: 'rgba(228,204,46,0.12)',
             border: '1px solid var(--eduact-secondary)',
@@ -78,7 +85,7 @@ export default function BusinessSolutions() {
             marginBottom: '24px',
             textAlign: 'center',
           }}>
-            {error}
+            {errors}
           </div>
         )}
         {/* Services navigation */}
@@ -124,52 +131,46 @@ export default function BusinessSolutions() {
             }
           `}</style>
           <div className="services-nav">
-            <a href="/business-solutions" className="services-nav-link is-home">
+            <Link to="/business-solutions" className="services-nav-link is-home" style={{ textDecoration: 'none' }}>
               Business Solutions
-            </a>
+            </Link>
             {services.map((s) => (
-              <a
-                key={s.idx || s.title}
-                href={`#service-${s.idx || s.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
-                className="services-nav-link"
-              >
-                {s.title}
-              </a>
-            ))}
+                <Link
+                  key={s.idx || s.title}
+                  to={s.slug ? `/business-solutions/${s.slug}` : '/business-solutions'}
+                  className="services-nav-link"
+                  style={{ textDecoration: 'none' }}
+                >
+                  {s.title}
+                </Link>
+              ))}
           </div>
         </nav>
 
         <Row className="g-4 reveal-stagger">
-          {services.map((s) => (
-            <Col key={s.idx || s.title} id={`service-${s.idx || s.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} md={6} lg={4} style={{ scrollMarginTop: '120px' }}>
-              <div className="eduact-card" style={{ height: '100%', borderTop: '3px solid var(--eduact-base)' }}>
+          {services.map((s) => {
+            const detailPath = s.slug ? `/business-solutions/${s.slug}` : '/business-solutions';
+            return (
+            <Col key={s.idx || s.title} md={6} lg={4}>
+              <Link
+                to={detailPath}
+                className="eduact-card track-card"
+                aria-label={`Open ${s.title} details`}
+              >
                 <span className="idx">{s.idx} / {s.title.split(' ')[0]}</span>
                 <h4>{s.title}</h4>
                 <p>{s.desc}</p>
-              </div>
+              </Link>
             </Col>
-          ))}
+            );
+          })}
         </Row>
 
         <div className="mt-5 pt-4 reveal text-center">
           <p className="eyebrow">Ready to start?</p>
-          <h2 style={{ fontSize: '24px', marginBottom: '20px' }}>{ctaTitle || "Let's discuss your business challenge."}</h2>
+          <h2 style={{ fontSize: '24px', marginBottom: '20px' }}>Let's discuss your business challenge.</h2>
           <Link to="/contact" className="btn-eduact">Get in Touch</Link>
         </div>
-
-        {links.length > 0 && (
-          <div className="mt-5 pt-4 reveal">
-            <p className="eyebrow" style={{ textAlign: 'center' }}>Useful Links</p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center', marginTop: '16px' }}>
-              {links.map((url, i) => (
-                <a key={i} href={url} target="_blank" rel="noopener noreferrer"
-                   className="btn-eduact" style={{ fontSize: '14px', padding: '10px 18px' }}>
-                  {url.replace(/^https?:\/\//, '').replace(/\/$/, '') || url}
-                </a>
-              ))}
-            </div>
-          </div>
-        )}
       </Container>
     </>
   );

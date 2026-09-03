@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { mouApi } from '../../api/mouApi.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import PermissionGuard from '../components/PermissionGuard.jsx';
-import { LoadingState, EmptyState, ErrorState } from '../../components/ui/States';
+import { ShimmerPanel, EmptyState, ErrorState } from '../../components/ui/States';
 import { useToast } from '../../context/ToastContext';
 
 export default function MOUList() {
@@ -96,7 +96,7 @@ export default function MOUList() {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan="6"><LoadingState compact label="Loading MOUs..." /></td></tr>
+              <tr><td colSpan="6"><ShimmerPanel variant="table" header={false} /></td></tr>
             ) : error ? (
               <tr><td colSpan="6"><ErrorState compact title="Couldn't load MOUs" text={error} onRetry={fetchMous} /></td></tr>
             ) : mous.length === 0 ? (

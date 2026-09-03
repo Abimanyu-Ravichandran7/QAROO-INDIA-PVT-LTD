@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { contentApi } from '../../api/contentApi.js';
 import { useAuth } from '../context/AuthContext.jsx';
-import { LoadingState, ErrorState } from '../../components/ui/States';
+import { ShimmerPanel, ErrorState } from '../../components/ui/States';
 import { useToast } from '../../context/ToastContext';
 
 const DEFAULT_ABOUT_STATS = [
@@ -286,7 +286,7 @@ function PageEditor({ page, onBack }) {
       {saved && <div className="admin-alert success">Content saved ✓</div>}
       {error && <div className="admin-alert error">{error}</div>}
 
-      {loading ? <LoadingState compact label="Loading content..." /> : !hasPermission(perm) ? (
+      {loading ? <ShimmerPanel variant="form" header={false} /> : !hasPermission(perm) ? (
         <div className="admin-alert error">You do not have permission to edit this page.</div>
       ) : (
         <form

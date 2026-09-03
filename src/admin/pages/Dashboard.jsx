@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { mouApi } from '../../api/mouApi.js';
 import { csrApi } from '../../api/csrApi.js';
 import { learningApi } from '../../api/learningApi.js';
+import { businessSolutionApi } from '../../api/businessSolutionApi.js';
 import { contactApi } from '../../api/contactApi.js';
 import { adminApi } from '../../api/adminApi.js';
 import { useUnreadMessages } from '../hooks/useUnreadMessages.js';
@@ -20,6 +21,7 @@ export default function Dashboard() {
     mous: 0,
     csr: 0,
     learning: 0,
+    business: 0,
     messages: 0,
     admins: 0,
   });
@@ -30,13 +32,14 @@ export default function Dashboard() {
 
   const loadStats = useCallback(async () => {
     setStatsError(false);
-    const next = { mous: 0, csr: 0, learning: 0, messages: 0, admins: 0 };
+    const next = { mous: 0, csr: 0, learning: 0, business: 0, messages: 0, admins: 0 };
     let failed = false;
     try {
       const calls = [];
       if (can('mou.read')) calls.push(mouApi.list({}).then((r) => { next.mous = r.count || 0; }));
       if (can('csr.read')) calls.push(csrApi.list({}).then((r) => { next.csr = r.count || 0; }));
       if (can('learning.read')) calls.push(learningApi.list({}).then((r) => { next.learning = r.count || 0; }));
+      if (can('business.read')) calls.push(businessSolutionApi.list({}).then((r) => { next.business = r.count || 0; }));
       if (can('contact.read')) calls.push(contactApi.list({}).then((r) => { next.messages = r.count || 0; }));
       if (isSuper) calls.push(adminApi.list().then((r) => { next.admins = r.data?.admins?.length || 0; }).catch(() => { failed = true; }));
       await Promise.all(calls);
@@ -76,6 +79,10 @@ export default function Dashboard() {
           <div className="num">{stats.learning}</div>
           <div className="label">Learning Programs</div>
         </div>
+        <div className="admin-stat">
+          <div className="num">{stats.business}</div>
+          <div className="label">Business Solutions</div>
+        </div>
         {isSuper && (
           <div className="admin-stat">
             <div className="num">{stats.admins}</div>
@@ -98,6 +105,7 @@ export default function Dashboard() {
           {can('mou.read') && <Link to="/admin/mous">Manage MOUs</Link>}
           {can('csr.read') && <Link to="/admin/csr">Manage CSR Projects</Link>}
           {can('learning.read') && <Link to="/admin/learning">Manage Learning Programs</Link>}
+          {can('business.read') && <Link to="/admin/business-solutions">Manage Business Solutions</Link>}
           {can('home.update') && <Link to="/admin/content">Manage Website Content</Link>}
           {can('contact.read') && <Link to="/admin/messages">Contact Messages{unread > 0 ? ` (${unread} new)` : ''}</Link>}
           {isSuper && <Link to="/admin/admins">Manage Admins</Link>}

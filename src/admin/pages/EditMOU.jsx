@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import MOUForm from '../components/forms/MOUForm.jsx';
 import { mouApi } from '../../api/mouApi.js';
 import PermissionGuard from '../components/PermissionGuard.jsx';
+import { ShimmerPanel } from '../../components/ui/States';
 
 export default function EditMOU() {
   const { id } = useParams();
@@ -45,7 +46,7 @@ export default function EditMOU() {
       {success && <div className="admin-alert success">{success}</div>}
       {error && <div className="admin-alert error">{error}</div>}
       {loading ? (
-        <div className="admin-alert info">Loading MOU...</div>
+        <ShimmerPanel variant="form" header={false} />
       ) : initial ? (
         <MOUForm key={initial._id} initial={initial} onSubmit={handleSubmit} submitting={submitting} />
       ) : (

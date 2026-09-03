@@ -3,7 +3,7 @@ import { adminApi } from '../../api/adminApi.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import PermissionGuard from '../components/PermissionGuard.jsx';
 import PasswordInput from '../components/forms/PasswordInput.jsx';
-import { LoadingState, EmptyState, ErrorState } from '../../components/ui/States';
+import { ShimmerPanel, EmptyState, ErrorState } from '../../components/ui/States';
 import { useToast } from '../../context/ToastContext';
 
 const PERM_GROUPS = [
@@ -36,11 +36,19 @@ const PERM_GROUPS = [
     ],
   },
   {
+    label: 'Business Solutions',
+    perms: [
+      { k: 'business.create', label: 'Create' },
+      { k: 'business.read', label: 'View' },
+      { k: 'business.update', label: 'Update' },
+      { k: 'business.delete', label: 'Delete' },
+    ],
+  },
+  {
     label: 'Website Content',
     perms: [
       { k: 'home.update', label: 'Home' },
       { k: 'about.update', label: 'About' },
-      { k: 'business.update', label: 'Business' },
       { k: 'learning.update', label: 'Learning' },
       { k: 'csr.update', label: 'CSR' },
       { k: 'mou.update', label: 'MOU' },
@@ -338,7 +346,7 @@ export default function AdminManagement() {
             <tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Verification</th><th>Permissions</th><th>Actions</th></tr>
           </thead>
           <tbody>
-            {loading ? <tr><td colSpan="7"><LoadingState compact label="Loading admins..." /></td></tr>
+            {loading ? <tr><td colSpan="7"><ShimmerPanel variant="table" header={false} /></td></tr>
             : error ? <tr><td colSpan="7"><ErrorState compact title="Couldn't load admins" text={error} onRetry={fetchAdmins} /></td></tr>
             : admins.length === 0 ? <tr><td colSpan="7"><EmptyState compact title="No users yet" text="Create your first admin user to start collaborating on the CMS." /></td></tr>
             : admins.map((a) => (

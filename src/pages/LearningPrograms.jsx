@@ -1,13 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Container, Row, Col, Modal, Form } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import Stepper, { Step } from '../components/Stepper';
 import Seo from '../components/Seo.jsx';
-import { LoadingState, EmptyState, ErrorState } from '../components/ui/States';
-import { useToast } from '../context/ToastContext';
+import { Shimmer, EmptyState, ErrorState } from '../components/ui/States';
 import { learningApi } from '../api/learningApi.js';
 import { contentApi } from '../api/contentApi.js';
-import { contactApi } from '../api/contactApi.js';
 
 const DEFAULT_LEARNING_STEPS = [
   { title: 'Connect', desc: 'Browse our career tracks and submit an enquiry. Our team will reach out within 24 hours to discuss your background and goals.' },
@@ -23,11 +21,7 @@ export default function LearningPrograms() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [content, setContent] = useState({});
-  const [enrollTrack, setEnrollTrack] = useState(null);
-  const [enrollForm, setEnrollForm] = useState({ name: '', email: '', phone: '' });
-  const [sending, setSending] = useState(false);
   const aliveRef = useRef(true);
-  const toast = useToast();
 
   const reload = useCallback(() => {
     setLoading(true);
@@ -51,36 +45,6 @@ export default function LearningPrograms() {
 
   const links = Array.isArray(content.links) ? content.links.filter(Boolean) : [];
   const steps = Array.isArray(content.steps) && content.steps.length > 0 ? content.steps : DEFAULT_LEARNING_STEPS;
-
-  const openEnroll = (track) => {
-    setEnrollForm({ name: '', email: '', phone: '' });
-    setEnrollTrack(track);
-  };
-
-  const handleEnrollChange = (e) => {
-    setEnrollForm({ ...enrollForm, [e.target.name]: e.target.value });
-  };
-
-  const submitEnroll = async (e) => {
-    e.preventDefault();
-    if (!enrollTrack) return;
-    setSending(true);
-    try {
-      await contactApi.submit({
-        name: enrollForm.name,
-        email: enrollForm.email,
-        phone: enrollForm.phone,
-        interest: 'learning',
-        message: `Enquiry for the "${enrollTrack.title}" learning program.`,
-      });
-      toast.success('Enquiry received. Our team will reach out within 24 hours.');
-      setEnrollTrack(null);
-    } catch (err) {
-      toast.error(err?.message || 'Something went wrong. Please try again.');
-    } finally {
-      setSending(false);
-    }
-  };
 
   return (
     <>
@@ -156,7 +120,7 @@ export default function LearningPrograms() {
         </div>
         <Row className="g-4 reveal-stagger">
           {loading ? (
-            <div style={{ width: '100%' }}><LoadingState label="Loading career tracks..." /></div>
+            <div style={{ width: '100%' }}><Shimmer /></div>
           ) : error ? (
             <div style={{ width: '100%' }}><ErrorState title="Couldn't load programs" text={error} onRetry={reload} /></div>
           ) : tracks.length === 0 ? (
@@ -167,12 +131,19 @@ export default function LearningPrograms() {
                 action={<Link to="/contact" className="btn-eduact">Contact Us</Link>}
               />
             </div>
-          ) : tracks.map((track, i) => (
-            <Col key={i} md={6} lg={4}>
-              <div className="eduact-card" style={{ height: '100%', borderTop: '3px solid var(--eduact-base)' }}>
+          ) : tracks.map((track, i) => {
+            const slug = track.slug;
+            const detailPath = slug ? `/learning-programs/${slug}` : '/contact';
+            return (
+            <Col key={track._id || i} md={6} lg={4}>
+              <Link
+                to={detailPath}
+                className="eduact-card track-card"
+                aria-label={`Open ${track.title} course details`}
+              >
                 <span className="idx">Career Track {String(i + 1).padStart(2, '0')}</span>
                 <h4>{track.title}</h4>
-                <p>{track.desc}</p>
+                <p>{track.desc || track.shortDescription}</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '12px' }}>
                   {(track.skills || []).map((skill) => (
                     <span key={skill} style={{
@@ -186,18 +157,17 @@ export default function LearningPrograms() {
                   ))}
                 </div>
                 <div style={{ marginTop: '16px' }}>
-                  <button
-                    type="button"
+                  <span
                     className="btn-eduact"
-                    style={{ fontSize: '13px', padding: '9px 16px' }}
-                    onClick={() => openEnroll(track)}
+                    style={{ fontSize: '13px', padding: '9px 16px', textDecoration: 'none', display: 'inline-block' }}
                   >
-                    Get course details
-                  </button>
+                    View course details
+                  </span>
                 </div>
-              </div>
+              </Link>
             </Col>
-          ))}
+            );
+          })}
         </Row>
 
         <div className="mt-5 pt-4 reveal text-center">
@@ -220,41 +190,6 @@ export default function LearningPrograms() {
           </div>
         )}
       </Container>
-
-      <Modal show={!!enrollTrack} onHide={() => setEnrollTrack(null)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title style={{ fontFamily: 'var(--heading-font)', fontSize: '18px' }}>
-            {enrollTrack ? `Request details — ${enrollTrack.title}` : 'Request details'}
-          </Modal.Title>
-        </Modal.Header>
-        <Form onSubmit={submitEnroll}>
-          <Modal.Body>
-            <p style={{ fontSize: '14px', color: 'var(--eduact-text)' }}>
-              Tell us a little about yourself and our team will send the full curriculum, pricing and next steps.
-            </p>
-            <Form.Group className="mb-3">
-              <Form.Label style={{ fontSize: '14px', fontWeight: 600 }}>Name</Form.Label>
-              <Form.Control type="text" name="name" value={enrollForm.name} onChange={handleEnrollChange} required />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label style={{ fontSize: '14px', fontWeight: 600 }}>Email</Form.Label>
-              <Form.Control type="email" name="email" value={enrollForm.email} onChange={handleEnrollChange} required />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label style={{ fontSize: '14px', fontWeight: 600 }}>
-                Phone <span style={{ fontWeight: 400, color: 'var(--eduact-text)' }}>(optional)</span>
-              </Form.Label>
-              <Form.Control type="tel" name="phone" value={enrollForm.phone} onChange={handleEnrollChange} />
-            </Form.Group>
-          </Modal.Body>
-          <Modal.Footer>
-            <button type="button" className="btn-eduact-outline" onClick={() => setEnrollTrack(null)}>Cancel</button>
-            <button type="submit" className="btn-eduact" disabled={sending}>
-              {sending ? 'Sending...' : 'Send enquiry'}
-            </button>
-          </Modal.Footer>
-        </Form>
-      </Modal>
     </>
   );
 }

@@ -8,14 +8,16 @@ import ErrorBoundary from './components/ErrorBoundary';
 import ToastProvider from './context/ToastContext';
 import NetworkStatus from './components/NetworkStatus';
 import CookieConsent from './components/CookieConsent';
-import { LoadingState } from './components/ui/States';
+import { Shimmer } from './components/ui/States';
 import { trackPageView } from './utils/analytics';
 import { installGlobalHandlers } from './utils/crashReporter';
 
 const Home = lazy(() => import('./pages/Home'));
 const About = lazy(() => import('./pages/About'));
 const BusinessSolutions = lazy(() => import('./pages/BusinessSolutions'));
+const BusinessSolutionDetail = lazy(() => import('./pages/business/BusinessSolutionDetail'));
 const LearningPrograms = lazy(() => import('./pages/LearningPrograms'));
+const CourseDetailPage = lazy(() => import('./pages/learning/CourseDetailPage'));
 const CSRProjects = lazy(() => import('./pages/CSRProjects'));
 const MOUDirectory = lazy(() => import('./pages/MOUDirectory'));
 const Contact = lazy(() => import('./pages/Contact'));
@@ -93,16 +95,18 @@ function App() {
         >
           <NetworkStatus />
           <NavigationBar />
-          <Suspense
-            fallback={
-              <LoadingState label="Loading page..." />
-            }
-          >
+            <Suspense
+              fallback={
+                <Shimmer />
+              }
+            >
             <Routes>
               <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
               <Route path="/about" element={<PageWrapper><About /></PageWrapper>} />
               <Route path="/business-solutions" element={<PageWrapper><BusinessSolutions /></PageWrapper>} />
+              <Route path="/business-solutions/:slug" element={<PageWrapper><BusinessSolutionDetail /></PageWrapper>} />
               <Route path="/learning-programs" element={<PageWrapper><LearningPrograms /></PageWrapper>} />
+              <Route path="/learning-programs/:slug" element={<PageWrapper><CourseDetailPage /></PageWrapper>} />
               <Route path="/csr-projects" element={<PageWrapper><CSRProjects /></PageWrapper>} />
               <Route path="/mou-directory" element={<PageWrapper><MOUDirectory /></PageWrapper>} />
               <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />

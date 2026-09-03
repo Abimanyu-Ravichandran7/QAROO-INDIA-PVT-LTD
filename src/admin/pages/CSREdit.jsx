@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import CSRForm from '../components/forms/CSRForm.jsx';
 import { csrApi } from '../../api/csrApi.js';
 import PermissionGuard from '../components/PermissionGuard.jsx';
-import { LoadingState } from '../../components/ui/States';
+import { ShimmerPanel } from '../../components/ui/States';
 
 export default function CSREdit() {
   const { id } = useParams();
@@ -41,7 +41,7 @@ export default function CSREdit() {
       <p className="page-sub">{isEdit ? 'Update project details.' : 'Create a new CSR project.'}</p>
       {success && <div className="admin-alert success">{success}</div>}
       {error && <div className="admin-alert error">{error}</div>}
-      {loading ? <LoadingState compact label="Loading project..." />
+      {loading ? <ShimmerPanel variant="form" header={false} />
         : initial || !isEdit ? <CSRForm initial={initial} onSubmit={handleSubmit} submitting={submitting} />
         : !error && <div className="admin-alert error">Project not found</div>}
     </PermissionGuard>

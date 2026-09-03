@@ -3,7 +3,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import ZoomReveal from '../components/ZoomReveal';
 import Seo from '../components/Seo.jsx';
-import { LoadingState, EmptyState, ErrorState } from '../components/ui/States';
+import { Shimmer, EmptyState, ErrorState } from '../components/ui/States';
 import { csrApi } from '../api/csrApi.js';
 import { contentApi } from '../api/contentApi.js';
 
@@ -230,7 +230,7 @@ export default function CSRProjects() {
         </div>
         <Row className="g-4 reveal-stagger">
           {loading ? (
-            <div style={{ width: '100%' }}><LoadingState label="Loading projects..." /></div>
+            <div style={{ width: '100%' }}><Shimmer /></div>
           ) : error ? (
             <div style={{ width: '100%' }}><ErrorState title="Couldn't load projects" text={error} onRetry={reload} /></div>
           ) : current.length === 0 ? (

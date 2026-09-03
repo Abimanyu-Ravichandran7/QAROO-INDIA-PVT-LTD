@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import LearningForm from '../components/forms/LearningForm.jsx';
 import { learningApi } from '../../api/learningApi.js';
 import PermissionGuard from '../components/PermissionGuard.jsx';
-import { LoadingState } from '../../components/ui/States';
+import { ShimmerPanel } from '../../components/ui/States';
 
 export default function LearningEdit() {
   const { id } = useParams();
@@ -39,7 +39,7 @@ export default function LearningEdit() {
       <p className="page-sub">{isEdit ? 'Update program details.' : 'Create a new learning program.'}</p>
       {success && <div className="admin-alert success">{success}</div>}
       {error && <div className="admin-alert error">{error}</div>}
-      {loading ? <LoadingState compact label="Loading program..." />
+      {loading ? <ShimmerPanel variant="form" header={false} />
         : initial || !isEdit ? <LearningForm initial={initial} onSubmit={handleSubmit} submitting={submitting} />
         : <div className="admin-alert error">Program not found</div>}
     </PermissionGuard>

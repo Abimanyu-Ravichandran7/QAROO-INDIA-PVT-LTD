@@ -20,6 +20,8 @@ import CSRManagement from './pages/CSRManagement.jsx';
 import CSREdit from './pages/CSREdit.jsx';
 import LearningManagement from './pages/LearningManagement.jsx';
 import LearningEdit from './pages/LearningEdit.jsx';
+import BusinessSolutionManagement from './pages/BusinessSolutionManagement.jsx';
+import BusinessSolutionEdit from './pages/BusinessSolutionEdit.jsx';
 import Messages from './pages/Messages.jsx';
 import AdminManagement from './pages/AdminManagement.jsx';
 import ChangePassword from './pages/ChangePassword.jsx';
@@ -58,6 +60,9 @@ export default function AdminRoutes() {
             <Route path="learning" element={<LearningManagement />} />
             <Route path="learning/create" element={<LearningEdit />} />
             <Route path="learning/:id/edit" element={<LearningEdit />} />
+            <Route path="business-solutions" element={<BusinessSolutionManagement />} />
+            <Route path="business-solutions/create" element={<BusinessSolutionEdit />} />
+            <Route path="business-solutions/:id/edit" element={<BusinessSolutionEdit />} />
             <Route path="messages" element={<Messages />} />
             <Route path="admins" element={<AdminManagement />} />
             <Route path="change-password" element={<ChangePassword />} />

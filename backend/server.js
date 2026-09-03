@@ -14,6 +14,7 @@ import mouRoutes from './routes/mouRoutes.js';
 import pageRoutes from './routes/pageRoutes.js';
 import csrRoutes from './routes/csrRoutes.js';
 import learningRoutes from './routes/learningRoutes.js';
+import businessSolutionRoutes from './routes/businessSolutionRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
 import clientErrorRoutes from './routes/clientErrorRoutes.js';
 
@@ -54,6 +55,7 @@ app.use('/api/mous', mouRoutes);
 app.use('/api/content', pageRoutes);
 app.use('/api/csr', csrRoutes);
 app.use('/api/learning', learningRoutes);
+app.use('/api/business-solutions', businessSolutionRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/client-errors', clientErrorRoutes);
 

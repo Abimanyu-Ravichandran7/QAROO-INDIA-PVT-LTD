@@ -7,6 +7,7 @@ const items = [
   { to: '/admin/mous', label: 'MOU Directory', icon: 'M', permission: 'mou.read' },
   { to: '/admin/csr', label: 'CSR Projects', icon: 'C', permission: 'csr.read' },
   { to: '/admin/learning', label: 'Learning Programs', icon: 'L', permission: 'learning.read' },
+  { to: '/admin/business-solutions', label: 'Business Solutions', icon: 'B', permission: 'business.read' },
   { to: '/admin/content', label: 'Website Content', icon: '◎', permission: 'home.update' },
   { to: '/admin/messages', label: 'Messages', icon: '✉', permission: 'contact.read' },
   { to: '/admin/admins', label: 'Admins', icon: '👤', permission: 'admin.read' },

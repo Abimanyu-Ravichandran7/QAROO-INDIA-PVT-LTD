@@ -135,3 +135,36 @@ Client request
 ## 8. FULL END-TO-END (one sentence)
 
 **Visitor or admin → React (Vite) route → axios API call → Express route/middleware (JWT + permission + rate limit) → Mongoose model → MongoDB → response → toast/UI update → (admin) CMS edit saved → reflected on public site.**
+
+## 9. DEMO / VERIFICATION CHECKLIST (data-driven Learning + Business)
+
+Run one pass to demo/verify the fully data-driven Learning Programs + Business Solutions (no per-course JSX; all DB-backed with dynamic `/:slug` routes, dynamic Navbar, admin CRUD + SEO). Backend must be running (`node server.js`) and seeds applied (`node backend/seed/runSeed.js`). Frontend dev server on port 5173.
+
+### Public site
+- [ ] `/learning-programs` — 7 cards, whole-card clickable, links use DB slug
+- [ ] `/learning-programs/:slug` (e.g. `data-science-business-analytics`) — one reusable template, all content + SEO rendered
+- [ ] `/business-solutions` — 8 cards + nav pills use DB slug
+- [ ] `/business-solutions/:slug` (e.g. `crm-solutions`) — one reusable template, all content + SEO rendered
+- [ ] Navbar dropdowns show published-only records in displayOrder — no hardcoded list
+- [ ] URLs are DB slugs, not page names (e.g. `ai-machine-learning`, `graphic-design-animation`)
+- [ ] No duplicate records (learning = exactly 7, business = exactly 8)
+
+### Admin CMS (`/admin`)
+- [ ] Learning Programs + Business Solutions listed with live counts
+- [ ] Edit form: rich content (lists/modules/FAQ) + SEO fields + displayOrder + status, auto-slug (editable)
+- [ ] Create/Publish/Unpublish/Delete work; changes reflect on public site
+- [ ] Sidebar "Business Solutions" visible to superadmin (others need `business.read`)
+- [ ] All CRUD stays behind `protect + requireVerifiedApproved + requirePermission`
+- [ ] Permission grid (`AdminManagement`) shows "Business Solutions" group (create/read/update/delete)
+
+### Data/API
+- [ ] `GET /api/learning` returns 7, `GET /api/business-solutions` returns 8
+- [ ] `GET /api/learning/by-slug/:slug` and `GET /api/business-solutions/by-slug/:slug` return published records
+- [ ] Seed is idempotent (slug upsert, never deletes); cleanup script `backend/seed/cleanupLegacyLearning.js` removes empty-slug legacy dupes
+- [ ] `npm run build` passes
+
+### Known notes
+- Backend must be restarted after backend changes; I never start it (per AGENTS.md) — user restarts.
+- After new/changed DB records, run `node backend/seed/runSeed.js`.
+- `business.*` permissions now drive Business Solutions CRUD; the old Website-Content `business.update` blob entry was removed from the permission grid.
+- `src/data/programs.js` and `src/data/businessSolutions.js` are imported by the seed scripts — do not delete.

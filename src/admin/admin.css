@@ -2,6 +2,7 @@
 
 :root {
   --admin-base: #931913;
+  --admin-base-rgb: 147, 25, 19;
   --admin-dark: #2A254D;
   --admin-accent: #e4cc2e;
   --admin-bg: #f5f6f8;
@@ -1059,3 +1060,98 @@ body.admin-dark .admin-shell::-webkit-scrollbar-thumb:hover { background: var(--
 /* Theme toggle button in dark mode */
 body.admin-dark .admin-theme-toggle { color: var(--admin-dark); border-color: #3a3346; }
 body.admin-dark .admin-theme-toggle:hover { background: var(--admin-soft); border-color: var(--admin-base); }
+
+/* ===== Admin shimmer / skeleton loading ===== */
+@keyframes admin-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.admin-shimmer-block {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  background: linear-gradient(90deg,
+    rgba(var(--admin-base-rgb), 0.08) 0%,
+    rgba(var(--admin-base-rgb), 0.16) 50%,
+    rgba(var(--admin-base-rgb), 0.08) 100%);
+  background-size: 200% 100%;
+  animation: admin-shimmer 1.3s ease-in-out infinite;
+}
+body.admin-dark .admin-shimmer-block {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.06) 0%,
+    rgba(255,255,255,0.12) 50%,
+    rgba(255,255,255,0.06) 100%);
+  background-size: 200% 100%;
+}
+
+.admin-shimmer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.admin-shimmer-title { width: 220px; height: 24px; }
+.admin-shimmer-sub   { width: 380px; height: 13px; margin-bottom: 22px; max-width: 90%; }
+
+/* Dashboard stat cards */
+.admin-shimmer-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.admin-shimmer-stat {
+  padding: 22px 16px;
+  border-radius: var(--admin-radius);
+  background: var(--admin-card);
+  border: 1px solid var(--admin-border);
+}
+.admin-shimmer-stat .shimmer-num { width: 48px; height: 28px; margin-bottom: 8px; }
+.admin-shimmer-stat .shimmer-lbl { width: 80px; height: 12px; }
+
+/* Table rows */
+.admin-shimmer-table {
+  width: 100%;
+  border-radius: var(--admin-radius);
+  overflow: hidden;
+  border: 1px solid var(--admin-border);
+  background: var(--admin-card);
+}
+.admin-shimmer-table .shimmer-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 18px;
+  height: 44px;
+}
+.admin-shimmer-table .shimmer-row:not(:last-child) {
+  border-bottom: 1px solid var(--admin-border);
+}
+.admin-shimmer-table .shimmer-cell { height: 13px; flex: 1; border-radius: 6px; }
+.admin-shimmer-table .shimmer-cell-sm { flex: 0 0 100px; }
+.admin-shimmer-table .shimmer-cell-xs { flex: 0 0 36px; height: 36px; border-radius: 8px; }
+
+/* Form fields */
+.admin-shimmer-form {
+  background: var(--admin-card);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius);
+  padding: 28px;
+}
+.admin-shimmer-form .shimmer-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+.admin-shimmer-form .shimmer-label { width: 100px; height: 12px; }
+.admin-shimmer-form .shimmer-input { width: 100%; height: 40px; border-radius: 10px; }
+.admin-shimmer-form .shimmer-textarea { width: 100%; height: 90px; border-radius: 10px; }
+.admin-shimmer-form .shimmer-row-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.admin-shimmer-form .shimmer-btn { width: 140px; height: 40px; border-radius: 10px; margin-top: 8px; }
+

@@ -1,26 +1,65 @@
 import { useState } from 'react';
 import ImageInput from './ImageInput.jsx';
+import { StringListEditor, ModuleListEditor, FaqListEditor, SeoFields } from './ContentFields.jsx';
+import { slugify } from '../../../utils/slug.js';
 
-const defaults = { title: '', desc: '', skills: [''], category: '', image: '', status: 'published' };
+const defaults = {
+  title: '', slug: '', desc: '', shortDescription: '', fullDescription: '',
+  skills: [''], category: '', image: '', status: 'published', displayOrder: 0,
+  highlights: [''], learn: [''], tools: [''], modules: [{ title: '', items: [''] }],
+  careers: [''], audience: [''], benefits: [''], certification: '', placement: '',
+  modes: [''], faq: [{ q: '', a: '' }], cta: '',
+  keyword: '', seoTitle: '', seoDescription: '', seoKeywords: [], ogTitle: '',
+  ogDescription: '', ogImage: '', canonicalUrl: '',
+};
+
+const norm = (v) => (Array.isArray(v) && v.length ? v : ['']);
+const normMod = (v) => (Array.isArray(v) && v.length ? v : [{ title: '', items: [''] }]);
+const normFaq = (v) => (Array.isArray(v) && v.length ? v : [{ q: '', a: '' }]);
 
 export default function LearningForm({ initial, onSubmit, submitting }) {
   const [form, setForm] = useState(() => {
-    if (!initial) return { ...defaults };
+    if (!initial) return { ...defaults, modules: [{ title: '', items: [''] }], faq: [{ q: '', a: '' }] };
     return {
-      ...defaults,
-      ...initial,
-      skills: initial.skills?.length ? initial.skills : [''],
+      ...defaults, ...initial,
+      skills: norm(initial.skills), highlights: norm(initial.highlights), learn: norm(initial.learn),
+      tools: norm(initial.tools), modules: normMod(initial.modules), careers: norm(initial.careers),
+      audience: norm(initial.audience), benefits: norm(initial.benefits), modes: norm(initial.modes),
+      faq: normFaq(initial.faq), seoKeywords: initial.seoKeywords || [],
     };
   });
+  // Whether the slug was auto-generated from the title or manually provided.
+  const [slugAuto, setSlugAuto] = useState(() => !initial || !initial.slug);
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
-  const setSkill = (i, v) => { const s = [...form.skills]; s[i] = v; set('skills', s); };
-  const addSkill = () => set('skills', [...form.skills, '']);
-  const removeSkill = (i) => set('skills', form.skills.filter((_, x) => x !== i));
+  const get = (k) => form[k];
+
+  const onTitle = (v) => {
+    if (slugAuto) set('slug', slugify(v));
+    set('title', v);
+  };
+  const onSlug = (v) => {
+    setSlugAuto(false);
+    set('slug', v);
+  };
+
+  const cleanup = (f) => ({
+    ...f,
+    skills: f.skills.filter((s) => s.trim()),
+    highlights: f.highlights.filter((s) => s.trim()),
+    learn: f.learn.filter((s) => s.trim()),
+    tools: f.tools.filter((s) => s.trim()),
+    careers: f.careers.filter((s) => s.trim()),
+    audience: f.audience.filter((s) => s.trim()),
+    benefits: f.benefits.filter((s) => s.trim()),
+    modes: f.modes.filter((s) => s.trim()),
+    modules: f.modules.map((m) => ({ title: m.title, items: (m.items || []).filter((x) => x.trim()) })).filter((m) => m.title.trim()),
+    faq: f.faq.map((x) => ({ q: x.q, a: x.a })).filter((x) => x.q.trim()),
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({ ...form, skills: form.skills.filter((s) => s.trim() !== '') });
+    onSubmit(cleanup(form));
   };
 
   return (
@@ -28,7 +67,7 @@ export default function LearningForm({ initial, onSubmit, submitting }) {
       {submitting && <div className="admin-alert info">Saving...</div>}
 
       <div className="admin-card">
-        <h2>Program Details</h2>
+        <h2>Basic Information</h2>
         <div className="form-grid">
           <div className="field">
             <label>Status</label>
@@ -38,37 +77,71 @@ export default function LearningForm({ initial, onSubmit, submitting }) {
             </select>
           </div>
           <div className="field">
-            <label>Category</label>
-            <input type="text" value={form.category} onChange={(e) => set('category', e.target.value)} placeholder="Career Track" />
+            <label>Display Order</label>
+            <input type="number" value={form.displayOrder} onChange={(e) => set('displayOrder', Number(e.target.value))} placeholder="1" />
           </div>
         </div>
         <div className="field">
           <label>Program Title *</label>
-          <input type="text" value={form.title} onChange={(e) => set('title', e.target.value)} required />
+          <input type="text" value={form.title} onChange={(e) => onTitle(e.target.value)} required />
         </div>
         <div className="field">
-          <label>Description</label>
-          <textarea rows={3} value={form.desc} onChange={(e) => set('desc', e.target.value)} />
+          <label>Slug (auto-generated from title; leave empty to auto-generate)</label>
+          <input type="text" value={form.slug} onChange={(e) => onSlug(e.target.value)} placeholder="cloud-computing" />
+          <p className="hint">Public URL: /learning-programs/{form.slug || '<slug>'}</p>
         </div>
         <div className="field">
-          <label>Image</label>
+          <label>Short Description</label>
+          <textarea rows={2} value={form.shortDescription} onChange={(e) => set('shortDescription', e.target.value)} />
+        </div>
+        <div className="field">
+          <label>Full Description</label>
+          <textarea rows={4} value={form.fullDescription} onChange={(e) => set('fullDescription', e.target.value)} />
+        </div>
+        <div className="field">
+          <label>Program Image</label>
           <ImageInput value={form.image} onChange={(v) => set('image', v)} />
+        </div>
+        <div className="field">
+          <label>CTA Text</label>
+          <input type="text" value={form.cta} onChange={(e) => set('cta', e.target.value)} />
         </div>
       </div>
 
       <div className="admin-card">
-        <h2>Skills</h2>
-        {form.skills.map((s, i) => (
-          <div key={i} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-            <input type="text" value={s} onChange={(e) => setSkill(i, e.target.value)} placeholder="Skill" />
-            <button type="button" className="admin-icon-btn danger" onClick={() => removeSkill(i)}>×</button>
+        <h2>Course Content</h2>
+        <StringListEditor label="Key Highlights" value={form.highlights} onChange={(v) => set('highlights', v)} />
+        <StringListEditor label="What You Will Learn" value={form.learn} onChange={(v) => set('learn', v)} hint="Each entry above is kept even if left blank during entry." />
+        <StringListEditor label="Tools & Technologies" value={form.tools} onChange={(v) => set('tools', v)} />
+        <ModuleListEditor label="Course Modules" value={form.modules} onChange={(v) => set('modules', v)} itemPlaceholder="Module item" />
+        <StringListEditor label="Career Opportunities" value={form.careers} onChange={(v) => set('careers', v)} />
+        <StringListEditor label="Who Can Join" value={form.audience} onChange={(v) => set('audience', v)} />
+        <StringListEditor label="Course Benefits" value={form.benefits} onChange={(v) => set('benefits', v)} />
+        <div className="form-grid">
+          <div className="field">
+            <label>Certification</label>
+            <textarea rows={2} value={form.certification} onChange={(e) => set('certification', e.target.value)} />
           </div>
-        ))}
-        <button type="button" className="admin-add-btn" onClick={addSkill}>+ Add Skill</button>
+          <div className="field">
+            <label>Placement Support</label>
+            <textarea rows={2} value={form.placement} onChange={(e) => set('placement', e.target.value)} />
+          </div>
+        </div>
+        <StringListEditor label="Learning Modes" value={form.modes} onChange={(v) => set('modes', v)} />
+      </div>
+
+      <div className="admin-card">
+        <h2>FAQ</h2>
+        <FaqListEditor value={form.faq} onChange={(v) => set('faq', v)} />
+      </div>
+
+      <div className="admin-card">
+        <h2>SEO</h2>
+        <SeoFields get={get} set={set} />
       </div>
 
       <div style={{ display: 'flex', gap: '10px' }}>
-        <button type="button" className="admin-btn outline" onClick={() => onSubmit({ ...form, status: 'draft', skills: form.skills.filter((s) => s.trim() !== '') })} disabled={submitting}>Save Draft</button>
+        <button type="button" className="admin-btn outline" onClick={() => onSubmit({ ...cleanup(form), status: 'draft' })} disabled={submitting}>Save Draft</button>
         <button type="submit" className="admin-btn" disabled={submitting}>{submitting ? 'Saving...' : 'Publish'}</button>
       </div>
     </form>

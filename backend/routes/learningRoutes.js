@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   listPrograms,
+  getProgramBySlug,
   getProgram,
   createProgram,
   updateProgram,
@@ -14,6 +15,7 @@ import { requirePermission } from '../middleware/permissionMiddleware.js';
 const router = Router();
 
 router.get('/', optionalAuth, listPrograms);
+router.get('/by-slug/:slug', optionalAuth, getProgramBySlug);
 router.get('/:id', optionalAuth, getProgram);
 
 router.post('/', protect, requireVerifiedApproved, requirePermission('learning.create'), createProgram);
