@@ -222,20 +222,6 @@ export default function Home() {
                     </Link>
                   </StarBorder>
                 ))}
-                {/* <StarBorder as="span" color="#e4cc2e" speed="6s" thickness={2}>
-                  <Link to="/mou-directory" style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    padding: '14px 26px',
-                    fontSize: '15px',
-                    fontWeight: 700,
-                    color: '#fff',
-                    textDecoration: 'none',
-                  }}>
-                    View MOU Directory
-                  </Link>
-                </StarBorder> */}
               </div>
             </Col>
             <Col lg={5} className="d-none d-lg-block">

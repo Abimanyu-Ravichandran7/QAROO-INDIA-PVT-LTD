@@ -86,12 +86,12 @@ const login = async (req, res, next) => {
     const accessToken = jwt.sign(
       { id: admin._id, role: admin.role },
       process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m' }
+      { algorithm: 'HS256', expiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m' }
     );
     const refreshToken = jwt.sign(
       { id: admin._id },
       process.env.JWT_SECRET + '_refresh',
-      { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' }
+      { algorithm: 'HS256', expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' }
     );
 
     const isProd = process.env.NODE_ENV === 'production';
@@ -113,7 +113,7 @@ const refresh = async (req, res, next) => {
     }
     let decoded;
     try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET + '_refresh');
+      decoded = jwt.verify(token, process.env.JWT_SECRET + '_refresh', { algorithms: ['HS256'] });
     } catch {
       return res.status(401).json({ success: false, message: 'Invalid refresh token' });
     }
@@ -124,7 +124,7 @@ const refresh = async (req, res, next) => {
     const accessToken = jwt.sign(
       { id: admin._id, role: admin.role },
       process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m' }
+      { algorithm: 'HS256', expiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m' }
     );
     res.cookie('accessToken', accessToken, {
       httpOnly: true,

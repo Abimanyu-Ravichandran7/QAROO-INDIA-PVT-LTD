@@ -20,17 +20,3 @@ export function trackPageView(path) {
     // ignore
   }
 }
-
-export function trackEvent(name, params = {}) {
-  const w = win();
-  if (!w) return;
-  try {
-    if (typeof w.gtag === 'function') {
-      w.gtag('event', name, params);
-    } else if (Array.isArray(w.dataLayer)) {
-      w.dataLayer.push({ event: name, ...params });
-    }
-  } catch {
-    // ignore
-  }
-}

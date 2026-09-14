@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 const DEFAULT_TITLE = 'Qaroo India Private Limited — Business Solutions & Career-Ready Learning';
 const DEFAULT_DESC =
   'Qaroo India Private Limited builds digital solutions for businesses — CRM, marketing, design, software, strategy — and career-ready IT learning programs. Coimbatore & Chennai.';
+const DEFAULT_OG_IMAGE = 'https://www.qarootech.in/logos/qaroo-logo.jpg';
 
 function setMeta(attrName, attrKey, content) {
   let el = document.head.querySelector(`meta[${attrName}="${attrKey}"]`);
@@ -14,19 +15,22 @@ function setMeta(attrName, attrKey, content) {
   el.setAttribute('content', content);
 }
 
-export default function Seo({ title, description, path }) {
+export default function Seo({ title, description, path, image }) {
   useEffect(() => {
     const t = title || DEFAULT_TITLE;
     const d = description || DEFAULT_DESC;
     const url = `https://www.qarootech.in${path || '/'}`;
+    const ogImage = image || DEFAULT_OG_IMAGE;
 
     document.title = t;
     setMeta('name', 'description', d);
     setMeta('property', 'og:title', t);
     setMeta('property', 'og:description', d);
     setMeta('property', 'og:url', url);
+    setMeta('property', 'og:image', ogImage);
     setMeta('name', 'twitter:title', t);
     setMeta('name', 'twitter:description', d);
+    setMeta('name', 'twitter:image', ogImage);
 
     let canonical = document.head.querySelector('link[rel="canonical"]');
     if (!canonical) {
@@ -35,7 +39,7 @@ export default function Seo({ title, description, path }) {
       document.head.appendChild(canonical);
     }
     canonical.setAttribute('href', url);
-  }, [title, description, path]);
+  }, [title, description, path, image]);
 
   return null;
 }

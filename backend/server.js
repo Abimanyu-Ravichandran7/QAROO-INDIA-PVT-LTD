@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 
 import { connectDB } from './config/db.js';
@@ -23,11 +24,16 @@ const app = express();
 
 connectDB();
 
+// Behind a reverse proxy (Nginx/cPanel/etc.) this restores the real client IP
+// for correct rate limiting and logging.
+app.set('trust proxy', 1);
+
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: 'cross-origin' },
   })
 );
+app.use(compression());
 app.use(
   cors({
     origin: process.env.CLIENT_URL || 'http://localhost:5173',
@@ -46,19 +52,40 @@ const authLimiter = rateLimit({
   message: { success: false, message: 'Too many requests, please try again later' },
 });
 
+// Broad abuse protection across every API route.
+const globalApiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 1000,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many requests, please try again later' },
+});
+
+// Stricter cap on write-capable modules so brute-force/abuse is blunted while
+// still allowing normal content reads over the same mounts.
+const writeApiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 300,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many requests, please try again later' },
+});
+
 app.get('/api/health', (req, res) =>
     res.json({ success: true, message: 'Qaroo India Private Limited CMS API is running' })
 );
 
+app.use('/api', globalApiLimiter);
+
 app.use('/api/stats', statsRoutes);
 
 app.use('/api/auth', authLimiter, authRoutes);
-app.use('/api/admins', adminRoutes);
-app.use('/api/mous', mouRoutes);
-app.use('/api/content', pageRoutes);
-app.use('/api/csr', csrRoutes);
-app.use('/api/learning', learningRoutes);
-app.use('/api/business-solutions', businessSolutionRoutes);
+app.use('/api/admins', writeApiLimiter, adminRoutes);
+app.use('/api/mous', writeApiLimiter, mouRoutes);
+app.use('/api/content', writeApiLimiter, pageRoutes);
+app.use('/api/csr', writeApiLimiter, csrRoutes);
+app.use('/api/learning', writeApiLimiter, learningRoutes);
+app.use('/api/business-solutions', writeApiLimiter, businessSolutionRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/client-errors', clientErrorRoutes);
 

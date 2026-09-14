@@ -1,6 +1,7 @@
 import CSRProject from '../models/CSRProject.js';
 import { uploadImage } from '../services/imageService.js';
 import { CSR_CATEGORIES } from '../../src/data/csrCategories.js';
+import { escapeRegex } from '../utils/escapeRegex.js';
 
 const normalizeProject = (b) => ({
   year: b.year || '',
@@ -35,9 +36,9 @@ const listCSR = async (req, res, next) => {
     if (status && status !== 'all' && req.admin) query.status = status;
     if (search) {
       query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { partner: { $regex: search, $options: 'i' } },
-        { tag: { $regex: search, $options: 'i' } },
+        { title: { $regex: escapeRegex(search), $options: 'i' } },
+        { partner: { $regex: escapeRegex(search), $options: 'i' } },
+        { tag: { $regex: escapeRegex(search), $options: 'i' } },
       ];
     }
     const projects = await CSRProject.find(query)

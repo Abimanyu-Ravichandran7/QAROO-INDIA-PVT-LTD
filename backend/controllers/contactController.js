@@ -1,4 +1,5 @@
 import ContactMessage from '../models/ContactMessage.js';
+import { escapeRegex } from '../utils/escapeRegex.js';
 
 const submitContact = async (req, res, next) => {
   try {
@@ -27,9 +28,9 @@ const listMessages = async (req, res, next) => {
     if (status && status !== 'all') query.status = status;
     if (search) {
       query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
-        { subject: { $regex: search, $options: 'i' } },
+        { name: { $regex: escapeRegex(search), $options: 'i' } },
+        { email: { $regex: escapeRegex(search), $options: 'i' } },
+        { subject: { $regex: escapeRegex(search), $options: 'i' } },
       ];
     }
     const messages = await ContactMessage.find(query).sort('-createdAt');

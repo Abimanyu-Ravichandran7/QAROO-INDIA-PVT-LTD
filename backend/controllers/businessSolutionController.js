@@ -1,6 +1,7 @@
 import BusinessSolution from '../models/BusinessSolution.js';
 import { uploadImage } from '../services/imageService.js';
 import { slugify } from '../utils/slug.js';
+import { escapeRegex } from '../utils/escapeRegex.js';
 
 const cleanArr = (v) => (Array.isArray(v) ? v.filter((x) => x && String(x).trim() !== '') : v || []);
 const cleanObjArr = (v, otherKeys = []) =>
@@ -72,8 +73,8 @@ const listSolutions = async (req, res, next) => {
     if (status && status !== 'all' && req.admin) query.status = status;
     if (search) {
       query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { pageName: { $regex: search, $options: 'i' } },
+        { title: { $regex: escapeRegex(search), $options: 'i' } },
+        { pageName: { $regex: escapeRegex(search), $options: 'i' } },
       ];
     }
     const solutions = await BusinessSolution.find(query)

@@ -1,6 +1,7 @@
 import MOU from '../models/MOU.js';
 import { uploadImage } from '../services/imageService.js';
 import { MOU_CATEGORIES } from '../../src/data/mouCategories.js';
+import { escapeRegex } from '../utils/escapeRegex.js';
 
 const normalizeTag = (tag) => {
   if (typeof tag !== 'string') return '';
@@ -33,9 +34,9 @@ const listMOUs = async (req, res, next) => {
 
     if (search) {
       query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { blurb: { $regex: search, $options: 'i' } },
-        { tag: { $regex: search, $options: 'i' } },
+        { name: { $regex: escapeRegex(search), $options: 'i' } },
+        { blurb: { $regex: escapeRegex(search), $options: 'i' } },
+        { tag: { $regex: escapeRegex(search), $options: 'i' } },
       ];
     }
 

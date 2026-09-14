@@ -119,12 +119,18 @@ Super Admin bypasses all permission checks. Granular permissions are defined in 
 | POST | `/api/auth/reset-password` | Reset password |
 | GET/POST/PUT/DELETE | `/api/admins` | Admin management (Super Admin) |
 | GET/POST/PUT/DELETE | `/api/mous` | MOU directory CRUD |
+| GET | `/api/mous/categories` | MOU category dropdown list |
 | GET/POST/PUT/DELETE | `/api/csr` | CSR project CRUD |
+| GET | `/api/csr/categories` | CSR category dropdown list |
 | GET/POST/PUT/DELETE | `/api/learning` | Learning program CRUD |
+| GET/POST/PUT/DELETE | `/api/business-solutions` | Business solutions CRUD |
 | GET/PUT | `/api/content/:page` | Page content (home/about/business/learning/csr/contact/mou) |
 | GET | `/api/content/pages` | List valid page keys |
+| GET | `/api/stats` | Live published counts (MOUs, CSR projects) |
 | POST | `/api/contact` | Submit a contact message (public) |
 | GET/PUT/DELETE | `/api/contact` | Admin message management |
+| POST | `/api/client-errors` | Report a frontend crash (public) |
+| GET | `/api/client-errors` | List frontend crashes (Super Admin) |
 | GET | `/api/health` | Health check |
 
 ## Verification

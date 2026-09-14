@@ -78,13 +78,6 @@ export async function sendRejectionEmail(email, name) {
   return sendMail({ to: email, subject, text, html });
 }
 
-export async function sendOTPEmail(email, name, otp) {
-  const subject = 'Your Qaroo Admin verification code';
-  const text = `Hi ${name || 'there'},\n\nYour verification code is:\n\n${otp}\n\nEnter this code to verify your email address. It expires in 10 minutes.`;
-  const html = `<p>Hi ${name || 'there'},</p><p>Your Qaroo Admin verification code is:</p><p style="font-size:28px;font-weight:bold;letter-spacing:6px;color:#931913;text-align:center;padding:12px;background:#f4f4f4;border-radius:8px;">${otp}</p><p>Enter this code to verify your email address. It expires in 10 minutes.</p><p>If you did not request this, you can safely ignore this email.</p>`;
-  return sendMail({ to: email, subject, text, html });
-}
-
 // The code is emailed to the ADMIN who creates the new user, not to the new user.
 export async function sendAdminVerificationOTPEmail(creatorEmail, creatorName, userName, userEmail, otp) {
   const subject = `Verify the new Qaroo admin: ${userName}`;

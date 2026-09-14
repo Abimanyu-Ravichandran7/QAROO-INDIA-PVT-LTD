@@ -5,7 +5,7 @@ export function generateAccessToken(admin) {
   return jwt.sign(
     { id: admin._id, role: admin.role },
     process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m' }
+    { algorithm: 'HS256', expiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m' }
   );
 }
 
@@ -13,7 +13,7 @@ export function generateRefreshToken(admin) {
   return jwt.sign(
     { id: admin._id },
     process.env.JWT_SECRET + '_refresh',
-    { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' }
+    { algorithm: 'HS256', expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' }
   );
 }
 
