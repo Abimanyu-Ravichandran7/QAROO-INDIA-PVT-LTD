@@ -104,12 +104,12 @@ export default function NavigationBar() {
         position: 'sticky',
         top: 0,
         zIndex: 100,
-        background: 'rgba(147,25,19,0.98)',
+        background: 'var(--eduact-black)',
         backdropFilter: 'blur(10px)',
         borderBottom: '1px solid rgba(228,204,46,0.2)',
         padding: scrolled ? '8px 0' : '14px 0',
         transition: 'padding 0.25s ease, box-shadow 0.25s ease',
-        boxShadow: scrolled ? '0 8px 24px rgba(147,25,19,0.35)' : 'none',
+        boxShadow: scrolled ? '0 8px 24px rgba(42,37,77,0.35)' : 'none',
       }}
       variant="dark"
     >
@@ -122,14 +122,14 @@ export default function NavigationBar() {
             src="/logos/qaroo-logo.jpg"
             alt="Qaroo India"
             style={{
-              height: '50px',
-              width: '50px',
+              height: '42px',
+              width: 'auto',
               objectFit: 'contain',
               display: 'block',
               background: '#fff',
-              borderRadius: '10px',
+              borderRadius: '8px',
               border: '1px solid rgba(255,255,255,0.6)',
-              padding: '4px',
+              padding: '6px 8px',
             }}
           />
         </Navbar.Brand>
@@ -453,7 +453,7 @@ export default function NavigationBar() {
             color: rgba(255,255,255,0.9);
           }
           .dropdown-item:hover {
-            background: rgba(147,25,19,0.3);
+            background: rgba(255,255,255,0.08);
             color: #fff;
           }
         }

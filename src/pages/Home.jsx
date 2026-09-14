@@ -9,6 +9,7 @@ import CountUp from '../components/CountUp';
 import GlareHover from '../components/GlareHover';
 import Seo from '../components/Seo.jsx';
 import { contentApi } from '../api/contentApi.js';
+import { statsApi } from '../api/statsApi.js';
 
 const DEFAULT_HOME = {
   heroEyebrow: 'Coimbatore · Chennai',
@@ -21,7 +22,7 @@ const DEFAULT_HOME = {
   ],
   statistics: [
     { num: 20, label: 'Memorandums of Understanding (MoUs) signed' },
-    { num: 9, label: 'Active institutional & CSR partners' },
+    { num: 12, label: 'CSR projects delivered' },
     { num: 2, label: 'Office locations — Coimbatore & Chennai' },
   ],
   partners: ['Infosys Foundation', 'EduBridge', 'Atos Prayas Foundation', 'Canara Bank', 'AISECT', 'SNS College of Engineering', 'Dr. SNS Rajalakshmi College', 'Narayana Engineering College Nellore', 'Nayago Educational Trust'],
@@ -56,6 +57,7 @@ const FAQ_SCHEMA = {
 
 export default function Home() {
   const [csrTab, setCsrTab] = useState('24-25');
+  const [hoverBtn, setHoverBtn] = useState(null);
   const [home, setHome] = useState(DEFAULT_HOME);
 
   useEffect(() => {
@@ -70,6 +72,31 @@ export default function Home() {
       })
       .catch(() => { });
     return () => { active = false; };
+  }, []);
+
+  // Live counts from the backend — replaces the hardcoded MoU / CSR totals so
+  // public stats update automatically whenever an admin adds or removes a
+  // published MOU or CSR project.
+  useEffect(() => {
+    let active = true;
+    statsApi
+      .getStats()
+      .then((res) => {
+        if (!active || !res?.data) return;
+        const { mouCount, csrCount } = res.data;
+        const base = home.statistics || DEFAULT_HOME.statistics;
+        setHome((prev) => ({
+          ...prev,
+          statistics: [
+            { ...(base[0] || {}), num: mouCount, label: 'Memorandums of Understanding (MoUs) signed' },
+            { ...(base[1] || {}), num: csrCount, label: 'CSR projects delivered' },
+            base[2] || { num: 2, label: 'Office locations — Coimbatore & Chennai' },
+          ],
+        }));
+      })
+      .catch(() => { });
+    return () => { active = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // FAQPage structured data — injected into <head> because script elements
@@ -163,7 +190,22 @@ export default function Home() {
               </p>
               <div className="d-flex gap-3 flex-wrap">
                 {home.buttons.map((b) => (
-                  <StarBorder key={b.link + b.text} as="span" color={b.style === 'yellow' ? '#e4cc2e' : '#ffffff'} speed={b.style === 'yellow' ? '4s' : '5s'} thickness={2}>
+                  <StarBorder
+                  key={b.link + b.text}
+                  as="span"
+                  color="var(--eduact-black)"
+                  speed={b.style === 'yellow' ? '4s' : '5s'}
+                  thickness={2}
+                  style={{
+                    cursor: 'pointer',
+                    transition: 'transform 0.25s ease, box-shadow 0.25s ease',
+                    transform: hoverBtn === b.text ? 'translateY(-4px) scale(1.04)' : 'translateY(0) scale(1)',
+                    boxShadow: hoverBtn === b.text ? '0 14px 34px rgba(42,37,77,0.4)' : '0 0 0 rgba(42,37,77,0)',
+                    display: 'inline-block',
+                  }}
+                  onMouseEnter={() => setHoverBtn(b.text)}
+                  onMouseLeave={() => setHoverBtn(null)}
+                >
                     <Link to={b.link} style={{
                       display: 'inline-flex',
                       alignItems: 'center',
@@ -173,6 +215,8 @@ export default function Home() {
                       fontWeight: 700,
                       color: '#fff',
                       textDecoration: 'none',
+                      background: 'var(--eduact-black)',
+                      borderRadius: '8px',
                     }}>
                       {b.text}
                     </Link>
@@ -227,7 +271,7 @@ export default function Home() {
             {[
               { text: <><strong style={{ color: '#fff' }}>Coimbatore HQ</strong> + <strong style={{ color: '#fff' }}>Chennai branch office</strong></> },
               { text: <>Academic & CSR partnerships incl. <strong style={{ color: '#fff' }}>Infosys Foundation</strong>, <strong style={{ color: '#fff' }}>EduBridge</strong>, <strong style={{ color: '#fff' }}>Atos Prayas Foundation</strong></> },
-              { text: <>20+ MoUs across software, branding & digital marketing</> },
+              { text: <>{home.statistics[0]?.num ?? 20} MoUs across software, branding & digital marketing</> },
             ].map((item, i) => (
               <div key={i} className="d-flex align-items-center gap-2" style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13.5px' }}>
                 <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--eduact-secondary)', flexShrink: 0 }} />
@@ -285,7 +329,7 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <Link to="/business-solutions" className="btn-eduact">Talk to an Expert</Link>
+              <Link to="/business-solutions" className="btn-eduact">Explore Business</Link>
             </GlareHover>
             <GlareHover
               width="100%"
@@ -337,7 +381,7 @@ export default function Home() {
                 { color: '#1a0a0a', title: 'Business Solutions', description: 'CRM, marketing, design, software and strategy — scoped around a business outcome.', label: 'For businesses', link: '/business-solutions' },
                 { color: '#1a0a0a', title: 'Learning Programs', description: 'Industry-linked training across technology, design and analytics — built around real projects.', label: 'For learners', link: '/learning-programs' },
                 { color: '#1a0a0a', title: 'CSR Projects', description: 'Workforce readiness, education access and digital empowerment — delivered through institutional partnerships.', label: 'CSR', link: '/csr-projects' },
-                { color: '#1a0a0a', title: 'MOU Directory', description: '20+ memorandums of understanding across software, branding and digital marketing.', label: 'Partners', link: '/mou-directory' },
+                { color: '#1a0a0a', title: 'MOU Directory', description: `${home.statistics[0]?.num ?? 20} memorandums of understanding across software, branding and digital marketing.`, label: 'Partners', link: '/mou-directory' },
               ]}
               textAutoHide={true}
               enableStars={true}

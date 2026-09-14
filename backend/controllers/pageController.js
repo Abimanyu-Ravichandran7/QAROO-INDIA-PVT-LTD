@@ -1,6 +1,6 @@
 import PageContent from '../models/PageContent.js';
 
-const PAGES = ['home', 'about', 'business', 'learning', 'csr', 'contact', 'mou'];
+const PAGES = ['home', 'about', 'business', 'learning', 'csr', 'contact', 'mou', 'footer'];
 
 const getPageContent = async (req, res, next) => {
   try {

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { Container, Row, Col, Modal, Carousel, Badge } from 'react-bootstrap';
+import { Container, Row, Col, Modal, Badge } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Seo from '../components/Seo.jsx';
 import { Shimmer, EmptyState, ErrorState } from '../components/ui/States';
@@ -137,11 +137,14 @@ export default function MOUDirectory() {
   const [activeTag, setActiveTag] = useState('All');
   const [showModal, setShowModal] = useState(false);
   const [modalIndex, setModalIndex] = useState(0);
+  const [activeImg, setActiveImg] = useState(0);
+  const [autoPaused, setAutoPaused] = useState(false);
   const [mous, setMous] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [content, setContent] = useState(DEFAULT_MOU_PAGE);
   const aliveRef = useRef(true);
+  const galRef = useRef(null);
 
   const reload = useCallback(() => {
     setLoading(true);
@@ -192,11 +195,45 @@ export default function MOUDirectory() {
     }
   }, [showModal, modalIndex, mous.length]);
 
+  useEffect(() => {
+    setActiveImg(0);
+    if (galRef.current) galRef.current.scrollTop = 0;
+  }, [modalIndex]);
+
+  const galCount = (m?.images?.length || 0);
+
+  const scrollGal = useCallback((i) => {
+    const el = galRef.current;
+    if (!el || galCount < 1) return;
+    const target = Math.max(0, Math.min(galCount - 1, i));
+    el.scrollTo({ top: target * el.clientHeight, behavior: 'smooth' });
+  }, [galCount]);
+
+  const onGalScroll = useCallback(() => {
+    const el = galRef.current;
+    if (!el || el.clientHeight < 1) return;
+    const i = Math.round(el.scrollTop / el.clientHeight);
+    setActiveImg(Math.max(0, Math.min(galCount - 1, i)));
+  }, [galCount]);
+
+  useEffect(() => {
+    if (!showModal || galCount <= 1 || autoPaused) return;
+    const timer = setInterval(() => {
+      setActiveImg((prev) => {
+        const next = prev >= galCount - 1 ? 0 : prev + 1;
+        const el = galRef.current;
+        if (el) el.scrollTo({ top: next * el.clientHeight, behavior: 'smooth' });
+        return next;
+      });
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [showModal, galCount, autoPaused]);
+
   return (
     <>
       <Seo
         title="MOU Directory — Qaroo India Private Limited | Institutional & CSR Partnerships"
-        description="Browse 20+ Memorandums of Understanding signed by Qaroo India Private Limited with academic institutions and CSR partners across software development, branding and digital marketing."
+        description={`Browse ${mous.length || 20}+ Memorandums of Understanding signed by Qaroo India Private Limited with academic institutions and CSR partners across software development, branding and digital marketing.`}
         path="/mou-directory"
       />
       {/* Header */}
@@ -295,8 +332,7 @@ export default function MOUDirectory() {
                 action={<Link to="/contact" className="btn-eduact">Start a partnership</Link>}
               />
             </div>
-          ) : filtered.map((item, i) => {
-            const init = initials(item.name);
+          ) : filtered.map((item) => {
             return (
               <Col key={item.name} xs={12} sm={6} lg={4}>
                 <div
@@ -526,17 +562,177 @@ export default function MOUDirectory() {
                 </Col>
 
                 <Col xs={12} lg={5} className="order-1 order-lg-2">
-                  <Carousel style={{ borderRadius: '16px', overflow: 'hidden' }}>
-                    {(m.images || []).map((src, idx) => (
-                      <Carousel.Item key={idx}>
-                        <img
-                          src={src}
-                          alt={`${m.name} ${idx + 1}`}
-                          style={{ width: '100%', height: '260px', objectFit: 'cover', borderRadius: '16px' }}
-                        />
-                      </Carousel.Item>
-                    ))}
-                  </Carousel>
+                  <div style={{ position: 'relative' }}>
+                    <div style={{
+                      width: '100%',
+                      aspectRatio: '210 / 297',
+                      maxHeight: '70vh',
+                      margin: '0 auto',
+                      overflow: 'hidden',
+                      borderRadius: '16px',
+                      border: '1px solid var(--eduact-soft4)',
+                      position: 'relative',
+                    }}>
+                      <div
+                        ref={galRef}
+                        onScroll={onGalScroll}
+                        onMouseEnter={() => setAutoPaused(true)}
+                        onMouseLeave={() => setAutoPaused(false)}
+                        style={{
+                          height: '100%',
+                          overflowY: 'auto',
+                          scrollSnapType: 'y mandatory',
+                          scrollbarWidth: 'none',
+                          msOverflowStyle: 'none',
+                        }}
+                      >
+                        {(m.images && m.images.length ? m.images : [null]).map((src, idx) => (
+                          <div
+                            key={idx}
+                            style={{
+                              height: '100%',
+                              flexShrink: 0,
+                              scrollSnapAlign: 'start',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              background: 'var(--eduact-soft2)',
+                              overflow: 'hidden',
+                            }}
+                          >
+                            {src ? (
+                              <img
+                                src={src}
+                                alt={`${m.name} ${idx + 1}`}
+                                style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+                              />
+                            ) : (
+                              <div style={{
+                                textAlign: 'center',
+                                padding: '0 20px',
+                                color: 'var(--eduact-grey)',
+                              }}>
+                                <div style={{
+                                  width: '52px',
+                                  height: '52px',
+                                  borderRadius: '50%',
+                                  background: 'rgba(42,37,77,0.08)',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  margin: '0 auto 14px',
+                                  fontSize: '22px',
+                                  color: 'var(--eduact-base)',
+                                }}>🖼️</div>
+                                <strong style={{
+                                  display: 'block',
+                                  color: 'var(--eduact-black)',
+                                  fontSize: '0.98rem',
+                                  fontWeight: 700,
+                                  marginBottom: '4px',
+                                }}>{m.name}</strong>
+                                <span style={{ fontSize: '0.84rem' }}>Image {idx + 1}</span>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {galCount > 1 && (
+                      <>
+                        <span style={{
+                          position: 'absolute',
+                          top: '10px',
+                          left: '12px',
+                          zIndex: 2,
+                          background: 'rgba(42,37,77,0.75)',
+                          color: '#fff',
+                          fontSize: '0.72rem',
+                          fontWeight: 700,
+                          padding: '4px 10px',
+                          borderRadius: '999px',
+                          letterSpacing: '0.04em',
+                        }}>
+                          {activeImg + 1} / {galCount}
+                        </span>
+                        <button
+                          onClick={() => scrollGal(activeImg - 1)}
+                          disabled={activeImg === 0}
+                          aria-label="Previous image"
+                          style={{
+                            position: 'absolute',
+                            top: '10px',
+                            right: '10px',
+                            width: '34px',
+                            height: '34px',
+                            borderRadius: '50%',
+                            border: 'none',
+                            background: 'rgba(42,37,77,0.85)',
+                            color: '#fff',
+                            fontSize: '15px',
+                            cursor: activeImg === 0 ? 'default' : 'pointer',
+                            opacity: activeImg === 0 ? 0.4 : 1,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            zIndex: 2,
+                            transition: 'opacity 0.2s ease',
+                          }}
+                        >▲</button>
+                        <button
+                          onClick={() => scrollGal(activeImg + 1)}
+                          disabled={activeImg === galCount - 1}
+                          aria-label="Next image"
+                          style={{
+                            position: 'absolute',
+                            bottom: '10px',
+                            right: '10px',
+                            width: '34px',
+                            height: '34px',
+                            borderRadius: '50%',
+                            border: 'none',
+                            background: 'rgba(42,37,77,0.85)',
+                            color: '#fff',
+                            fontSize: '15px',
+                            cursor: activeImg === galCount - 1 ? 'default' : 'pointer',
+                            opacity: activeImg === galCount - 1 ? 0.4 : 1,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            zIndex: 2,
+                            transition: 'opacity 0.2s ease',
+                          }}
+                        >▼</button>
+                        <div style={{
+                          position: 'absolute',
+                          bottom: '10px',
+                          left: '12px',
+                          display: 'flex',
+                          gap: '6px',
+                          zIndex: 2,
+                        }}>
+                          {(m.images || []).map((_, dIdx) => (
+                            <button
+                              key={dIdx}
+                              onClick={() => scrollGal(dIdx)}
+                              aria-label={`Go to image ${dIdx + 1}`}
+                              style={{
+                                width: '8px',
+                                height: '8px',
+                                borderRadius: '50%',
+                                border: 'none',
+                                padding: 0,
+                                background: dIdx === activeImg ? 'var(--eduact-secondary)' : 'rgba(255,255,255,0.7)',
+                                cursor: 'pointer',
+                                transition: 'background 0.2s ease',
+                              }}
+                            />
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </Col>
               </Row>
             </Modal.Body>

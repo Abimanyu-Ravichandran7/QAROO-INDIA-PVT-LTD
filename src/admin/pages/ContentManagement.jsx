@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { contentApi } from '../../api/contentApi.js';
 import { useAuth } from '../context/AuthContext.jsx';
-import { ShimmerPanel, ErrorState } from '../../components/ui/States';
+import { ShimmerPanel } from '../../components/ui/States';
 import { useToast } from '../../context/ToastContext';
 
 const DEFAULT_ABOUT_STATS = [
@@ -150,6 +150,20 @@ const SCHEMAS = {
       ]},
     ],
   },
+  footer: {
+    title: 'Footer',
+    fields: [
+      { key: 'brandName', label: 'Brand Name', type: 'text' },
+      { key: 'tagline', label: 'Tagline / About', type: 'textarea' },
+      { key: 'email', label: 'Contact Email', type: 'text' },
+      { key: 'phones', label: 'Contact Phones', type: 'strings' },
+      { key: 'socials', label: 'Social Media Links', type: 'rows', subfields: [
+        { key: 'platform', label: 'Platform (instagram / linkedin / facebook / youtube / email)', type: 'text' },
+        { key: 'url', label: 'URL / Email Link', type: 'text' },
+      ]},
+      { key: 'copyright', label: 'Copyright Text', type: 'text' },
+    ],
+  },
 };
 
 function FieldRenderer({ field, value, onChange }) {
@@ -266,7 +280,7 @@ function PageEditor({ page, onBack }) {
   const perm = {
     home: 'home.update', about: 'about.update', business: 'business.update',
     learning: 'learning.update', contact: 'contact.update', csr: 'csr.update',
-    mou: 'mou.update',
+    mou: 'mou.update', footer: 'footer.update',
   }[page];
 
   const save = async () => {
@@ -313,10 +327,8 @@ export default function ContentManagement() {
   const PERMS = {
     home: 'home.update', about: 'about.update', business: 'business.update',
     learning: 'learning.update', contact: 'contact.update', csr: 'csr.update',
-    mou: 'mou.update',
+    mou: 'mou.update', footer: 'footer.update',
   };
-
-  const editable = Object.keys(SCHEMAS).filter((p) => hasPermission(PERMS[p]));
 
   if (editing) return <PageEditor key={editing} page={editing} onBack={() => setEditing(null)} />;
 

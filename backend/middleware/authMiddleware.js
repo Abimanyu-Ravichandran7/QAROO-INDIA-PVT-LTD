@@ -14,13 +14,13 @@ export async function optionalAuth(req, res, next) {
     let decoded;
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET);
-    } catch (err) {
+    } catch {
       return next();
     }
     const admin = await Admin.findById(decoded.id);
     if (admin && !admin.isDisabled) req.admin = admin;
     next();
-  } catch (err) {
+  } catch {
     next();
   }
 }
@@ -45,7 +45,7 @@ export async function protect(req, res, next) {
     let decoded;
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET);
-    } catch (err) {
+    } catch {
       return res.status(401).json({ success: false, message: 'Not authorized, token invalid or expired' });
     }
 
@@ -60,7 +60,7 @@ export async function protect(req, res, next) {
 
     req.admin = admin;
     next();
-  } catch (err) {
+  } catch {
     return res.status(500).json({ success: false, message: 'Authentication error' });
   }
 }

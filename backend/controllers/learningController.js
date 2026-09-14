@@ -56,7 +56,6 @@ const normalizeProgram = (b) => ({
 async function ensureUniqueSlug(slug, excludeId) {
   let candidate = slug || '';
   let n = 1;
-  // eslint-disable-next-line no-constant-condition
   while (true) {
     const query = { slug: candidate };
     if (excludeId) query._id = { $ne: excludeId };

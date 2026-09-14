@@ -23,6 +23,7 @@ const PAGE_PERMISSION = {
   csr: 'csr.update',
   contact: 'contact.update',
   mou: 'mou.update',
+  footer: 'footer.update',
 };
 
 router.put('/:page', protect, requireVerifiedApproved, (req, res, next) => {

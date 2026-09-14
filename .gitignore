@@ -20,3 +20,6 @@ Thumbs.db
 
 # Vite
 *.local
+
+# Local tooling config
+compass-connections.json

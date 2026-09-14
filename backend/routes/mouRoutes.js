@@ -6,6 +6,7 @@ import {
   updateMOU,
   deleteMOU,
   togglePublish,
+  listMOUCategories,
 } from '../controllers/mouController.js';
 import { protect, optionalAuth } from '../middleware/authMiddleware.js';
 import { requireVerifiedApproved } from '../middleware/adminMiddleware.js';
@@ -15,6 +16,7 @@ const router = Router();
 
 // Public read (published only) and admin read (incl. drafts)
 router.get('/', optionalAuth, listMOUs);
+router.get('/categories', optionalAuth, listMOUCategories);
 router.get('/:id', optionalAuth, getMOU);
 
 // Protected mutations

@@ -11,6 +11,8 @@ export const ALL_PERMISSIONS = [
 
   'about.update',
 
+  'footer.update',
+
   'business.create',
   'business.read',
   'business.update',

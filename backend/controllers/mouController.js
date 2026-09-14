@@ -1,5 +1,23 @@
 import MOU from '../models/MOU.js';
 import { uploadImage } from '../services/imageService.js';
+import { MOU_CATEGORIES } from '../../src/data/mouCategories.js';
+
+const normalizeTag = (tag) => {
+  if (typeof tag !== 'string') return '';
+  return tag.trim().replace(/\s+/g, ' ');
+};
+
+const listMOUCategories = async (_req, res, next) => {
+  try {
+    const distinct = await MOU.distinct('tag');
+    const categories = Array.from(
+      new Set([...MOU_CATEGORIES, ...distinct.filter((t) => t && String(t).trim() !== '')])
+    );
+    res.json({ success: true, data: { categories } });
+  } catch (err) {
+    next(err);
+  }
+};
 
 const listMOUs = async (req, res, next) => {
   try {
@@ -61,8 +79,12 @@ const normalizeSections = (sections) => {
 const createMOU = async (req, res, next) => {
   try {
     const { tag, name, blurb, logo, images, sections, status } = req.body || {};
-    if (!tag || !name) {
-      return res.status(400).json({ success: false, message: 'Tag and name are required' });
+    const normalizedTag = normalizeTag(tag);
+    if (!name) {
+      return res.status(400).json({ success: false, message: 'MOU name is required' });
+    }
+    if (!normalizedTag) {
+      return res.status(400).json({ success: false, message: 'MOU category is required' });
     }
 
     const normalized = normalizeSections(sections);
@@ -74,7 +96,7 @@ const createMOU = async (req, res, next) => {
     }
 
     const mou = await MOU.create({
-      tag,
+      tag: normalizedTag,
       name,
       blurb: blurb || '',
       logo: logo ? await uploadImage(logo, 'qaroo/mou') : '',
@@ -98,7 +120,9 @@ const updateMOU = async (req, res, next) => {
 
     const { tag, name, blurb, logo, images, sections, status } = req.body || {};
 
-    if (tag !== undefined) mou.tag = tag;
+    if (tag !== undefined && tag !== null && String(tag).trim() !== '') {
+      mou.tag = normalizeTag(tag);
+    }
     if (name !== undefined) mou.name = name;
     if (blurb !== undefined) mou.blurb = blurb;
     if (logo !== undefined) mou.logo = logo ? await uploadImage(logo, 'qaroo/mou') : '';
@@ -147,4 +171,4 @@ const togglePublish = async (req, res, next) => {
   }
 };
 
-export { listMOUs, getMOU, createMOU, updateMOU, deleteMOU, togglePublish };
+export { listMOUs, getMOU, createMOU, updateMOU, deleteMOU, togglePublish, listMOUCategories };

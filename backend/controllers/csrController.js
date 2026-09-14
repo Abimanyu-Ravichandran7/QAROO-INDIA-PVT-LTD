@@ -1,5 +1,6 @@
 import CSRProject from '../models/CSRProject.js';
 import { uploadImage } from '../services/imageService.js';
+import { CSR_CATEGORIES } from '../../src/data/csrCategories.js';
 
 const normalizeProject = (b) => ({
   year: b.year || '',
@@ -12,6 +13,18 @@ const normalizeProject = (b) => ({
   image: b.image || '',
   status: b.status === 'published' ? 'published' : 'draft',
 });
+
+const listCSRCategories = async (_req, res, next) => {
+  try {
+    const distinct = await CSRProject.distinct('tag');
+    const categories = Array.from(
+      new Set([...CSR_CATEGORIES, ...distinct.filter((t) => t && String(t).trim() !== '')])
+    );
+    res.json({ success: true, data: { categories } });
+  } catch (err) {
+    next(err);
+  }
+};
 
 const listCSR = async (req, res, next) => {
   try {
@@ -104,4 +117,4 @@ const togglePublish = async (req, res, next) => {
   }
 };
 
-export { listCSR, getCSR, createCSR, updateCSR, deleteCSR, togglePublish };
+export { listCSR, getCSR, createCSR, updateCSR, deleteCSR, togglePublish, listCSRCategories };

@@ -53,6 +53,7 @@ const PERM_GROUPS = [
       { k: 'csr.update', label: 'CSR' },
       { k: 'mou.update', label: 'MOU' },
       { k: 'contact.update', label: 'Contact' },
+      { k: 'footer.update', label: 'Footer' },
     ],
   },
   {

@@ -1,9 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ImageInput from './ImageInput.jsx';
+import { mouApi } from '../../../api/mouApi.js';
+import { MOU_CATEGORIES } from '../../../data/mouCategories.js';
 
+const ADD_NEW = '__add_new__';
 const emptySection = () => ({ heading: '', paragraphs: [], list: [], pathway: [], note: '' });
 
 export default function MOUForm({ initial, onSubmit, submitting }) {
+  const [categories, setCategories] = useState(MOU_CATEGORIES);
+  const [newTagMode, setNewTagMode] = useState(false);
+
+  useEffect(() => {
+    mouApi.categories({ credentials: 'omit' })
+      .then((res) => {
+        let cats = res?.data?.data?.categories;
+        if (!Array.isArray(cats) || !cats.length) cats = MOU_CATEGORIES;
+        const cur = initial?.tag;
+        if (cur && !cats.includes(cur)) cats = [...cats, cur];
+        setCategories(cats);
+      })
+      .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const [form, setForm] = useState(() => {
     if (initial) {
       return {
@@ -91,8 +110,46 @@ export default function MOUForm({ initial, onSubmit, submitting }) {
         <h2>Details</h2>
         <div className="form-grid">
           <div className="field">
-            <label>MOU Category / Tag *</label>
-            <input type="text" value={form.tag} onChange={(e) => set('tag', e.target.value)} placeholder="Skill Development" required />
+            <label>MOU Category / Tag</label>
+            {newTagMode ? (
+              <input
+                type="text"
+                value={form.tag}
+                onChange={(e) => set('tag', e.target.value)}
+                placeholder="Enter a new category"
+              />
+            ) : (
+              <select
+                value={form.tag}
+                onChange={(e) => {
+                  if (e.target.value === ADD_NEW) {
+                    setNewTagMode(true);
+                    set('tag', '');
+                  } else {
+                    set('tag', e.target.value);
+                  }
+                }}
+              >
+                <option value="">Select category…</option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+                <option value={ADD_NEW}>➕ Add new category…</option>
+              </select>
+            )}
+            {newTagMode && (
+              <small className="admin-hint">
+                New category will be saved and appear in the dropdown for future MOUs.{' '}
+                <button
+                  type="button"
+                  className="admin-outline-btn"
+                  style={{ display: 'inline', fontSize: '12px', padding: '2px 8px', marginLeft: '6px' }}
+                  onClick={() => { setNewTagMode(false); set('tag', ''); }}
+                >
+                  Cancel
+                </button>
+              </small>
+            )}
           </div>
           <div className="field">
             <label>Status</label>

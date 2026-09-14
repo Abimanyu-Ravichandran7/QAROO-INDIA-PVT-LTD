@@ -4,6 +4,7 @@ import GlareHover from '../components/GlareHover';
 import CountUp from '../components/CountUp';
 import Seo from '../components/Seo.jsx';
 import { contentApi } from '../api/contentApi.js';
+import { statsApi } from '../api/statsApi.js';
 import { PARTNERS } from '../data/partners.js';
 
 const DEFAULT_ABOUT = {
@@ -23,10 +24,10 @@ const DEFAULT_ABOUT = {
   ],
   partners: PARTNERS,
   stats: [
-    { num: '20', label: 'MoUs signed' },
-    { num: '9', label: 'Active partners' },
-    { num: '2', label: 'Office locations' },
-    { num: '1500', label: 'Students impacted' },
+    { num: 20, label: 'MoUs signed' },
+    { num: 12, label: 'CSR projects delivered' },
+    { num: 2, label: 'Office locations' },
+    { num: 1500, label: 'Students impacted' },
   ],
 };
 
@@ -47,11 +48,43 @@ export default function About() {
     return () => { active = false; };
   }, []);
 
+  // Live counts from the backend — keeps the MoU / CSR totals auto-updating
+  // whenever an admin adds or removes a published MOU or CSR project.
+  useEffect(() => {
+    let active = true;
+    statsApi
+      .getStats()
+      .then((res) => {
+        if (!active || !res?.data) return;
+        const { mouCount, csrCount } = res.data;
+        setAbout((prev) => {
+          const base = prev.stats || DEFAULT_ABOUT.stats;
+          const milestones = (prev.milestones || []).map((m) =>
+            m.title.startsWith('20+ MoUs')
+              ? { ...m, title: `${mouCount}+ MoUs Signed` }
+              : m
+          );
+          return {
+            ...prev,
+            milestones,
+            stats: [
+              { ...(base[0] || {}), num: mouCount, label: 'MoUs signed' },
+              { ...(base[1] || {}), num: csrCount, label: 'CSR projects delivered' },
+              base[2] || { num: 2, label: 'Office locations' },
+              base[3] || { num: 1500, label: 'Students impacted' },
+            ],
+          };
+        });
+      })
+      .catch(() => {});
+    return () => { active = false; };
+  }, []);
+
   return (
     <>
       <Seo
         title="About Us — Qaroo India Private Limited | Digital Solutions & Career Training"
-        description="Learn about Qaroo India Private Limited: our vision, mission, milestones, partners (Infosys Foundation, EduBridge, Atos Prayas) and our impact by the numbers."
+        description={`Learn about Qaroo India Private Limited: our vision, mission, milestones and our impact by the numbers — ${about.stats[0]?.num ?? 20} MoUs signed and ${about.stats[1]?.num ?? 12} CSR projects delivered.`}
         path="/about"
       />
       {/* Header */}

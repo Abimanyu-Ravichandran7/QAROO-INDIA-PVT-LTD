@@ -114,7 +114,7 @@ const refresh = async (req, res, next) => {
     let decoded;
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET + '_refresh');
-    } catch (err) {
+    } catch {
       return res.status(401).json({ success: false, message: 'Invalid refresh token' });
     }
     const admin = await Admin.findById(decoded.id);

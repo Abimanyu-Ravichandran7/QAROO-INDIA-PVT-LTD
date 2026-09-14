@@ -3,7 +3,10 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import ScrollExpand from '../components/ScrollExpand';
 import Seo from '../components/Seo.jsx';
+import ArchitecturalFrames from '../components/ArchitecturalFrames.jsx';
+import BlueprintSectionTitle from '../components/BlueprintSectionTitle.jsx';
 import { businessSolutionApi } from '../api/businessSolutionApi.js';
+import './business/BusinessSolutions.css';
 
 const DEFAULT_SERVICES = [
   { idx: '01', title: 'CRM Solutions', desc: 'Strategy, implementation, customization and pipeline reporting built around how your sales team actually sells. We help you choose, configure, and adopt the right CRM for your workflow.', slug: 'crm-solutions' },
@@ -45,7 +48,7 @@ export default function BusinessSolutions() {
   }, []);
 
   return (
-    <>
+    <div className="business-template">
       <Seo
         title="Business Solutions — Qaroo India Private Limited | CRM, Marketing, Design, Software, Strategy"
         description="Business solutions from Qaroo India Private Limited: CRM solutions, digital marketing & SEO, graphic design & branding, web & software development, UI/UX design, UX research and business strategy."
@@ -147,11 +150,19 @@ export default function BusinessSolutions() {
           </div>
         </nav>
 
+        <BlueprintSectionTitle
+          eyebrow="Plan view"
+          index="01"
+          title="Our Solutions"
+          aside="8 Specifications"
+        />
+
         <Row className="g-4 reveal-stagger">
           {services.map((s) => {
             const detailPath = s.slug ? `/business-solutions/${s.slug}` : '/business-solutions';
             return (
             <Col key={s.idx || s.title} md={6} lg={4}>
+              <div className="af-card-wrap">
               <Link
                 to={detailPath}
                 className="eduact-card track-card"
@@ -161,17 +172,26 @@ export default function BusinessSolutions() {
                 <h4>{s.title}</h4>
                 <p>{s.desc}</p>
               </Link>
+              </div>
             </Col>
             );
           })}
         </Row>
 
-        <div className="mt-5 pt-4 reveal text-center">
-          <p className="eyebrow">Ready to start?</p>
-          <h2 style={{ fontSize: '24px', marginBottom: '20px' }}>Let's discuss your business challenge.</h2>
+        <div className="mt-5 pt-4 reveal" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <BlueprintSectionTitle
+            eyebrow="Ready to start?"
+            title="Let's discuss your business challenge."
+            align="center"
+            aside="Contact"
+          />
           <Link to="/contact" className="btn-eduact">Get in Touch</Link>
         </div>
       </Container>
-    </>
+      {/* Architectural background */}
+      <div className="af-blocks" aria-hidden="true">
+        <ArchitecturalFrames />
+      </div>
+    </div>
   );
 }

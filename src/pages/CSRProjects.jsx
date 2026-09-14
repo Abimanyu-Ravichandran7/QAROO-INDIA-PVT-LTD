@@ -6,6 +6,7 @@ import Seo from '../components/Seo.jsx';
 import { Shimmer, EmptyState, ErrorState } from '../components/ui/States';
 import { csrApi } from '../api/csrApi.js';
 import { contentApi } from '../api/contentApi.js';
+import { statsApi } from '../api/statsApi.js';
 
 const DEFAULT_CSR_PAGE = {
   eyebrow: 'Corporate Social Responsibility',
@@ -21,6 +22,7 @@ export default function CSRProjects() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [content, setContent] = useState(DEFAULT_CSR_PAGE);
+  const [mouCount, setMouCount] = useState(20);
   const aliveRef = useRef(true);
 
   const reload = useCallback(() => {
@@ -49,6 +51,9 @@ export default function CSRProjects() {
     reload();
     contentApi.get('csr', { credentials: 'omit' })
       .then((res) => { if (aliveRef.current) setContent({ ...DEFAULT_CSR_PAGE, ...(res.data.content.data || {}) }); })
+      .catch(() => {});
+    statsApi.getStats()
+      .then((res) => { if (aliveRef.current && res?.data?.mouCount != null) setMouCount(res.data.mouCount); })
       .catch(() => {});
     return () => { aliveRef.current = false; };
   }, [reload]);
@@ -138,7 +143,7 @@ export default function CSRProjects() {
               {content.mouBannerTitle}
             </h4>
             <p style={{ fontSize: '13px', color: 'var(--eduact-text)', margin: 0 }}>
-              {content.mouBannerDesc}
+              {`View all ${mouCount} Memorandums of Understanding with detailed assessments.`}
             </p>
           </div>
           <Link to="/mou-directory" className="btn-eduact">Open MOU Directory</Link>

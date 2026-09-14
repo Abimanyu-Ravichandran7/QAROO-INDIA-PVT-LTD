@@ -1,0 +1,77 @@
+.business-template {
+  position: relative;
+}
+.business-template .af-blocks {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.business-template > .scroll-expand,
+.business-template > .page-section {
+  position: relative;
+  z-index: 1;
+}
+
+/* Architectural frame around service cards */
+.business-template .af-card-wrap {
+  position: relative;
+  border-radius: 16px;
+}
+.business-template .af-card-wrap::before,
+.business-template .af-card-wrap::after {
+  content: "";
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  pointer-events: none;
+  z-index: 2;
+}
+.business-template .af-card-wrap::before {
+  top: -8px;
+  left: -8px;
+  border-top: 2px solid var(--eduact-base);
+  border-left: 2px solid var(--eduact-base);
+  border-top-left-radius: 10px;
+}
+.business-template .af-card-wrap::after {
+  bottom: -8px;
+  right: -8px;
+  border-bottom: 2px solid var(--eduact-secondary);
+  border-right: 2px solid var(--eduact-secondary);
+  border-bottom-right-radius: 10px;
+}
+.business-template .af-card-wrap:hover::before {
+  border-color: var(--eduact-secondary);
+}
+.business-template .af-card-wrap:hover::after {
+  border-color: var(--eduact-base);
+}
+.business-template .af-card-wrap .eduact-card {
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  border: 1px solid var(--eduact-soft4);
+  box-shadow: 0 1px 2px rgba(42, 37, 77, 0.04), 0 10px 24px rgba(42, 37, 77, 0.06);
+}
+.business-template .af-card-wrap:hover .eduact-card {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px rgba(42, 37, 77, 0.11);
+  border-color: rgba(147, 25, 19, 0.28);
+}
+
+/* Section title accent (blueprint style) */
+.business-template .biz-eyebrow {
+  position: relative;
+  display: inline-block;
+  padding-left: 14px;
+}
+.business-template .biz-eyebrow::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  background: var(--eduact-base);
+  transform: translateY(-50%) rotate(45deg);
+  box-shadow: 0 0 0 2px var(--eduact-soft3);
+}

@@ -1,12 +1,23 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import { COMPANY } from '../data/company.js';
+import { contentApi } from '../api/contentApi.js';
+import { mailtoHref } from '../utils/mailto.js';
 
 const DEFAULT_FOOTER = {
   brandName: COMPANY.name,
   tagline: 'Business solutions and career-ready learning, from one team in Tamil Nadu.',
   email: COMPANY.email,
   phones: [...COMPANY.phones],
+  socials: [
+    { platform: 'instagram', url: '' },
+    { platform: 'linkedin', url: '' },
+    { platform: 'facebook', url: '' },
+    { platform: 'youtube', url: '' },
+    { platform: 'email', url: '' },
+  ],
+    copyright: 'All rights reserved.',
   businessLinks: [
     { label: 'CRM Solutions', path: '/business-solutions' },
     { label: 'Digital Marketing', path: '/business-solutions' },
@@ -28,14 +39,87 @@ const DEFAULT_FOOTER = {
   offices: COMPANY.offices.map((o) => ({ ...o })),
 };
 
+const SOCIAL_SVG = {
+  instagram: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <circle cx="12" cy="12" r="5" />
+      <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none" />
+    </svg>
+  ),
+  linkedin: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+      <rect x="2" y="9" width="4" height="12" />
+      <circle cx="4" cy="4" r="2" />
+    </svg>
+  ),
+  facebook: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    </svg>
+  ),
+  youtube: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19.1c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.43z" />
+      <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
+    </svg>
+  ),
+  email: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="4" width="20" height="16" rx="2" />
+      <path d="M22 7l-10 7L2 7" />
+    </svg>
+  ),
+};
+
+function SocialIcon({ platform, url }) {
+  const href = platform === 'email' ? mailtoHref(url) : url;
+  const icon = SOCIAL_SVG[platform];
+  if (!icon || !url) return null;
+  return (
+    <a
+      href={href}
+      target={platform !== 'email' ? '_blank' : undefined}
+      rel={platform !== 'email' ? 'noopener noreferrer' : undefined}
+      aria-label={platform}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '38px',
+        height: '38px',
+        borderRadius: '10px',
+        background: 'rgba(255,255,255,0.08)',
+        color: 'rgba(255,255,255,0.7)',
+        transition: 'all 0.18s ease',
+      }}
+      onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--eduact-secondary)'; e.currentTarget.style.color = '#fff'; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = 'rgba(255,255,255,0.7)'; }}
+    >
+      {icon}
+    </a>
+  );
+}
+
 const officeLines = (office) =>
   Array.isArray(office.lines)
     ? office.lines
     : String(office.lines || '').split('\n').map((s) => s.trim()).filter(Boolean);
 
 export default function Footer() {
-  const cfg = DEFAULT_FOOTER;
-  const brandName = DEFAULT_FOOTER.brandName;
+  const [cfg, setCfg] = useState(DEFAULT_FOOTER);
+
+  useEffect(() => {
+    contentApi.get('footer', { credentials: 'omit' }).then((res) => {
+      const d = res?.data?.content?.data;
+      if (d && Object.keys(d).length) {
+        setCfg((prev) => ({ ...prev, ...d }));
+      }
+    }).catch(() => {});
+  }, []);
+
+  const socials = (cfg.socials || []).filter((s) => s && s.url);
 
   return (
     <footer style={{
@@ -48,11 +132,11 @@ export default function Footer() {
         <Row className="g-4" style={{ marginBottom: '48px' }}>
           <Col lg={4} md={6}>
             <Link to="/admin/login" aria-label="Admin login" style={{ display: 'inline-block', lineHeight: 0 }}>
-              <span style={{ display: 'inline-block', background: '#fff', borderRadius: '10px', padding: '6px', marginBottom: '16px', lineHeight: 0 }}>
+              <span style={{ display: 'inline-block', background: '#fff', borderRadius: '10px', padding: '8px 12px', marginBottom: '16px', lineHeight: 0 }}>
                 <img
                   src="/logos/qaroo-logo.jpg"
-                  alt={brandName}
-                  style={{ height: '50px', width: '50px', objectFit: 'contain', display: 'block' }}
+                  alt={cfg.brandName}
+                  style={{ height: '40px', width: 'auto', objectFit: 'contain', display: 'block' }}
                 />
               </span>
             </Link>
@@ -68,13 +152,15 @@ export default function Footer() {
             <p style={{ fontSize: '13.5px', marginBottom: '10px' }}>
               {cfg.tagline}
             </p>
-            <p style={{ fontSize: '13.5px', marginBottom: '10px' }}>
-              <a href={`mailto:${cfg.email}`} style={{ color: 'var(--eduact-secondary)', fontWeight: 600, textDecoration: 'none' }}
-                onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
-                onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}>
-                {cfg.email}
-              </a>
-            </p>
+            {cfg.email && (
+              <p style={{ fontSize: '13.5px', marginBottom: '10px' }}>
+                <a href={mailtoHref(cfg.email)} style={{ color: 'var(--eduact-secondary)', fontWeight: 600, textDecoration: 'none' }}
+                  onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
+                  onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}>
+                  {cfg.email}
+                </a>
+              </p>
+            )}
             {(cfg.phones || []).length > 0 && (
               <p style={{ fontSize: '13.5px', marginBottom: '10px', color: '#fff' }}>
                 {cfg.phones.map((p, i) => (
@@ -90,6 +176,13 @@ export default function Footer() {
                   </a>
                 ))}
               </p>
+            )}
+            {socials.length > 0 && (
+              <div style={{ display: 'flex', gap: '10px', marginTop: '16px', flexWrap: 'wrap' }}>
+                {socials.map((s) => (
+                  <SocialIcon key={s.platform} platform={s.platform} url={s.url} />
+                ))}
+              </div>
             )}
           </Col>
 
@@ -176,7 +269,7 @@ export default function Footer() {
           fontSize: '12.5px',
           color: 'rgba(255,255,255,0.5)',
         }}>
-          <span>© 2026 <span style={{ color: '#fff', fontWeight: 600 }}>{brandName}</span>. All rights reserved.</span>
+          <span>&copy; 2026 <span style={{ color: '#fff', fontWeight: 600 }}>{cfg.brandName}</span> {cfg.copyright ? `— ${cfg.copyright}` : '. All rights reserved.'}</span>
           <span>
             <Link to="/privacy-policy" style={{ color: 'inherit', textDecoration: 'none', marginRight: '10px' }}>Privacy Policy</Link>
             <Link to="/terms" style={{ color: 'inherit', textDecoration: 'none', marginRight: '10px' }}>Terms</Link>

@@ -27,7 +27,7 @@ export default function Sidebar({ onNavigate }) {
         <img
           src="/logos/qaroo-logo.jpg"
           alt="Qaroo India"
-          style={{ width: '42px', height: '42px', objectFit: 'contain', borderRadius: '10px', background: '#fff', padding: '4px' }}
+          style={{ height: '34px', width: 'auto', objectFit: 'contain', borderRadius: '8px', background: '#fff', padding: '5px 10px' }}
         />
         <div>
           <strong>Qaroo India</strong>

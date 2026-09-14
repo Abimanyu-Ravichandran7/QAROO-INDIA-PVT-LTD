@@ -1,11 +1,29 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ImageInput from './ImageInput.jsx';
+import { csrApi } from '../../../api/csrApi.js';
+import { CSR_CATEGORIES } from '../../../data/csrCategories.js';
 
+const ADD_NEW = '__add_new__';
 const defaults = { year: '24-25', tag: '', title: '', desc: '', partner: '', location: '', beneficiaries: '', image: '', status: 'published' };
 
 export default function CSRForm({ initial, onSubmit, submitting }) {
+  const [categories, setCategories] = useState(CSR_CATEGORIES);
+  const [newTagMode, setNewTagMode] = useState(false);
   const [form, setForm] = useState(() => (initial ? { ...defaults, ...initial } : { ...defaults }));
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+
+  useEffect(() => {
+    csrApi.categories({ credentials: 'omit' })
+      .then((res) => {
+        let cats = res?.data?.data?.categories;
+        if (!Array.isArray(cats) || !cats.length) cats = CSR_CATEGORIES;
+        const cur = initial?.tag;
+        if (cur && !cats.includes(cur)) cats = [...cats, cur];
+        setCategories(cats);
+      })
+      .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -24,8 +42,46 @@ export default function CSRForm({ initial, onSubmit, submitting }) {
             <input type="text" value={form.year} onChange={(e) => set('year', e.target.value)} placeholder="24-25" required />
           </div>
           <div className="field">
-            <label>Tag</label>
-            <input type="text" value={form.tag} onChange={(e) => set('tag', e.target.value)} placeholder="Skill Development" />
+            <label>Category / Tag</label>
+            {newTagMode ? (
+              <input
+                type="text"
+                value={form.tag}
+                onChange={(e) => set('tag', e.target.value)}
+                placeholder="Enter a new category"
+              />
+            ) : (
+              <select
+                value={form.tag}
+                onChange={(e) => {
+                  if (e.target.value === ADD_NEW) {
+                    setNewTagMode(true);
+                    set('tag', '');
+                  } else {
+                    set('tag', e.target.value);
+                  }
+                }}
+              >
+                <option value="">Select category…</option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+                <option value={ADD_NEW}>➕ Add new category…</option>
+              </select>
+            )}
+            {newTagMode && (
+              <small className="admin-hint">
+                New category will be saved and appear in the dropdown for future projects.{' '}
+                <button
+                  type="button"
+                  className="admin-outline-btn"
+                  style={{ display: 'inline', fontSize: '12px', padding: '2px 8px', marginLeft: '6px' }}
+                  onClick={() => { setNewTagMode(false); set('tag', ''); }}
+                >
+                  Cancel
+                </button>
+              </small>
+            )}
           </div>
         </div>
         <div className="form-grid">

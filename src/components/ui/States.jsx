@@ -1,5 +1,3 @@
-import React from 'react';
-
 export function LoadingState({ label = 'Loading...', compact }) {
   return (
     <div className={`state-wrap${compact ? ' compact' : ''}`} role="status" aria-live="polite">
@@ -9,7 +7,7 @@ export function LoadingState({ label = 'Loading...', compact }) {
   );
 }
 
-export function Shimmer({ cards = 6, rows = 4, compact }) {
+export function Shimmer({ cards = 6, compact }) {
   return (
     <div
       className={`shimmer-wrap${compact ? ' compact' : ''}`}

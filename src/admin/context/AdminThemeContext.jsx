@@ -9,7 +9,7 @@ export function AdminThemeProvider({ children }) {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved === 'dark' || saved === 'light') return saved;
-    } catch (e) { /* ignore */ }
+    } catch { /* ignore */ }
     return 'light';
   });
 
@@ -17,7 +17,7 @@ export function AdminThemeProvider({ children }) {
     document.body.classList.toggle('admin-dark', theme === 'dark');
     try {
       localStorage.setItem(STORAGE_KEY, theme);
-    } catch (e) { /* ignore */ }
+    } catch { /* ignore */ }
     return () => document.body.classList.remove('admin-dark');
   }, [theme]);
 

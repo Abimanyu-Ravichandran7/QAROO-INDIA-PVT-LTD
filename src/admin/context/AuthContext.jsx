@@ -31,7 +31,9 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     try {
       await authApi.logout();
-    } catch {}
+    } catch {
+      // ignore logout errors; clear local state regardless
+    }
     setAdmin(null);
   };
 

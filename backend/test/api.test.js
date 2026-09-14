@@ -28,7 +28,7 @@ async function req(method, url, { token, body, cookie } = {}) {
     credentials: 'include',
   });
   let json = null;
-  try { json = await res.json(); } catch {}
+  try { json = await res.json(); } catch { /* non-JSON response */ }
   return { status: res.status, json, headers: res.headers };
 }
 
@@ -43,7 +43,6 @@ async function main() {
   const login = await req('POST', '/auth/login', { body: { email: 'admin@qaroo.in', password: 'QarooAdmin@123' } });
   check('super admin login', login.status === 200, JSON.stringify(login.json));
   const superToken = login.json?.data?.accessToken;
-  const cookie = (login.headers.get('set-cookie') || '').split(';')[0] || '';
   check('super admin has token', !!superToken);
   check('super admin is superadmin', login.json?.data?.admin?.role === 'superadmin');
 

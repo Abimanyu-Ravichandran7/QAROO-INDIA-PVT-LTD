@@ -4,6 +4,7 @@ import Seo from '../components/Seo.jsx';
 import { useToast } from '../context/ToastContext';
 import { contactApi } from '../api/contactApi.js';
 import { contentApi } from '../api/contentApi.js';
+import { mailtoHref } from '../utils/mailto.js';
 import { COMPANY } from '../data/company.js';
 
 const DEFAULT_CONTACT = {
@@ -285,7 +286,7 @@ export default function Contact() {
                   {contactInfo.email && (
                     <>
                       <strong style={{ color: 'var(--eduact-black)' }}>Email:</strong>{' '}
-                      <a href={`mailto:${contactInfo.email}`} style={{ color: 'var(--eduact-base)', fontWeight: 600, textDecoration: 'none' }}
+                      <a href={mailtoHref(contactInfo.email)} style={{ color: 'var(--eduact-base)', fontWeight: 600, textDecoration: 'none' }}
                         onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
                         onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}>
                         {contactInfo.email}

@@ -297,7 +297,9 @@ const WebThreads = ({
       ctxMap.delete(container);
       try {
         container.removeChild(canvas);
-      } catch {}
+      } catch {
+        // canvas may already be detached
+      }
       gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
   }, []);

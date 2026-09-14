@@ -116,7 +116,7 @@ export default function Dashboard() {
         <div className="admin-card" style={{ marginTop: '22px' }}>
           <div className="admin-section-title">
             <span>Getting started</span>
-            <button className="admin-icon-btn" onClick={() => { try { localStorage.setItem('qaroo_onboarding_dismissed', '1'); } catch {} setOnboardDismissed(true); }}>
+            <button className="admin-icon-btn" onClick={() => { try { localStorage.setItem('qaroo_onboarding_dismissed', '1'); } catch { /* localStorage unavailable */ } setOnboardDismissed(true); }}>
               Dismiss
             </button>
           </div>

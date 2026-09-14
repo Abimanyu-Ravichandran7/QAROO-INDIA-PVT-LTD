@@ -3,11 +3,7 @@ export const MOUS = [
     tag: "Skill Development",
     name: "EduBridge Learning Pvt. Ltd.",
     blurb: "Skill-development and employability organization bridging education, skills and employment for youth.",
-    images: [
-      "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=900&q=80",
-    ],
+    images: [],
     sections: [
       { heading: "What Is It?", paragraphs: ["EduBridge is a skill-development and employability-focused organization.", "Publicly available EduBridge MOU documents describe its objective as helping bridge the gap between education, skills and employment, particularly for youth, and it has worked with colleges on training programs."] },
       { heading: "What Can The MOU Provide?", list: ["Skill training", "Employability training", "Job-oriented courses", "Soft skills", "Industry preparation", "Placement support", "Career development"] },
@@ -19,11 +15,7 @@ export const MOUS = [
     tag: "Skill University",
     name: "SCOPE Global Skills University",
     blurb: "Significant skill-development-oriented university built around industry integration and employability.",
-    images: [
-      "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=900&q=80",
-    ],
+    images: [],
     sections: [
       { heading: "What Is It?", paragraphs: ["This is a significant skill-development-oriented university.", "Public information from SGSU shows that it works around skill-based education, industry integration and employability. Its board documents also confirm that the university signs MOUs with external organizations."] },
       { heading: "What Could This MOU Mean?", list: ["Skill-based degree programs", "Industry-linked education", "Certification", "Practical learning", "Work-integrated education", "Internships", "Employability programs"] },
@@ -35,11 +27,7 @@ export const MOUS = [
     tag: "Skill Development",
     name: "Skill Development Network",
     blurb: "A broad-name partner; exact organization could not be confidently identified from public sources.",
-    images: [
-      "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=900&q=80",
-    ],
+    images: [],
     sections: [
       { heading: "What Is It?", paragraphs: ["The scan says \"SkillDevelopment Network.\" This is a broad name, and the exact organization could not be confidently identified from publicly available information."] },
       { heading: "Likely MOU Purpose", list: ["Skill development", "Employability", "Career training", "Workshops", "Job-oriented courses", "Placement support"] },
@@ -50,11 +38,7 @@ export const MOUS = [
     tag: "Institution Partnership",
     name: "SNS College of Engineering",
     blurb: "Major Coimbatore engineering institution with an active Industry-Institute Partnership Cell.",
-    images: [
-      "https://images.unsplash.com/photo-1580537659466-0a9bfa916a54?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=900&q=80",
-    ],
+    images: [],
     sections: [
       { heading: "What Is It?", paragraphs: ["This is a major educational institution in Coimbatore.", "SNS's own materials describe an Industry-Institute Partnership Cell that works with industries for sponsored R&D, seminars, workshops, industrial training and industry exposure.", "SNS institutions also report a substantial network of industry MOUs and industry interaction."] },
       { heading: "What Could Your MOU Mean?", list: ["Academic collaboration", "Faculty interaction", "Workshops", "Student training", "Knowledge sharing", "Joint events", "Skill programs", "Research/projects"] },
@@ -66,11 +50,7 @@ export const MOUS = [
     tag: "Institution Partnership",
     name: "Sri Ranganathar Institute of Engineering and Technology",
     blurb: "SRIET publicly documents its own MOUs covering industrial visits, training and placement.",
-    images: [
-      "https://images.unsplash.com/photo-1580537659466-0a9bfa916a54?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=900&q=80",
-    ],
+    images: [],
     sections: [
       { heading: "What Is It?", paragraphs: ["SRIET publicly documents its own MOUs with companies and organizations. Its MOU activities include industrial visits, technical training, training & placement, and industry exposure."] },
       { heading: "What Could Your MOU Mean?", list: ["Student technical training", "Joint workshops", "Industrial exposure", "Faculty interaction", "Projects", "Academic collaboration", "Placement-related activities"] },
@@ -81,11 +61,7 @@ export const MOUS = [
     tag: "Institution Partnership",
     name: "A.V.P. College of Arts and Science",
     blurb: "Tiruppur college spanning CS, IT, Data Analytics, AI & ML, Commerce, BBA, Biotechnology and more.",
-    images: [
-      "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=900&q=80",
-    ],
+    images: [],
     sections: [
       { heading: "What Is It?", paragraphs: ["A.V.P. College is located in Tiruppur and offers UG/PG programs including Computer Science, Information Technology, Data Analytics, AI & ML, Commerce, BBA, Biotechnology, Fashion, Mathematics and more.", "Its website also explicitly mentions MOUs and collaborations with leading companies."] },
       { heading: "What Could The MOU Mean?", list: ["Academic collaboration", "Workshops", "Student exchange/interaction", "Training", "Knowledge sharing", "Joint events", "Skill programs", "Research"] },
@@ -96,11 +72,7 @@ export const MOUS = [
     tag: "Institution Partnership",
     name: "Dr. SNS Rajalakshmi College of Arts and Science",
     blurb: "SNS-group institution reporting 64+ MOUs, industry projects and student placements.",
-    images: [
-      "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80",
-    ],
+    images: [],
     sections: [
       { heading: "What Is It?", paragraphs: ["This is another institution under the SNS group. The institution publicly reports 64+ MOUs, industry projects, student placements and industry engagement."] },
       { heading: "What Could Your MOU Mean?", list: ["Academic collaboration", "Skill training", "Workshops", "Student projects", "Faculty interaction", "Placement interaction", "Industry exposure"] },
@@ -111,11 +83,7 @@ export const MOUS = [
     tag: "Career Training",
     name: "NSP Career Point",
     blurb: "Puducherry-based skill-training center covering areas such as banking and Python.",
-    images: [
-      "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=900&q=80",
-    ],
+    images: [],
     sections: [
       { heading: "What Is It?", paragraphs: ["The scan appears to say \"NSP Career Point.\" An NSP Career Point presence was found in Puducherry describing itself as a skill-training center, with training including areas such as banking and Python."] },
       { heading: "Possible MOU Purpose", list: ["Career training", "Python/IT skills", "Banking-related training", "Employability", "Soft skills", "Professional training"] },
@@ -127,11 +95,7 @@ export const MOUS = [
     tag: "National Ecosystem",
     name: "NSDC (National Skill Development Corporation)",
     blurb: "Operates within India's national skill-development ecosystem through partnerships.",
-    images: [
-      "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=900&q=80",
-    ],
+    images: [],
     sections: [
       { heading: "What Is It?", paragraphs: ["The scan appears to say \"N.S.D.C.\" — this almost certainly refers to the National Skill Development Corporation (NSDC).", "NSDC operates within India's skill-development ecosystem and works through partnerships to support skills and employability."] },
       { heading: "What Does An NSDC-Related MOU Mean?", list: ["Skill development", "Job-oriented training", "Industry-aligned courses", "Training ecosystem", "Certifications", "Employability", "Skill ecosystem partnerships"] },
@@ -143,11 +107,7 @@ export const MOUS = [
     tag: "Regulatory Body",
     name: "NCVET",
     blurb: "India's overarching regulator for the vocational education and training ecosystem.",
-    images: [
-      "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=900&q=80",
-    ],
+    images: [],
     sections: [
       { heading: "What Is It?", paragraphs: ["NCVET stands for National Council for Vocational Education and Training.", "It is India's overarching regulator for the vocational education and training ecosystem. NCVET establishes standards and regulates areas including awarding bodies and assessment agencies."] },
       { heading: "What Does NCVET Mean For Students?", list: ["Vocational education", "Skill qualifications", "Standards", "Assessment", "Certification ecosystem", "Quality assurance", "NSQF-aligned qualifications"] },
@@ -159,11 +119,7 @@ export const MOUS = [
     tag: "Skill University",
     name: "Medhavi Skills University",
     blurb: "Integrates industry expertise into curriculum through a 'Learn and Earn' work-integrated model.",
-    images: [
-      "https://images.unsplash.com/photo-1580537659466-0a9bfa916a54?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=900&q=80",
-    ],
+    images: [],
     sections: [
       { heading: "What Is It?", paragraphs: ["This is one of the more important entries. Medhavi Skills University publicly describes its model as integrating industry expertise into curriculum, training and skill development.", "Its collaboration ecosystem includes industry and government/skill-development partners. Its publicly available DGT MoU describes objectives including manufacturing/service sector skills, \"Learn and Earn,\" theoretical learning, on-the-job training and improving employment potential."] },
       { heading: "What Could Your MOU Mean?", list: ["Degree programs", "Skill programs", "OJT", "Internship", "Industry projects", "Certification", "Employment-oriented training"] },
@@ -174,11 +130,7 @@ export const MOUS = [
     tag: "Skill Development",
     name: "AISECT",
     blurb: "Active across skill development, education and employment-linked programs nationally.",
-    images: [
-      "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=900&q=80",
-    ],
+    images: [],
     sections: [
       { heading: "What Is It?", paragraphs: ["AISECT is active in skill development, education and employment-linked programs.", "Its publicly documented collaborations include higher education, internships, certification and employment-related initiatives."] },
       { heading: "What Could This MOU Mean?", list: ["Skill training", "IT training", "Vocational programs", "Certification", "Higher education", "Career development", "Internship", "Employment opportunities"] },
@@ -190,11 +142,7 @@ export const MOUS = [
     tag: "Unverified",
     name: "Innovative Gurukul Education & Charitable Trust, BGL",
     blurb: "Exact organization could not be confidently identified from public sources.",
-    images: [
-      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=900&q=80",
-    ],
+    images: [],
     sections: [
       { heading: "What Is It?", paragraphs: ["The scan appears to say something close to \"Innovative Gurukul education & charitable trust, Bgl.\" The exact organization could not be confidently identified from public sources.", "There are several organizations in Bengaluru using \"Gurukul\" in their names, but no reliable evidence was found proving which one is the organization listed in this MOU."] },
       { heading: "Possible Areas", list: ["Education", "Training", "Social initiatives", "Skill development", "Community programs", "Student activities"] }
@@ -204,11 +152,7 @@ export const MOUS = [
     tag: "Institution Partnership",
     name: "Christ the King Polytechnic College",
     blurb: "Coimbatore diploma institution (est. 1985) with an established Industry-Institute Interaction system.",
-    images: [
-      "https://images.unsplash.com/photo-1580537659466-0a9bfa916a54?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=900&q=80",
-    ],
+    images: [],
     sections: [
       { heading: "What Is It?", paragraphs: ["The most relevant verified institution matching \"Christ the King\" in the context of Tamil Nadu technical education is Christ the King Polytechnic College, Coimbatore, established in 1985.", "It offers diploma programmes in Civil, Mechanical, Electrical & Electronics, Electronics & Communication, Computer Engineering, Automobile Engineering, and Artificial Intelligence & Machine Learning.", "It has an established Industry-Institute Interaction system and states it has signed several MOUs with industries to enrich students' education."] },
       { heading: "What Can The MOU Provide?", list: ["Technical training", "Industrial visits", "Internships", "On-the-job training", "Industry exposure", "Practical learning", "Workshops", "Projects", "Placement opportunities", "Industry interaction", "Research/collaborative activities"] },
@@ -335,5 +279,20 @@ export const PAGE_CONTENT = {
     eyebrow: 'Institutional Partnerships',
     title: 'MOU Directory',
     description: 'Every memorandum of understanding on record — who the partner is, what it can offer students, and our read on how strong the collaboration actually is.',
+  },
+
+  footer: {
+    brandName: 'Qaroo India Private Limited',
+    tagline: 'Business solutions and career-ready learning, from one team in Tamil Nadu.',
+    email: 'qarootech@gmail.com',
+    phones: ['+91 90439 27967', '+91 90439 97967'],
+    socials: [
+      { platform: 'instagram', url: 'https://instagram.com/qarootech' },
+      { platform: 'linkedin', url: 'https://linkedin.com/company/qarootech' },
+      { platform: 'facebook', url: 'https://facebook.com/qarootech' },
+      { platform: 'youtube', url: 'https://youtube.com/@qarootech' },
+      { platform: 'email', url: 'qarootech@gmail.com' },
+    ],
+    copyright: 'All rights reserved.',
   },
 };

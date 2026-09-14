@@ -1,0 +1,177 @@
+.learning-template .lt-hero {
+  background:
+    radial-gradient(circle at 88% 18%, rgba(228, 204, 46, 0.3), transparent 46%),
+    radial-gradient(circle at 6% 110%, rgba(42, 37, 77, 0.55), transparent 60%),
+    linear-gradient(135deg, #7a140f 0%, var(--eduact-base) 55%, #5e0f0b 100%);
+  padding: 56px 0 88px;
+}
+.learning-template .lt-hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--eduact-secondary) 0%, rgba(228, 204, 46, 0.35) 100%);
+}
+.learning-template .lt-hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 84px;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.06), transparent);
+}
+.learning-template .lt-ring2 {
+  position: absolute;
+  left: -70px;
+  top: -80px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.09), transparent 65%);
+}
+
+.learning-template .lt-title {
+  position: relative;
+  padding-bottom: 14px;
+}
+.learning-template .lt-title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 60px;
+  height: 4px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--eduact-base), var(--eduact-secondary));
+}
+
+.learning-template .section-head h2 {
+  position: relative;
+  padding-bottom: 16px;
+}
+.learning-template .section-head h2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 58px;
+  height: 4px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--eduact-base), var(--eduact-secondary));
+}
+
+.learning-template .lt-highlight {
+  position: relative;
+  border: 1px solid var(--eduact-soft4);
+  border-radius: 14px;
+  padding: 14px 16px 14px 62px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--eduact-black);
+  height: 100%;
+  background: linear-gradient(180deg, #ffffff, #fbfbfe);
+  box-shadow: 0 1px 2px rgba(42, 37, 77, 0.04), 0 8px 20px rgba(42, 37, 77, 0.06);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+.learning-template .lt-highlight:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(42, 37, 77, 0.1);
+  border-color: rgba(147, 25, 19, 0.28);
+}
+.learning-template .lt-medal {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--eduact-base);
+  color: var(--eduact-secondary);
+  font-family: var(--heading-font);
+  font-weight: 800;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.03em;
+}
+
+.learning-template .lt-chip {
+  display: inline-block;
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--eduact-base);
+  background: var(--eduact-soft3);
+  border: 1px solid rgba(147, 25, 19, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+.learning-template .lt-chip:hover {
+  transform: translateY(-2px);
+  background: var(--eduact-base);
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(147, 25, 19, 0.25);
+}
+
+.learning-template .lt-tick {
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: var(--eduact-soft3);
+  color: var(--eduact-base) !important;
+  font-weight: 800;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.learning-template .accordion-item {
+  border: 1px solid var(--eduact-soft4) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  margin-bottom: 10px;
+  background: var(--eduact-white);
+  box-shadow: 0 2px 10px rgba(42, 37, 77, 0.04);
+}
+.learning-template .accordion-button {
+  font-weight: 600;
+  color: var(--eduact-black);
+  background: var(--eduact-white);
+  box-shadow: none !important;
+}
+.learning-template .accordion-button:not(.collapsed) {
+  color: var(--eduact-base);
+  background: var(--eduact-soft3);
+}
+
+.learning-template .lt-cta {
+  background:
+    radial-gradient(circle at 14% 30%, rgba(228, 204, 46, 0.32), transparent 40%),
+    radial-gradient(circle at 88% 80%, rgba(42, 37, 77, 0.5), transparent 55%),
+    var(--eduact-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.learning-template {
+  position: relative;
+}
+.learning-template .lt-blobs {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.learning-template > section.page-section,
+.learning-template > .lt-hero {
+  position: relative;
+  z-index: 1;
+}

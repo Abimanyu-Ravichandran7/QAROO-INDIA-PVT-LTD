@@ -1,7 +1,12 @@
 import { Container, Row, Col, Accordion, Breadcrumb } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Seo from '../../components/Seo.jsx';
+import InkLines from '../../components/InkLines.jsx';
+import GradientBlobBackground from '../../components/GradientBlobBackground.jsx';
 import { COMPANY } from '../../data/company.js';
+import './ProgramTemplate.css';
+
+const BLOB_COLORS = ['#2A254D', '#931913', '#e4cc2e'];
 
 function SectionTitle({ eyebrow, title, desc }) {
   return (
@@ -19,18 +24,7 @@ function ChipList({ items }) {
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
       {items.map((item) => (
-        <span
-          key={item}
-          style={{
-            fontSize: '12.5px',
-            fontWeight: 600,
-            color: 'var(--eduact-base)',
-            background: 'var(--eduact-soft3)',
-            padding: '6px 14px',
-            borderRadius: '999px',
-            border: '1px solid rgba(147,25,19,0.1)',
-          }}
-        >
+        <span key={item} className="lt-chip">
           {item}
         </span>
       ))}
@@ -44,7 +38,7 @@ function CheckList({ items, cols = 2 }) {
       {items.map((item) => (
         <Col key={item} xs={12} md={6} lg={cols === 3 ? 4 : 6} style={{ marginBottom: '10px' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', fontSize: '14.5px', color: 'var(--eduact-text)' }}>
-            <span style={{ color: 'var(--eduact-secondary)', fontWeight: 800, marginTop: '1px' }}>✓</span>
+            <span className="lt-tick">✓</span>
             <span>{item}</span>
           </div>
         </Col>
@@ -57,7 +51,10 @@ export default function ProgramTemplate({ program, otherPrograms }) {
   const path = `/learning-programs/${program.slug}`;
 
   return (
-    <>
+    <div className="learning-template">
+      <div className="lt-blobs" aria-hidden="true">
+        <GradientBlobBackground colors={BLOB_COLORS} opacity={0.16} />
+      </div>
       <Seo
         title={program.metaTitle}
         description={program.metaDescription}
@@ -65,12 +62,7 @@ export default function ProgramTemplate({ program, otherPrograms }) {
       />
 
       {/* Hero */}
-      <div style={{
-        background: 'var(--eduact-base)',
-        padding: '56px 0 72px',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
+      <div className="lt-hero" style={{ position: 'relative', overflow: 'hidden' }}>
         <div style={{
           position: 'absolute',
           top: '-60px',
@@ -80,6 +72,7 @@ export default function ProgramTemplate({ program, otherPrograms }) {
           borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(228,204,46,0.35), transparent 70%)',
         }} />
+        <div className="lt-ring2" />
         <Container style={{ position: 'relative', zIndex: 2 }}>
           <Breadcrumb style={{ marginBottom: '14px' }}>
             <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/' }} style={{ color: 'rgba(255,255,255,0.6)' }}>
@@ -114,12 +107,13 @@ export default function ProgramTemplate({ program, otherPrograms }) {
         </Container>
       </div>
 
-      {/* Introduction */}
-      <section className="page-section">
-        <Container>
+      {/* Introduction (section 2 — ink lines) */}
+      <section className="page-section lt-lines" style={{ position: 'relative', overflow: 'hidden' }}>
+        <InkLines mode="light" />
+        <Container style={{ position: 'relative', zIndex: 1 }}>
           <div className="reveal" style={{ maxWidth: '860px' }}>
             <p className="eyebrow">Program Overview</p>
-            <h2 style={{ fontSize: 'clamp(26px, 3vw, 36px)', color: 'var(--eduact-black)', marginBottom: '20px' }}>
+            <h2 className="lt-title" style={{ fontSize: 'clamp(26px, 3vw, 36px)', color: 'var(--eduact-black)', marginBottom: '20px' }}>
               Why learn {program.pageName}?
             </h2>
             {program.fullDescription.split('\n\n').map((para, i) => (
@@ -132,20 +126,12 @@ export default function ProgramTemplate({ program, otherPrograms }) {
           {/* Key Highlights */}
           <div className="mt-5 reveal">
             <p className="eyebrow">Key Highlights</p>
-            <h3 style={{ fontSize: '26px', color: 'var(--eduact-black)', marginBottom: '18px' }}>What makes this program valuable</h3>
+            <h3 className="lt-title" style={{ fontSize: '26px', color: 'var(--eduact-black)', marginBottom: '18px' }}>What makes this program valuable</h3>
             <Row className="g-3">
-              {program.highlights.map((h) => (
+              {program.highlights.map((h, i) => (
                 <Col xs={12} md={6} lg={4} key={h}>
-                  <div style={{
-                    border: '1px solid var(--eduact-soft4)',
-                    borderRadius: '12px',
-                    padding: '12px 16px',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    color: 'var(--eduact-black)',
-                    height: '100%',
-                    background: 'var(--eduact-white)',
-                  }}>
+                  <div className="lt-highlight">
+                    <span className="lt-medal">{String(i + 1).padStart(2, '0')}</span>
                     {h}
                   </div>
                 </Col>
@@ -169,9 +155,10 @@ export default function ProgramTemplate({ program, otherPrograms }) {
         </Container>
       </section>
 
-      {/* Tools & Technologies */}
-      <section className="page-section">
-        <Container>
+      {/* Tools & Technologies (section 4 — ink lines) */}
+      <section className="page-section lt-lines" style={{ position: 'relative', overflow: 'hidden' }}>
+        <InkLines mode="light" />
+        <Container style={{ position: 'relative', zIndex: 1 }}>
           <SectionTitle eyebrow="Toolkit" title="Tools & technologies" />
           <ChipList items={program.tools} />
         </Container>
@@ -205,9 +192,10 @@ export default function ProgramTemplate({ program, otherPrograms }) {
         </Container>
       </section>
 
-      {/* Career Opportunities */}
-      <section className="page-section">
-        <Container>
+      {/* Career Opportunities (section 6 — ink lines) */}
+      <section className="page-section lt-lines" style={{ position: 'relative', overflow: 'hidden' }}>
+        <InkLines mode="light" />
+        <Container style={{ position: 'relative', zIndex: 1 }}>
           <SectionTitle
             eyebrow="Career Paths"
             title="Career opportunities"
@@ -225,12 +213,12 @@ export default function ProgramTemplate({ program, otherPrograms }) {
           <Row className="g-5">
             <Col md={6}>
               <p className="eyebrow">Who can join</p>
-              <h3 style={{ fontSize: '24px', color: 'var(--eduact-black)', marginBottom: '18px' }}>Is this program right for you?</h3>
+              <h3 className="lt-title" style={{ fontSize: '24px', color: 'var(--eduact-black)', marginBottom: '18px' }}>Is this program right for you?</h3>
               <CheckList items={program.audience} cols={1} />
             </Col>
             <Col md={6}>
               <p className="eyebrow">Course benefits</p>
-              <h3 style={{ fontSize: '24px', color: 'var(--eduact-black)', marginBottom: '18px' }}>What you gain</h3>
+              <h3 className="lt-title" style={{ fontSize: '24px', color: 'var(--eduact-black)', marginBottom: '18px' }}>What you gain</h3>
               <CheckList items={program.benefits} cols={1} />
             </Col>
           </Row>
@@ -285,8 +273,9 @@ export default function ProgramTemplate({ program, otherPrograms }) {
 
       {/* Other programs */}
       {otherPrograms && otherPrograms.length > 0 && (
-        <section className="page-section">
-          <Container>
+        <section className="page-section lt-lines" style={{ position: 'relative', overflow: 'hidden' }}>
+          <InkLines mode="light" />
+          <Container style={{ position: 'relative', zIndex: 1 }}>
             <SectionTitle eyebrow="Explore more" title="Other learning programs" />
             <Row className="g-4">
               {otherPrograms.map((p) => (
@@ -304,7 +293,7 @@ export default function ProgramTemplate({ program, otherPrograms }) {
       )}
 
       {/* CTA */}
-      <section className="page-section" style={{ background: 'var(--eduact-base)' }}>
+      <section className="page-section lt-cta">
         <Container className="text-center">
           <h2 style={{ fontFamily: 'var(--heading-font)', fontWeight: 800, color: '#fff', fontSize: 'clamp(24px, 3vw, 34px)' }}>
             Ready to start your journey with {program.pageName}?
@@ -317,6 +306,6 @@ export default function ProgramTemplate({ program, otherPrograms }) {
           </Link>
         </Container>
       </section>
-    </>
+    </div>
   );
 }

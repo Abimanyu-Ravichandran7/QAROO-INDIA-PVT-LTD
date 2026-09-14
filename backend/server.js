@@ -13,6 +13,7 @@ import adminRoutes from './routes/adminRoutes.js';
 import mouRoutes from './routes/mouRoutes.js';
 import pageRoutes from './routes/pageRoutes.js';
 import csrRoutes from './routes/csrRoutes.js';
+import statsRoutes from './routes/statsRoutes.js';
 import learningRoutes from './routes/learningRoutes.js';
 import businessSolutionRoutes from './routes/businessSolutionRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
@@ -48,6 +49,8 @@ const authLimiter = rateLimit({
 app.get('/api/health', (req, res) =>
     res.json({ success: true, message: 'Qaroo India Private Limited CMS API is running' })
 );
+
+app.use('/api/stats', statsRoutes);
 
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/admins', adminRoutes);

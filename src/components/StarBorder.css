@@ -30,8 +30,8 @@
 }
 .inner-content {
   position: relative;
-  border: 1px solid #222;
-  background: #000;
+  border: 1px solid var(--eduact-black);
+  background: var(--eduact-black);
   color: white;
   font-size: 16px;
   text-align: center;

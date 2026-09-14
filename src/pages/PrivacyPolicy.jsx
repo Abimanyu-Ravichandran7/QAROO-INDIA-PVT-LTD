@@ -1,6 +1,7 @@
 import Seo from '../components/Seo.jsx';
 import LegalLayout from '../components/LegalLayout.jsx';
 import { COMPANY } from '../data/company.js';
+import { mailtoHref } from '../utils/mailto.js';
 
 export default function PrivacyPolicy() {
   return (
@@ -37,7 +38,7 @@ export default function PrivacyPolicy() {
         <h2 style={{ fontSize: '20px', color: 'var(--eduact-base)', marginBottom: '12px' }}>5. Contact</h2>
         <p style={{ fontSize: '14.5px', lineHeight: 1.7 }}>
           If you have any questions about this Privacy Policy, please contact us at{' '}
-          <a href={`mailto:${COMPANY.email}`} style={{ color: 'var(--eduact-base)', fontWeight: 600 }}>{COMPANY.email}</a>
+          <a href={mailtoHref(COMPANY.email)} style={{ color: 'var(--eduact-base)', fontWeight: 600 }}>{COMPANY.email}</a>
           {' '}or call{' '}
           <a href={`tel:${COMPANY.primaryPhone.replace(/\s/g, '')}`} style={{ color: 'var(--eduact-base)', fontWeight: 700 }}>{COMPANY.primaryPhone}</a>.
         </p>
