@@ -1,4 +1,7 @@
 import 'dotenv/config';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -88,6 +91,20 @@ app.use('/api/learning', writeApiLimiter, learningRoutes);
 app.use('/api/business-solutions', writeApiLimiter, businessSolutionRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/client-errors', clientErrorRoutes);
+
+// Optional single-process deployment: serve the built React app (repo root
+// dist/) from the backend with an SPA fallback so direct visits or refreshes on
+// nested routes (e.g. /learning-programs/<slug>) resolve to index.html.
+// Set SERVE_STATIC=true only when the frontend is NOT hosted separately.
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const distDir = path.resolve(__dirname, '../dist');
+if (process.env.SERVE_STATIC === 'true' && fs.existsSync(distDir)) {
+  app.use(express.static(distDir));
+  app.use((req, res, next) => {
+    if (req.method !== 'GET' || req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(distDir, 'index.html'));
+  });
+}
 
 app.use(notFound);
 app.use(errorHandler);
