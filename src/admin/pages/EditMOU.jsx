@@ -39,7 +39,7 @@ export default function EditMOU() {
     <PermissionGuard permission="mou.update">
       <div className="admin-section-title">
         <span>Edit MOU</span>
-        <button type="button" className="admin-outline-btn" onClick={() => navigate(-1)}>← Back</button>
+        <button type="button" className="admin-outline-btn" onClick={() => navigate(-1)}>{'<- Back'}</button>
       </div>
       <p className="page-sub">Update memorandum details and save changes.</p>
 

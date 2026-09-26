@@ -7,7 +7,7 @@ export default function Terms() {
   return (
     <>
       <Seo
-        title="Terms of Use — Qaroo India Private Limited"
+        title="Terms of Use - Qaroo India Private Limited"
         description="Terms of Use for the Qaroo India Private Limited website. Please read these terms before using our services."
         path="/terms"
       />

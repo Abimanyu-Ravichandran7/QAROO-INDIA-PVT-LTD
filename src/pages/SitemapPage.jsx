@@ -8,6 +8,7 @@ export default function SitemapPage() {
     { to: '/about', label: 'About Us' },
     { to: '/business-solutions', label: 'Business Solutions' },
     { to: '/learning-programs', label: 'Learning Programs' },
+    { to: '/careers', label: 'Careers' },
     { to: '/csr-projects', label: 'CSR Projects' },
     { to: '/mou-directory', label: 'MOU Directory' },
     { to: '/contact', label: 'Contact Us' },
@@ -17,7 +18,7 @@ export default function SitemapPage() {
   return (
     <>
       <Seo
-        title="Sitemap — Qaroo India Private Limited"
+        title="Sitemap - Qaroo India Private Limited"
         description="Sitemap of the Qaroo India Private Limited website. Browse all pages including business solutions, learning programs, CSR projects and MOU directory."
         path="/sitemap"
       />

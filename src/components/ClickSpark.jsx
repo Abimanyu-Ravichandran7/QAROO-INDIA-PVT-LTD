@@ -1,5 +1,13 @@
 import { useRef, useEffect, useCallback } from 'react';
 
+/**
+ * Global click micro-interaction: a short burst of sparks wherever the page is
+ * clicked. Mounted once around the whole app, so every button, card and icon
+ * gets the same confirmation without its own component.
+ *
+ * The canvas is viewport-sized and fixed, so a long page costs the same as a
+ * short one, and the animation loop only runs while sparks are alive.
+ */
 const ClickSpark = ({
   sparkColor = '#fff',
   sparkSize = 10,
@@ -12,37 +20,39 @@ const ClickSpark = ({
 }) => {
   const canvasRef = useRef(null);
   const sparksRef = useRef([]);
-  const startTimeRef = useRef(null);
+  const rafRef = useRef(0);
+  const sizeRef = useRef({ w: 0, h: 0 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const parent = canvas.parentElement;
-    if (!parent) return;
-
     let resizeTimeout;
 
     const resizeCanvas = () => {
-      const { width, height } = parent.getBoundingClientRect();
-      if (canvas.width !== width || canvas.height !== height) {
-        canvas.width = width;
-        canvas.height = height;
-      }
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      sizeRef.current.w = w;
+      sizeRef.current.h = h;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+      // Resizing resets the context, so the DPR transform is re-applied here.
+      canvas.getContext('2d')?.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
     const handleResize = () => {
       clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(resizeCanvas, 100);
+      resizeTimeout = setTimeout(resizeCanvas, 120);
     };
 
-    const ro = new ResizeObserver(handleResize);
-    ro.observe(parent);
-
     resizeCanvas();
+    window.addEventListener('resize', handleResize);
 
     return () => {
-      ro.disconnect();
+      window.removeEventListener('resize', handleResize);
       clearTimeout(resizeTimeout);
     };
   }, []);
@@ -63,72 +73,71 @@ const ClickSpark = ({
     [easing]
   );
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+  // Stop the loop as soon as the last spark fades, and restart it on the next
+  // click - no permanent requestAnimationFrame for a mostly idle effect.
+  const runLoop = useCallback(() => {
+    if (rafRef.current) return;
 
-    let animationId;
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext('2d');
+    if (!ctx) return;
 
     const draw = timestamp => {
-      if (!startTimeRef.current) {
-        startTimeRef.current = timestamp;
-      }
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, sizeRef.current.w, sizeRef.current.h);
 
       sparksRef.current = sparksRef.current.filter(spark => {
         const elapsed = timestamp - spark.startTime;
-        if (elapsed >= duration) {
-          return false;
-        }
+        if (elapsed >= duration) return false;
 
-        const progress = elapsed / duration;
-        const eased = easeFunc(progress);
-
+        const eased = easeFunc(elapsed / duration);
         const distance = eased * sparkRadius * extraScale;
         const lineLength = sparkSize * (1 - eased);
-
-        const x1 = spark.x + distance * Math.cos(spark.angle);
-        const y1 = spark.y + distance * Math.sin(spark.angle);
-        const x2 = spark.x + (distance + lineLength) * Math.cos(spark.angle);
-        const y2 = spark.y + (distance + lineLength) * Math.sin(spark.angle);
+        const cos = Math.cos(spark.angle);
+        const sin = Math.sin(spark.angle);
 
         ctx.strokeStyle = sparkColor;
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
+        ctx.moveTo(spark.x + distance * cos, spark.y + distance * sin);
+        ctx.lineTo(spark.x + (distance + lineLength) * cos, spark.y + (distance + lineLength) * sin);
         ctx.stroke();
 
         return true;
       });
 
-      animationId = requestAnimationFrame(draw);
+      if (sparksRef.current.length) {
+        rafRef.current = requestAnimationFrame(draw);
+      } else {
+        rafRef.current = 0;
+      }
     };
 
-    animationId = requestAnimationFrame(draw);
+    rafRef.current = requestAnimationFrame(draw);
+  }, [duration, easeFunc, extraScale, sparkColor, sparkRadius, sparkSize]);
 
-    return () => {
-      cancelAnimationFrame(animationId);
-    };
-  }, [sparkColor, sparkSize, sparkRadius, sparkCount, duration, easeFunc, extraScale]);
+  useEffect(
+    () => () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = 0;
+    },
+    []
+  );
 
   const handleClick = e => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    if (!canvasRef.current) return;
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
 
+    // The canvas is fixed to the viewport, so client coordinates map directly.
     const now = performance.now();
-    const newSparks = Array.from({ length: sparkCount }, (_, i) => ({
-      x,
-      y,
-      angle: (2 * Math.PI * i) / sparkCount,
-      startTime: now
-    }));
-
-    sparksRef.current.push(...newSparks);
+    for (let i = 0; i < sparkCount; i++) {
+      sparksRef.current.push({
+        x: e.clientX,
+        y: e.clientY,
+        angle: (2 * Math.PI * i) / sparkCount,
+        startTime: now
+      });
+    }
+    runLoop();
   };
 
   return (
@@ -143,14 +152,13 @@ const ClickSpark = ({
       <canvas
         ref={canvasRef}
         style={{
-          width: '100%',
-          height: '100%',
-          display: 'block',
-          userSelect: 'none',
-          position: 'absolute',
+          position: 'fixed',
           top: 0,
           left: 0,
-          pointerEvents: 'none'
+          display: 'block',
+          userSelect: 'none',
+          pointerEvents: 'none',
+          zIndex: 1300
         }}
       />
       {children}

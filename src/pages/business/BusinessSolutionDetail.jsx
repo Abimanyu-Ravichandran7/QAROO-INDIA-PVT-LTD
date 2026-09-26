@@ -8,7 +8,7 @@ function toTemplate(s) {
   return {
     slug: s.slug,
     pageName: s.pageName || s.title,
-    metaTitle: s.seoTitle || `${s.pageName || s.title} — Qaroo India`,
+    metaTitle: s.seoTitle || `${s.pageName || s.title} - Qaroo India`,
     metaDescription: s.seoDescription || s.shortDescription || '',
     shortDescription: s.shortDescription || '',
     fullDescription: s.fullDescription || '',

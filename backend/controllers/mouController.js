@@ -41,8 +41,8 @@ const listMOUs = async (req, res, next) => {
     }
 
     const mous = await MOU.find(query)
-      .populate('createdBy', 'name email')
-      .populate('updatedBy', 'name email')
+      .populate('createdBy', 'name')
+      .populate('updatedBy', 'name')
       .sort('-updatedAt');
 
     res.json({ success: true, count: mous.length, data: { mous } });
@@ -54,8 +54,8 @@ const listMOUs = async (req, res, next) => {
 const getMOU = async (req, res, next) => {
   try {
     const mou = await MOU.findById(req.params.id)
-      .populate('createdBy', 'name email')
-      .populate('updatedBy', 'name email');
+      .populate('createdBy', 'name')
+      .populate('updatedBy', 'name');
     if (!mou) return res.status(404).json({ success: false, message: 'MOU not found' });
     if (!req.admin && mou.status !== 'published') {
       return res.status(404).json({ success: false, message: 'MOU not found' });

@@ -59,7 +59,7 @@ export default function LearningForm({ initial, onSubmit, submitting }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(cleanup(form));
+    onSubmit({ ...cleanup(form), status: 'published' });
   };
 
   return (

@@ -30,13 +30,9 @@
 }
 .inner-content {
   position: relative;
-  border: 1px solid var(--eduact-black);
-  background: var(--eduact-black);
-  color: white;
-  font-size: 16px;
-  text-align: center;
-  padding: 16px 26px;
-  border-radius: 20px;
+  background: transparent;
+  border: none;
+  color: inherit;
   z-index: 1;
 }
 @keyframes star-movement-bottom {

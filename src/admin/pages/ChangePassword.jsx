@@ -159,8 +159,8 @@ export default function ChangePassword() {
       </div>
 
       {admin && admin.role !== 'superadmin' && hasPermission('admin.delete') && (
-        <div className="admin-card" style={{ maxWidth: '520px', marginTop: '16px', border: '1px solid rgba(147,25,19,0.3)' }}>
-          <h2 style={{ color: 'var(--admin-base, #931913)', fontSize: '17px', marginBottom: '6px' }}>Danger zone</h2>
+        <div className="admin-card" style={{ maxWidth: '520px', marginTop: '16px', border: '1px solid rgba(179, 38, 45,0.3)' }}>
+          <h2 style={{ color: 'var(--admin-base, #B3262D)', fontSize: '17px', marginBottom: '6px' }}>Danger zone</h2>
           <p className="hint" style={{ marginBottom: '14px' }}>
             Permanently delete your admin account and revoke your access to the Qaroo CMS. Only admins (not Super Admins)
             can delete themselves.

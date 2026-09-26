@@ -36,7 +36,7 @@ export default function CSREdit() {
     <PermissionGuard permission={permission}>
       <div className="admin-section-title">
         <span>{isEdit ? 'Edit CSR Project' : 'Add CSR Project'}</span>
-        <button type="button" className="admin-outline-btn" onClick={() => navigate(-1)}>← Back</button>
+        <button type="button" className="admin-outline-btn" onClick={() => navigate(-1)}>{'<- Back'}</button>
       </div>
       <p className="page-sub">{isEdit ? 'Update project details.' : 'Create a new CSR project.'}</p>
       {success && <div className="admin-alert success">{success}</div>}

@@ -1,7 +1,9 @@
 import { useRef, useEffect, useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import './MagicBento.css';
+import CountUp from './CountUp';
+import Icon from './Icon';
 
 const DEFAULT_PARTICLE_COUNT = 12;
 const DEFAULT_SPOTLIGHT_RADIUS = 300;
@@ -656,9 +658,34 @@ const MagicBento = ({
               <div className="magic-bento-card__header">
                 <div className="magic-bento-card__label">{card.label}</div>
               </div>
+              {card.metric ? (
+                <div className="magic-bento-card__metric">
+                  <span className="magic-bento-card__metric-value">
+                    <CountUp to={card.metric.value} duration={1.4} />
+                  </span>
+                  <span className="magic-bento-card__metric-unit">{card.metric.unit}</span>
+                  {card.metric.live ? (
+                    <span className="magic-bento-card__metric-live">live</span>
+                  ) : null}
+                </div>
+              ) : null}
               <div className="magic-bento-card__content">
                 <h2 className="magic-bento-card__title">{card.title}</h2>
                 <p className="magic-bento-card__description">{card.description}</p>
+                {card.link ? (
+                  // A real link, not just the card's click handler: it gives the
+                  // destination a visible affordance and makes the card
+                  // reachable by keyboard. stopPropagation keeps the card's own
+                  // navigate from pushing a second history entry.
+                  <Link
+                    to={card.link}
+                    className="magic-bento-card__cta"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {card.linkLabel || 'Explore'}
+                    <Icon name="arrow-right" size={15} strokeWidth={2} />
+                  </Link>
+                ) : null}
               </div>
             </>
           );

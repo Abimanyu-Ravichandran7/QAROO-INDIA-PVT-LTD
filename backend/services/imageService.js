@@ -29,7 +29,7 @@ export async function uploadImage(value, folder = 'qaroo') {
   if (isUrl(value)) return value;
 
   if (!configure()) {
-    // No Cloudinary configured — assume value is already a usable URL/path.
+    // No Cloudinary configured - assume value is already a usable URL/path.
     return value;
   }
 
@@ -39,5 +39,25 @@ export async function uploadImage(value, folder = 'qaroo') {
   } catch (err) {
     console.error('Cloudinary upload error:', err.message);
     return value;
+  }
+}
+
+// Uploads a non-image document (resume PDF/DOC) as a raw Cloudinary asset.
+// Returns '' when storage is not configured, so callers can fail loudly rather
+// than persisting a base64 blob into the database.
+export async function uploadDocument(value, folder = 'qaroo/docs') {
+  if (!value) return '';
+  if (isUrl(value)) return value;
+  if (!configure()) return '';
+
+  try {
+    const result = await cloudinary.uploader.upload(value, {
+      folder,
+      resource_type: 'raw',
+    });
+    return result.secure_url;
+  } catch (err) {
+    console.error('Cloudinary document upload error:', err.message);
+    return '';
   }
 }

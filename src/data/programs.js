@@ -16,7 +16,7 @@ export const PROGRAMS = [
     pageName: 'Data Science & Business Analytics',
     courseName: 'Data Science Course',
     keyword: 'Data Science Course in Coimbatore',
-    metaTitle: 'Data Science & Business Analytics Course in Coimbatore — Qaroo India',
+    metaTitle: 'Data Science & Business Analytics Course in Coimbatore - Qaroo India',
     metaDescription:
       'Learn Data Science, Python, Machine Learning, statistics, analytics and data visualization through practical training and real-world projects with Qaroo India.',
     shortDescription:
@@ -93,7 +93,7 @@ export const PROGRAMS = [
       'Placement and career support may include resume preparation, interview preparation, career guidance, technical mentoring, portfolio/project preparation, job-oriented training and placement assistance.',
     modes: ['Classroom training', 'Online training', 'Hybrid learning', 'Weekday batches', 'Weekend batches', 'Evening batches'],
     faq: [
-      { q: 'What is Data Science?', a: 'Data Science is the process of collecting, processing and analysing data using programming, statistics and analytical techniques to generate useful insights and support better decisions.' },
+      { q: 'What is Data Science?', a: 'Data Science is the process of collecting, processing and analyzing data using programming, statistics and analytical techniques to generate useful insights and support better decisions.' },
       { q: 'Which programming language is commonly used for Data Science?', a: 'Python is one of the most widely used programming languages for Data Science because of its large collection of libraries for analysis, visualization and Machine Learning.' },
       { q: 'What careers can I pursue after learning Data Science?', a: 'Career opportunities can include Data Scientist, Data Analyst, Machine Learning Engineer, Data Engineer, Business Intelligence Analyst and related roles.' },
       { q: 'Can beginners learn Data Science?', a: 'Yes. Beginners can start by learning Python, statistics, data analysis and visualization before moving into Machine Learning and Deep Learning.' },
@@ -105,7 +105,7 @@ export const PROGRAMS = [
     pageName: 'Full Stack Development',
     courseName: 'Full Stack Developer Course',
     keyword: 'Full Stack Development Course in Coimbatore',
-    metaTitle: 'Full Stack Development Course in Coimbatore — Qaroo India',
+    metaTitle: 'Full Stack Development Course in Coimbatore - Qaroo India',
     metaDescription:
       'Learn front-end, backend, databases, APIs and modern web frameworks through practical Full Stack Development training with Qaroo India.',
     shortDescription:
@@ -194,13 +194,13 @@ export const PROGRAMS = [
     pageName: 'UI/UX Design',
     courseName: 'UI/UX Design Course',
     keyword: 'UI/UX Design Course in Coimbatore',
-    metaTitle: 'UI/UX Design Course in Coimbatore — Qaroo India',
+    metaTitle: 'UI/UX Design Course in Coimbatore - Qaroo India',
     metaDescription:
       'Learn UI/UX design, user research, wireframing, prototyping, Figma and professional visual design techniques through practical projects with Qaroo India.',
     shortDescription:
       'Develop practical UI and UX design skills covering user research, wireframing, prototyping, visual design, usability and professional design tools.',
     fullDescription:
-      'The UI/UX Design program introduces students to the principles and practical techniques required to create useful, attractive and user-friendly digital products.\n\nStudents learn visual design concepts such as colour theory, typography, layout and visual hierarchy together with UX concepts such as user research, personas, information architecture, user flows, wireframes and usability testing.\n\nThe program also introduces professional design and prototyping tools such as Photoshop, Illustrator, Adobe XD, Figma, Miro, Balsamiq, FigJam and Lunacy.\n\nPractical exercises and projects help students build portfolios and develop a design process that can be applied to websites, mobile applications and digital products.',
+      'The UI/UX Design program introduces students to the principles and practical techniques required to create useful, attractive and user-friendly digital products.\n\nStudents learn visual design concepts such as color theory, typography, layout and visual hierarchy together with UX concepts such as user research, personas, information architecture, user flows, wireframes and usability testing.\n\nThe program also introduces professional design and prototyping tools such as Photoshop, Illustrator, Adobe XD, Figma, Miro, Balsamiq, FigJam and Lunacy.\n\nPractical exercises and projects help students build portfolios and develop a design process that can be applied to websites, mobile applications and digital products.',
     highlights: [
       'UI & UX Design',
       'User research',
@@ -208,7 +208,7 @@ export const PROGRAMS = [
       'Prototyping',
       'Design thinking',
       'Typography',
-      'Colour theory',
+      'Color theory',
       'Visual hierarchy',
       'Information architecture',
       'User flows',
@@ -223,7 +223,7 @@ export const PROGRAMS = [
     learn: [
       'UI design fundamentals',
       'UX design fundamentals',
-      'Colour theory',
+      'Color theory',
       'Typography',
       'Layout',
       'Visual hierarchy',
@@ -245,16 +245,16 @@ export const PROGRAMS = [
       'Balsamiq', 'FigJam', 'Lunacy', 'Creative.AI',
     ],
     modules: [
-      { title: 'UI/UX Fundamentals', items: ['Introduction to UI', 'Introduction to UX', 'Difference between UI and UX', 'Design principles', 'User-centred design'] },
-      { title: 'Visual Design', items: ['Colour theory', 'Typography', 'Layout', 'Alignment', 'Spacing', 'Visual hierarchy', 'Composition'] },
-      { title: 'User Experience Research', items: ['User research', 'Understanding user needs', 'Personas', 'User journeys', 'User behaviour', 'Research insights'] },
+      { title: 'UI/UX Fundamentals', items: ['Introduction to UI', 'Introduction to UX', 'Difference between UI and UX', 'Design principles', 'User-centered design'] },
+      { title: 'Visual Design', items: ['Color theory', 'Typography', 'Layout', 'Alignment', 'Spacing', 'Visual hierarchy', 'Composition'] },
+      { title: 'User Experience Research', items: ['User research', 'Understanding user needs', 'Personas', 'User journeys', 'User behavior', 'Research insights'] },
       { title: 'Information Architecture', items: ['Information architecture', 'Navigation structure', 'Content hierarchy', 'User flows'] },
       { title: 'Wireframing', items: ['Low-fidelity wireframes', 'High-fidelity wireframes', 'Page structure', 'Screen layout'] },
       { title: 'Prototyping', items: ['Interactive prototypes', 'User interactions', 'Animation', 'Navigation flows'] },
-      { title: 'Photoshop', items: ['Artboards', 'Typography', 'Layouts', 'Colours', 'Styles', 'Logo design', 'Brochures', 'Flyers', 'Banner design'] },
-      { title: 'Illustrator', items: ['Artboards', 'Typography', 'Layout', 'Colours', 'Styles', 'Logo design', 'Vector design', 'Flyer design', 'Banner design'] },
-      { title: 'Adobe XD', items: ['Wireframes', 'Typography', 'Frames', 'Colours', 'Styles', 'Prototyping', 'Animation'] },
-      { title: 'Figma', items: ['Frames', 'Components', 'Typography', 'Colours', 'Styles', 'Wireframes', 'Prototyping', 'Interactive designs'] },
+      { title: 'Photoshop', items: ['Artboards', 'Typography', 'Layouts', 'Colors', 'Styles', 'Logo design', 'Brochures', 'Flyers', 'Banner design'] },
+      { title: 'Illustrator', items: ['Artboards', 'Typography', 'Layout', 'Colors', 'Styles', 'Logo design', 'Vector design', 'Flyer design', 'Banner design'] },
+      { title: 'Adobe XD', items: ['Wireframes', 'Typography', 'Frames', 'Colors', 'Styles', 'Prototyping', 'Animation'] },
+      { title: 'Figma', items: ['Frames', 'Components', 'Typography', 'Colors', 'Styles', 'Wireframes', 'Prototyping', 'Interactive designs'] },
       { title: 'Usability Testing', items: ['Usability concepts', 'User testing', 'Identifying usability problems', 'Improving designs based on feedback'] },
       { title: 'Portfolio Projects', items: ['Website UI', 'Mobile application UI', 'Case studies', 'UX documentation', 'Portfolio preparation'] },
     ],
@@ -294,7 +294,7 @@ export const PROGRAMS = [
     pageName: 'Cyber Security & Ethical Hacking',
     courseName: 'Cyber Security & Ethical Hacking Course',
     keyword: 'Cyber Security Course in Coimbatore',
-    metaTitle: 'Cyber Security & Ethical Hacking Course in Coimbatore — Qaroo India',
+    metaTitle: 'Cyber Security & Ethical Hacking Course in Coimbatore - Qaroo India',
     metaDescription:
       'Learn cybersecurity, ethical hacking, network security, application protection and cloud security through practical training with Qaroo India.',
     shortDescription:
@@ -381,7 +381,7 @@ export const PROGRAMS = [
     pageName: 'AI & Machine Learning',
     courseName: 'Artificial Intelligence & Machine Learning Course',
     keyword: 'AI & Machine Learning Course in Coimbatore',
-    metaTitle: 'AI & Machine Learning Course in Coimbatore — Qaroo India',
+    metaTitle: 'AI & Machine Learning Course in Coimbatore - Qaroo India',
     metaDescription:
       'Learn Artificial Intelligence, Machine Learning, Python, Deep Learning, NLP and Generative AI through practical projects and industry-oriented training with Qaroo India.',
     shortDescription:
@@ -475,16 +475,16 @@ export const PROGRAMS = [
     pageName: 'Graphic Design & Animation',
     courseName: 'Graphic Design & Animation Course',
     keyword: 'Graphic Design Course in Coimbatore',
-    metaTitle: 'Graphic Design & Animation Course in Coimbatore — Qaroo India',
+    metaTitle: 'Graphic Design & Animation Course in Coimbatore - Qaroo India',
     metaDescription:
-      'Learn graphic design, typography, colour theory, image editing, vector design, branding and motion graphics through practical creative projects with Qaroo India.',
+      'Learn graphic design, typography, color theory, image editing, vector design, branding and motion graphics through practical creative projects with Qaroo India.',
     shortDescription:
-      'Develop professional graphic design and visual communication skills through typography, colour theory, image editing, vector design, motion graphics and portfolio projects.',
+      'Develop professional graphic design and visual communication skills through typography, color theory, image editing, vector design, motion graphics and portfolio projects.',
     fullDescription:
-      'The Graphic Design & Animation program introduces students to creative design principles and practical visual communication skills.\n\nStudents learn colour theory, typography, composition, layouts, visual hierarchy, concept development, image editing, vector graphics, branding, user-interface design and motion graphics.\n\nPractical projects help learners apply design concepts while building a professional portfolio for creative career opportunities.',
+      'The Graphic Design & Animation program introduces students to creative design principles and practical visual communication skills.\n\nStudents learn color theory, typography, composition, layouts, visual hierarchy, concept development, image editing, vector graphics, branding, user-interface design and motion graphics.\n\nPractical projects help learners apply design concepts while building a professional portfolio for creative career opportunities.',
     highlights: [
       'Graphic design fundamentals',
-      'Colour theory',
+      'Color theory',
       'Typography',
       'Layout & composition',
       'Visual hierarchy',
@@ -501,7 +501,7 @@ export const PROGRAMS = [
     ],
     learn: [
       'Graphic design principles',
-      'Colour theory',
+      'Color theory',
       'Typography',
       'Layout',
       'Composition',
@@ -522,8 +522,8 @@ export const PROGRAMS = [
       'Adobe Photoshop', 'Adobe Illustrator', 'Adobe XD', 'Vector design tools', 'Motion graphics tools',
     ],
     modules: [
-      { title: 'Graphic Design Fundamentals', items: ['Introduction to graphic design', 'Design principles', 'Colour theory', 'Typography', 'Layout', 'Composition', 'Visual hierarchy'] },
-      { title: 'Vector Design', items: ['Vector graphics', 'Shapes', 'Illustration', 'Logo design', 'Artwork', 'Recolouring', 'Clipping concepts'] },
+      { title: 'Graphic Design Fundamentals', items: ['Introduction to graphic design', 'Design principles', 'Color theory', 'Typography', 'Layout', 'Composition', 'Visual hierarchy'] },
+      { title: 'Vector Design', items: ['Vector graphics', 'Shapes', 'Illustration', 'Logo design', 'Artwork', 'Recoloring', 'Clipping concepts'] },
       { title: 'Image Editing', items: ['Raster images', 'Image manipulation', 'Image correction', 'Filters', 'Layers', 'Selection', 'Retouching', 'Image restoration'] },
       { title: 'Branding & Marketing Design', items: ['Logo design', 'Brand identity', 'Flyers', 'Brochures', 'Posters', 'Social media graphics', 'Marketing materials'] },
       { title: 'UI Graphics', items: ['Digital interface graphics', 'Icons', 'Banners', 'Web graphics', 'Basic UI concepts'] },
@@ -555,19 +555,75 @@ export const PROGRAMS = [
       'Career support may include portfolio development, resume preparation, interview preparation, career guidance, project mentoring and placement assistance.',
     modes: ['Classroom training', 'Online learning', 'Evening courses', 'Flexible schedules', 'Weekday batches', 'Weekend batches'],
     faq: [
-      { q: 'Can beginners learn Graphic Design?', a: 'Yes. Beginners can start with colour theory, typography, composition and design fundamentals before learning professional design tools.' },
-      { q: 'What skills are important for Graphic Design?', a: 'Important skills include typography, colour theory, layout, branding, image editing, visual hierarchy and creative problem-solving.' },
+      { q: 'Can beginners learn Graphic Design?', a: 'Yes. Beginners can start with color theory, typography, composition and design fundamentals before learning professional design tools.' },
+      { q: 'What skills are important for Graphic Design?', a: 'Important skills include typography, color theory, layout, branding, image editing, visual hierarchy and creative problem-solving.' },
       { q: 'Is portfolio development important?', a: 'Yes. A portfolio demonstrates practical design ability and is useful when applying for design roles or freelance work.' },
       { q: 'What career opportunities are available?', a: 'Possible roles include Graphic Designer, Visual Designer, Brand Designer, Motion Graphics Designer and Digital Designer.' },
       { q: 'Is animation included?', a: 'The Graphic Design & Animation program can include motion graphics and animation-related design concepts depending on the applicable syllabus.' },
     ],
   },
   {
+    // Subject coverage and tools are taken from the digital marketing work the
+    // company already does (see BUSINESS_SOLUTIONS), so nothing here states a
+    // capability the company has not already published. The curriculum detail
+    // other programs carry - modules, careers, certification, placement - is
+    // deliberately left empty rather than invented; fill it from the admin
+    // panel.
+    slug: 'digital-marketing',
+    pageName: 'Digital Marketing',
+    courseName: 'Digital Marketing Course',
+    keyword: 'Digital Marketing Course in Coimbatore',
+    metaTitle: 'Digital Marketing Course in Coimbatore - Qaroo India',
+    metaDescription:
+      'Learn SEO, content marketing, social media, paid advertising, email marketing, conversion optimization and web analytics through practical, project-based training with Qaroo India.',
+    shortDescription:
+      'Practical training in SEO, content, social media, paid advertising and analytics - built around measurable business outcomes rather than vanity metrics.',
+    fullDescription:
+      'The Digital Marketing program covers how businesses are found online and how that attention is turned into measurable results.\n\nThe course works through search engine optimization, keyword and competitor research, content marketing, social media, pay-per-click advertising, email marketing, conversion rate optimization and web analytics.\n\nThe same approach runs through the program as through our client work: start from a business goal, choose the channels that serve it, and measure conversions rather than clicks.',
+    highlights: [
+      'Search engine optimization, on-page and technical',
+      'Keyword and competitor research',
+      'Content marketing',
+      'Social media marketing',
+      'Pay-per-click (PPC) advertising',
+      'Email marketing',
+      'Conversion rate optimization',
+      'Web analytics and reporting',
+    ],
+    learn: [
+      'Search engine optimization (SEO)',
+      'Keyword & competitor research',
+      'Content marketing',
+      'Social media marketing',
+      'Pay-per-click (PPC) advertising',
+      'Email marketing',
+      'Conversion rate optimization',
+      'Web analytics & reporting',
+    ],
+    tools: [
+      'Google Analytics',
+      'Google Search Console',
+      'Google Ads',
+      'SEO tools',
+      'WordPress',
+      'Email marketing tools',
+      'Social media platforms',
+    ],
+    modules: [],
+    careers: [],
+    audience: [],
+    benefits: [],
+    certification: '',
+    placement: '',
+    modes: [],
+    faq: [],
+  },
+  {
     slug: 'software-testing',
     pageName: 'Software Testing',
     courseName: 'Software Testing Course',
     keyword: 'Software Testing Course in Coimbatore',
-    metaTitle: 'Software Testing Course in Coimbatore — Qaroo India',
+    metaTitle: 'Software Testing Course in Coimbatore - Qaroo India',
     metaDescription:
       'Learn manual testing, automation testing, Selenium, JIRA and software-quality concepts through practical Software Testing training with Qaroo India.',
     shortDescription:
@@ -642,7 +698,7 @@ export const PROGRAMS = [
     faq: [
       { q: 'What is Software Testing?', a: 'Software Testing is the process of checking a software application to identify defects and ensure that it works according to expected requirements.' },
       { q: 'What is Manual Testing?', a: 'Manual Testing involves testing software manually without using automated scripts.' },
-      { q: 'What is Automation Testing?', a: 'Automation Testing uses software tools and scripts to automatically execute tests and verify application behaviour.' },
+      { q: 'What is Automation Testing?', a: 'Automation Testing uses software tools and scripts to automatically execute tests and verify application behavior.' },
       { q: 'Which tools are included?', a: 'Selenium and JIRA are relevant tools mentioned for Software Testing training.' },
       { q: 'What careers are available?', a: 'Possible roles include Manual Tester, Automation Tester, QA Engineer, Test Analyst, Performance Tester and Security Tester.' },
     ],

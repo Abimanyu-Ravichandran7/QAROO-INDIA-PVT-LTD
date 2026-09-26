@@ -23,18 +23,31 @@ const submitContact = async (req, res, next) => {
 
 const listMessages = async (req, res, next) => {
   try {
-    const { status, search } = req.query;
+    const { status, search, interest, from, to } = req.query;
     const query = {};
     if (status && status !== 'all') query.status = status;
+    if (interest && interest !== 'all') {
+      query.interest = { $regex: `^${escapeRegex(interest)}$`, $options: 'i' };
+    }
+    const fromDate = from && !Number.isNaN(Date.parse(from)) ? new Date(`${from}T00:00:00.000Z`) : null;
+    const toDate = to && !Number.isNaN(Date.parse(to)) ? new Date(`${to}T23:59:59.999Z`) : null;
+    if (fromDate || toDate) {
+      query.createdAt = {};
+      if (fromDate) query.createdAt.$gte = fromDate;
+      if (toDate) query.createdAt.$lte = toDate;
+    }
     if (search) {
       query.$or = [
         { name: { $regex: escapeRegex(search), $options: 'i' } },
         { email: { $regex: escapeRegex(search), $options: 'i' } },
         { subject: { $regex: escapeRegex(search), $options: 'i' } },
+        { interest: { $regex: escapeRegex(search), $options: 'i' } },
+        { message: { $regex: escapeRegex(search), $options: 'i' } },
       ];
     }
     const messages = await ContactMessage.find(query).sort('-createdAt');
-    res.json({ success: true, count: messages.length, data: { messages } });
+    const interests = await ContactMessage.distinct('interest');
+    res.json({ success: true, count: messages.length, data: { messages, interests } });
   } catch (err) {
     next(err);
   }

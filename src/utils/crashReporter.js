@@ -1,8 +1,10 @@
 // Lightweight crash reporting. In production builds, uncaught errors are
-// posted to the backend /api/client-errors endpoint (stored for the admin).
+// posted to the backend client-errors endpoint (stored for the admin).
 // To switch to Sentry/Bugsnag later, forward `error` inside reportError instead.
 
-const ENDPOINT = '/api/client-errors';
+import { API_BASE } from '../api/api.js';
+
+const ENDPOINT = `${API_BASE}/client-errors`;
 
 export function reportError(error, extra = {}) {
   try {

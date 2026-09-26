@@ -1,6 +1,7 @@
 import PageContent from '../models/PageContent.js';
+import { PAGE_CONTENT } from '../data/seedData.js';
 
-const PAGES = ['home', 'about', 'business', 'learning', 'csr', 'contact', 'mou', 'footer'];
+const PAGES = ['home', 'about', 'business', 'learning', 'csr', 'contact', 'mou', 'footer', 'careers'];
 
 const getPageContent = async (req, res, next) => {
   try {
@@ -8,11 +9,18 @@ const getPageContent = async (req, res, next) => {
     if (!PAGES.includes(page)) {
       return res.status(400).json({ success: false, message: 'Invalid page key' });
     }
-    let content = await PageContent.findOne({ page });
-    if (!content) {
-      content = await PageContent.create({ page, data: {} });
+    const existing = await PageContent.findOne({ page });
+    if (existing) {
+      res.json({ success: true, data: { content: existing } });
+      return;
     }
-    res.json({ success: true, data: { content } });
+    // No write-on-read: GET stays side-effect free. Return the shipped seed
+    // defaults (or an empty object) shaped like a document so every consumer
+    // keeps the same response envelope.
+    res.json({
+      success: true,
+      data: { content: { page, data: PAGE_CONTENT[page] || {}, updatedBy: null } },
+    });
   } catch (err) {
     next(err);
   }

@@ -6,6 +6,8 @@ import Seo from '../components/Seo.jsx';
 import { Shimmer, EmptyState, ErrorState } from '../components/ui/States';
 import { learningApi } from '../api/learningApi.js';
 import { contentApi } from '../api/contentApi.js';
+import TiltCard from '../components/TiltCard.jsx';
+import PageHero from '../components/PageHero';
 
 const DEFAULT_LEARNING_STEPS = [
   { title: 'Connect', desc: 'Browse our career tracks and submit an enquiry. Our team will reach out within 24 hours to discuss your background and goals.' },
@@ -16,11 +18,23 @@ const DEFAULT_LEARNING_STEPS = [
   { title: 'Ace', desc: 'Complete your capstone project and earn your certification. Our placement support helps you land your next role.' },
 ];
 
+function categoryOf(track) {
+  const t = `${track.title || ''} ${track.slug || ''}`.toLowerCase();
+  if (/animation|vfx/.test(t)) return 'Animation & VFX';
+  if (/cyber|security|hacking/.test(t)) return 'Security';
+  if (/\bai\b|machine|artificial/.test(t)) return 'AI & ML';
+  if (/data|analytics/.test(t)) return 'Data & Analytics';
+  if (/design/.test(t)) return 'Design';
+  if (/full ?stack|development|software|testing/.test(t)) return 'Development';
+  return 'Other';
+}
+
 export default function LearningPrograms() {
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [content, setContent] = useState({});
+  const [filter, setFilter] = useState('All');
   const aliveRef = useRef(true);
 
   const reload = useCallback(() => {
@@ -45,43 +59,43 @@ export default function LearningPrograms() {
 
   const links = Array.isArray(content.links) ? content.links.filter(Boolean) : [];
   const steps = Array.isArray(content.steps) && content.steps.length > 0 ? content.steps : DEFAULT_LEARNING_STEPS;
+  const categories = tracks.length
+    ? ['All', ...new Set(tracks.map(categoryOf))]
+    : ['All'];
+  const filtered = filter === 'All' ? tracks : tracks.filter((t) => categoryOf(t) === filter);
+
+  // Counted from the published programs, so the figures cannot drift from the
+  // list below them.
+  const heroFacts = tracks.length
+    ? [
+        { num: tracks.length, label: tracks.length === 1 ? 'Program' : 'Programs' },
+        {
+          num: categories.length - 1,
+          label: categories.length === 2 ? 'Career track' : 'Career tracks',
+        },
+      ]
+    : [];
 
   return (
     <>
       <Seo
-        title="Learning Programs & Career Tracks — Qaroo India Private Limited | Data Science, Full Stack, UI/UX, Cyber Security, AI"
+        title="Learning Programs & Career Tracks - Qaroo India Private Limited | Data Science, Full Stack, UI/UX, Cyber Security, AI"
         description="Career-ready IT learning programs from Qaroo India Private Limited: Data Science & Business Analytics, Full Stack Development, UI/UX Design, Cyber Security, AI & Machine Learning, Graphic Design and Software Testing."
         path="/learning-programs"
       />
-      <div style={{
-        background: 'var(--eduact-base)',
-        padding: '80px 0 100px',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        <div style={{
-          position: 'absolute',
-          top: '-60px',
-          right: '-60px',
-          width: '260px',
-          height: '260px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(228,204,46,0.35), transparent 70%)',
-        }} />
-        <Container style={{ position: 'relative', zIndex: 2 }}>
-          <span className="eyebrow">Learning Programs</span>
-          <h1 style={{
-            fontFamily: 'var(--heading-font)',
-            fontWeight: 800,
-            color: '#fff',
-            fontSize: 'clamp(2rem, 4vw, 3rem)',
-            marginTop: '10px',
-          }}>{content.heading || 'Skills that move your career forward.'}</h1>
-          <p style={{ color: 'rgba(255,255,255,0.7)', maxWidth: '560px', marginTop: '14px' }}>
-            {content.description || 'Practical, project-based training across technology, design and analytics — grouped by career path.'}
-          </p>
-        </Container>
-      </div>
+      <PageHero padding="80px 0 100px" facts={heroFacts}>
+        <span className="eyebrow">Learning Programs</span>
+        <h1 style={{
+          fontFamily: 'var(--heading-font)',
+          fontWeight: 800,
+          color: '#fff',
+          fontSize: 'clamp(2rem, 4vw, 3rem)',
+          marginTop: '10px',
+        }}>{content.heading || 'Skills that move your career forward.'}</h1>
+        <p style={{ color: 'rgba(255,255,255,0.7)', maxWidth: '560px', marginTop: '14px' }}>
+          {content.description || 'Practical, project-based training across technology, design and analytics - grouped by career path.'}
+        </p>
+      </PageHero>
 
       {/* Enrollment Stepper */}
       <section className="page-section">
@@ -116,26 +130,50 @@ export default function LearningPrograms() {
       <Container className="page-section" style={{ paddingTop: 0 }}>
         <div className="reveal">
           <p className="eyebrow">Available Career Tracks</p>
-          <h2 style={{ fontSize: '28px', marginBottom: '36px' }}>Choose your path</h2>
+          <h2 style={{ fontSize: '28px', marginBottom: '20px' }}>Choose your path</h2>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '32px' }}>
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setFilter(cat)}
+                style={{
+                  padding: '9px 18px',
+                  borderRadius: '999px',
+                  border: '1px solid var(--eduact-soft4)',
+                  fontFamily: 'var(--heading-font)',
+                  fontWeight: 600,
+                  fontSize: '13px',
+                  color: filter === cat ? '#fff' : 'var(--eduact-text)',
+                  background: filter === cat ? 'var(--eduact-base)' : 'transparent',
+                  borderColor: filter === cat ? 'var(--eduact-base)' : 'var(--eduact-soft4)',
+                  transition: 'background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease',
+                  cursor: 'pointer',
+                }}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
         <Row className="g-4 reveal-stagger">
           {loading ? (
             <div style={{ width: '100%' }}><Shimmer /></div>
           ) : error ? (
             <div style={{ width: '100%' }}><ErrorState title="Couldn't load programs" text={error} onRetry={reload} /></div>
-          ) : tracks.length === 0 ? (
+          ) : filtered.length === 0 ? (
             <div style={{ width: '100%' }}>
               <EmptyState
-                title="Programs coming soon"
-                text="No learning programs are published right now. Check back shortly, or contact us for the full curriculum."
+                title={tracks.length === 0 ? 'Programs coming soon' : 'No programs in this track yet'}
+                text={tracks.length === 0 ? 'No learning programs are published right now. Check back shortly, or contact us for the full curriculum.' : 'Try another category, or contact us for the full curriculum.'}
                 action={<Link to="/contact" className="btn-eduact">Contact Us</Link>}
               />
             </div>
-          ) : tracks.map((track, i) => {
+          ) : filtered.map((track, i) => {
             const slug = track.slug;
             const detailPath = slug ? `/learning-programs/${slug}` : '/contact';
             return (
             <Col key={track._id || i} md={6} lg={4}>
+              <TiltCard>
               <Link
                 to={detailPath}
                 className="eduact-card track-card"
@@ -165,6 +203,7 @@ export default function LearningPrograms() {
                   </span>
                 </div>
               </Link>
+              </TiltCard>
             </Col>
             );
           })}

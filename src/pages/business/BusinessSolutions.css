@@ -7,6 +7,8 @@
   z-index: 0;
   pointer-events: none;
 }
+/* Everything that carries content has to sit above .af-blocks, which is a
+   fixed full-viewport layer at z-index 0 placed last in the DOM. */
 .business-template > .scroll-expand,
 .business-template > .page-section {
   position: relative;
@@ -50,12 +52,12 @@
 .business-template .af-card-wrap .eduact-card {
   transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
   border: 1px solid var(--eduact-soft4);
-  box-shadow: 0 1px 2px rgba(42, 37, 77, 0.04), 0 10px 24px rgba(42, 37, 77, 0.06);
+  box-shadow: 0 1px 2px rgba(23, 42, 70, 0.04), 0 10px 24px rgba(23, 42, 70, 0.06);
 }
 .business-template .af-card-wrap:hover .eduact-card {
   transform: translateY(-3px);
-  box-shadow: 0 14px 32px rgba(42, 37, 77, 0.11);
-  border-color: rgba(147, 25, 19, 0.28);
+  box-shadow: 0 14px 32px rgba(23, 42, 70, 0.11);
+  border-color: rgba(179, 38, 45, 0.28);
 }
 
 /* Section title accent (blueprint style) */
@@ -74,4 +76,367 @@
   background: var(--eduact-base);
   transform: translateY(-50%) rotate(45deg);
   box-shadow: 0 0 0 2px var(--eduact-soft3);
+}
+/* ============================================================
+   ROADMAP FLIP BOOK
+   ============================================================
+   Built on the three brand colours. Each leaf takes one as its page, and
+   declares the ink and accent that read against it - so every rule below is
+   written once, against those variables, rather than three times.
+
+   Measured contrast on the page colours:
+     navy + white ink  14.42:1     gold + navy ink  8.78:1
+     red  + white ink   6.50:1     accents          3.96:1 (large/bold only)
+   The book's own layout lives in FlipBook.css. */
+
+.solutions-roadmap {
+  margin-bottom: 60px;
+}
+
+.flipbook-page.rm-leaf--navy {
+  --rm-page: var(--eduact-black);
+  --rm-ink: var(--eduact-white);
+  --rm-muted: rgba(255, 255, 255, 0.76);
+  --rm-accent: var(--eduact-secondary);
+  --rm-line: rgba(255, 255, 255, 0.22);
+  --rm-panel: rgba(255, 255, 255, 0.08);
+}
+
+.flipbook-page.rm-leaf--red {
+  --rm-page: var(--eduact-base);
+  --rm-ink: var(--eduact-white);
+  --rm-muted: rgba(255, 255, 255, 0.82);
+  --rm-accent: var(--eduact-secondary);
+  --rm-line: rgba(255, 255, 255, 0.26);
+  --rm-panel: rgba(255, 255, 255, 0.1);
+}
+
+.flipbook-page.rm-leaf--gold {
+  --rm-page: var(--eduact-secondary);
+  --rm-ink: var(--eduact-black);
+  --rm-muted: rgba(23, 42, 70, 0.78);
+  --rm-accent: var(--eduact-base);
+  --rm-line: rgba(23, 42, 70, 0.22);
+  --rm-panel: rgba(23, 42, 70, 0.08);
+}
+
+.flipbook-page.rm-leaf--navy,
+.flipbook-page.rm-leaf--red,
+.flipbook-page.rm-leaf--gold {
+  background: var(--rm-page);
+  color: var(--rm-ink);
+}
+
+/* ---- solution pages ---- */
+
+.rm-page__stage {
+  font-family: var(--heading-font);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rm-accent);
+}
+
+.rm-page__title {
+  font-family: var(--heading-font);
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.18;
+  margin: 10px 0 0;
+  color: var(--rm-ink);
+}
+
+.rm-page__rule {
+  width: 42px;
+  height: 3px;
+  margin: 14px 0 12px;
+  background: var(--rm-accent);
+}
+
+.rm-page__desc {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--rm-muted);
+  margin: 0;
+  /* A page cannot scroll, so a long description is trimmed rather than
+     pushing the stages and the link off the leaf. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+.rm-page__block {
+  margin-top: 14px;
+}
+
+.rm-page__label {
+  font-family: var(--heading-font);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--rm-accent);
+  margin: 0 0 9px;
+}
+
+.rm-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.rm-list li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--rm-muted);
+}
+
+.rm-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 9px;
+  width: 7px;
+  height: 2px;
+  background: var(--rm-accent);
+}
+
+/* ---- the stages, as a numbered flow ---- */
+
+.rm-flow {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.rm-flow__step {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* Joins one stage to the next, between the nodes only. */
+.rm-flow__step:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 11px;
+  top: 24px;
+  bottom: -12px;
+  width: 1px;
+  background: var(--rm-line);
+}
+
+.rm-flow__node {
+  flex: 0 0 auto;
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  border: 1px solid var(--rm-accent);
+  background: var(--rm-page);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--heading-font);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--rm-accent);
+  position: relative;
+  z-index: 1;
+}
+
+.rm-flow__body {
+  min-width: 0;
+}
+
+.rm-flow__title {
+  display: block;
+  font-family: var(--heading-font);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--rm-ink);
+}
+
+.rm-flow__detail {
+  display: block;
+  margin-top: 1px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--rm-muted);
+}
+
+.rm-page__result {
+  margin: 14px 0 0;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: var(--rm-panel);
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--rm-ink);
+}
+
+.rm-page__result span {
+  font-family: var(--heading-font);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rm-accent);
+  margin-right: 7px;
+}
+
+.rm-page__cta {
+  margin-top: auto;
+  align-self: flex-start;
+  padding-top: 14px;
+  font-family: var(--heading-font);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--rm-accent);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.flipbook-page .rm-page__cta:hover {
+  opacity: 0.78;
+}
+
+/* ---- covers ---- */
+
+.rm-cover {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.rm-cover__label {
+  font-family: var(--heading-font);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rm-accent);
+}
+
+.rm-cover__title {
+  font-family: var(--heading-font);
+  font-size: 27px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 14px 0 0;
+  color: var(--rm-ink);
+}
+
+.rm-cover__text {
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 14px 0 0;
+  color: var(--rm-muted);
+}
+
+.rm-cover__hint {
+  font-size: 12.5px;
+  line-height: 1.45;
+  margin: 22px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--rm-line);
+  color: var(--rm-muted);
+}
+
+.rm-cover__cta {
+  align-self: flex-start;
+  margin-top: 22px;
+  font-family: var(--heading-font);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--rm-accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rm-line);
+  padding-bottom: 3px;
+}
+
+@media (max-width: 575px) {
+  .rm-page__title { font-size: 22px; }
+  .rm-cover__title { font-size: 24px; }
+  .rm-flow__detail { display: none; }
+}
+
+/* ---- controls: where the reader is, and how to move ---- */
+
+.rm-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 26px;
+}
+
+.rm-controls__btn {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border: 1px solid var(--eduact-soft4);
+  background: var(--surface);
+  color: var(--eduact-base);
+  font-family: var(--heading-font);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.rm-controls__btn:hover:not(:disabled) {
+  background: var(--eduact-base);
+  border-color: var(--eduact-base);
+  color: var(--eduact-white);
+}
+
+/* Disabled rather than hidden, so the ends of the book are legible: no
+   previous page on the cover, no next page past the back. */
+.rm-controls__btn:disabled {
+  opacity: 0.38;
+  cursor: default;
+}
+
+.rm-controls__where {
+  margin: 0;
+  min-width: 15ch;
+  text-align: center;
+  font-family: var(--heading-font);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--eduact-black);
+}
+
+.rm-controls__hint {
+  margin: 10px 0 0;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--eduact-text);
+}
+
+@media (max-width: 575px) {
+  .rm-controls {
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .rm-controls__where {
+    font-size: 12px;
+    min-width: 0;
+  }
 }

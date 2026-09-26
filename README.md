@@ -51,9 +51,9 @@ cp .env.example .env    # then edit .env (JWT_SECRET, admin, email, etc.)
 Configure `backend/.env`:
 
 - `JWT_SECRET` — long random secret (required)
-- `ADMIN_EMAIL` / `ADMIN_PASSWORD` — credentials for the first Super Admin created by the seed script
+- `ADMIN_EMAIL` / `ADMIN_PASSWORD` — required by the seed script; the Super Admin is never created with a default password, so set both before seeding
 - `EMAIL_HOST` / `EMAIL_USER` / `EMAIL_PASSWORD` / `EMAIL_FROM` — SMTP for verification emails (leave blank to skip actual sending in dev)
-- `CLOUDINARY_*` — optional; image upload falls back to URL passthrough when blank
+- `CLOUDINARY_*` — optional; image upload falls back to URL passthrough when blank, resumes to local disk
 
 ### 2. Seed the database
 
@@ -62,9 +62,7 @@ cd backend
 npm run seed
 ```
 
-This creates the Super Admin and seeds all migrated content (14 MOUs, 12 CSR projects, 7 learning programs, and page content for home/about/business/contact).
-
-Seeded Super Admin (from `backend/.env`): `admin@qaroo.in` / `QarooAdmin@123`
+This creates the Super Admin (using `ADMIN_EMAIL` / `ADMIN_PASSWORD` from `backend/.env`, both required) and seeds all migrated content (14 MOUs, 12 CSR projects, 7 learning programs, and page content for home/about/business/contact).
 
 ### 3. Start the backend
 

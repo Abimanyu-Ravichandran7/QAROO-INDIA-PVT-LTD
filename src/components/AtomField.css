@@ -1,0 +1,25 @@
+.atom-field {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.atom-field__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Cursor affordance for drag-to-rotate. AtomField toggles these on whichever
+   element drives its pointer interaction, so the globe reads as grabbable
+   without adding a hit-test element to the DOM. */
+.atom-field-grab {
+  cursor: grab;
+}
+
+.atom-field-grabbing,
+.atom-field-grabbing * {
+  cursor: grabbing !important;
+  user-select: none;
+}

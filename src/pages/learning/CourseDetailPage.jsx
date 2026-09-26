@@ -12,7 +12,7 @@ function toTemplate(program) {
     pageName: program.pageName || program.title,
     shortDescription: program.shortDescription || program.desc || '',
     fullDescription: program.fullDescription || program.desc || '',
-    metaTitle: program.seoTitle || program.metaTitle || `${program.title} — Qaroo India`,
+    metaTitle: program.seoTitle || program.metaTitle || `${program.title} - Qaroo India`,
     metaDescription: program.seoDescription || program.metaDescription || program.shortDescription || program.desc || '',
     highlights: program.highlights || [],
     learn: program.learn || [],

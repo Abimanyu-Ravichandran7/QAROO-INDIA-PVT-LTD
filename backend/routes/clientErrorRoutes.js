@@ -5,7 +5,7 @@ import { requireVerifiedApproved, requireSuperAdmin } from '../middleware/adminM
 
 const router = Router();
 
-// Public endpoint — browser crash reports.
+// Public endpoint - browser crash reports.
 router.post('/', reportClientError);
 
 // Review logged frontend errors (Super Admin only).

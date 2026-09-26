@@ -14,7 +14,7 @@ const DEFAULT_ABOUT_STATS = [
 const DEFAULT_LEARNING_PAGE = {
   eyebrow: 'The Qaroo Launchpad',
   heading: 'Skills that move your career forward.',
-  description: 'Practical, project-based training across technology, design and analytics — grouped by career path.',
+  description: 'Practical, project-based training across technology, design and analytics - grouped by career path.',
   stepperHeading: 'From enquiry to certification in 6 steps.',
   stepperDesc: 'Our structured enrollment process ensures you get the right training for your career goals.',
   steps: [
@@ -38,7 +38,7 @@ const DEFAULT_CSR_PAGE = {
 const DEFAULT_MOU_PAGE = {
   eyebrow: 'Institutional Partnerships',
   title: 'MOU Directory',
-  description: 'Every memorandum of understanding on record — who the partner is, what it can offer students, and our read on how strong the collaboration actually is.',
+  description: 'Every memorandum of understanding on record - who the partner is, what it can offer students, and our read on how strong the collaboration actually is.',
 };
 
 const PAGE_FALLBACKS = {
@@ -131,6 +131,37 @@ const SCHEMAS = {
       { key: 'eyebrow', label: 'Hero Eyebrow', type: 'text' },
       { key: 'title', label: 'Hero Title', type: 'text' },
       { key: 'description', label: 'Hero Description', type: 'textarea' },
+    ],
+  },
+  careers: {
+    title: 'Careers',
+    fields: [
+      { key: 'eyebrow', label: 'Hero Eyebrow', type: 'text' },
+      { key: 'title', label: 'Hero Title', type: 'text' },
+      { key: 'intro', label: 'Hero Intro', type: 'textarea' },
+      { key: 'scope', label: 'Where We Hire (heading)', type: 'textarea' },
+      { key: 'belief', label: 'Where We Hire (supporting)', type: 'textarea' },
+      { key: 'processTitle', label: 'Recruitment Section Title', type: 'text' },
+      { key: 'processNote', label: 'Recruitment Note', type: 'textarea' },
+      { key: 'lookForTitle', label: 'What We Look For - Title', type: 'text' },
+      { key: 'lookForIntro', label: 'What We Look For - Intro', type: 'textarea' },
+      { key: 'lookFor', label: 'What We Look For - Items', type: 'rows', subfields: [
+        { key: 'title', label: 'Trait', type: 'text' },
+        { key: 'desc', label: 'Description', type: 'textarea' },
+      ] },
+      { key: 'growthTitle', label: 'Career Growth - Title', type: 'text' },
+      { key: 'growthIntro', label: 'Career Growth - Intro', type: 'text' },
+      { key: 'growth', label: 'Career Growth - Steps', type: 'strings' },
+      { key: 'growthNote', label: 'Career Growth - Note', type: 'textarea' },
+      { key: 'ctaTitle', label: 'CTA Title', type: 'text' },
+      { key: 'ctaBody', label: 'CTA Body', type: 'textarea' },
+      { key: 'ctaLabel', label: 'CTA Eyebrow', type: 'text' },
+      { key: 'faq', label: 'FAQ / AI Answers', type: 'rows', subfields: [
+        { key: 'q', label: 'Question', type: 'text' },
+        { key: 'a', label: 'Answer', type: 'textarea' },
+      ] },
+      { key: 'seoTitle', label: 'SEO Title', type: 'text' },
+      { key: 'seoDescription', label: 'SEO Description', type: 'textarea' },
     ],
   },
   contact: {
@@ -271,7 +302,7 @@ function PageEditor({ page, onBack }) {
   useEffect(() => {
     setLoading(true);
     contentApi.get(page).then((res) => {
-      const loaded = res.data.content.data || {};
+      const loaded = res.data?.content?.data || {};
       if (page === 'about' && !loaded.stats) loaded.stats = DEFAULT_ABOUT_STATS;
       setData({ ...(PAGE_FALLBACKS[page] || {}), ...loaded });
     }).catch((e) => setError(e.message)).finally(() => setLoading(false));
@@ -280,7 +311,7 @@ function PageEditor({ page, onBack }) {
   const perm = {
     home: 'home.update', about: 'about.update', business: 'business.update',
     learning: 'learning.update', contact: 'contact.update', csr: 'csr.update',
-    mou: 'mou.update', footer: 'footer.update',
+    mou: 'mou.update', footer: 'footer.update', careers: 'careers.update',
   }[page];
 
   const save = async () => {
@@ -294,7 +325,7 @@ function PageEditor({ page, onBack }) {
     <div className="admin-card">
       <div className="admin-section-title">
         <span>Edit {schema.title} Content</span>
-        <button className="admin-icon-btn" onClick={onBack}>← Back</button>
+        <button className="admin-icon-btn" onClick={onBack}>{'<- Back'}</button>
       </div>
 
       {saved && <div className="admin-alert success">Content saved ✓</div>}
@@ -327,7 +358,7 @@ export default function ContentManagement() {
   const PERMS = {
     home: 'home.update', about: 'about.update', business: 'business.update',
     learning: 'learning.update', contact: 'contact.update', csr: 'csr.update',
-    mou: 'mou.update', footer: 'footer.update',
+    mou: 'mou.update', footer: 'footer.update', careers: 'careers.update',
   };
 
   if (editing) return <PageEditor key={editing} page={editing} onBack={() => setEditing(null)} />;

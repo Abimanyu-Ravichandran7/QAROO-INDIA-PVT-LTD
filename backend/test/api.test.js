@@ -1,9 +1,15 @@
-// End-to-end API test — boots server, exercises the full auth/permissions/CRUD flow.
+// End-to-end API test - boots server, exercises the full auth/permissions/CRUD flow.
 import '../server.js';
 import Admin from '../models/Admin.js';
 
 const BASE = 'http://localhost:5000/api';
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Login tests authenticate as the seeded Super Admin, whose credentials now
+// come from the environment (the seed fails if ADMIN_EMAIL/ADMIN_PASSWORD are
+// unset, so defaults are intentionally NOT hardcoded here).
+const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || '').toLowerCase();
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
 
 let passed = 0;
 let failed = 0;
@@ -40,14 +46,18 @@ async function main() {
   check('health endpoint', health.status === 200);
 
   console.log('\n== Login (super admin) ==');
-  const login = await req('POST', '/auth/login', { body: { email: 'admin@qaroo.in', password: 'QarooAdmin@123' } });
+  if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+    console.error('  SKIP: set ADMIN_EMAIL / ADMIN_PASSWORD in backend/.env to run login tests.');
+    process.exit(1);
+  }
+  const login = await req('POST', '/auth/login', { body: { email: ADMIN_EMAIL, password: ADMIN_PASSWORD } });
   check('super admin login', login.status === 200, JSON.stringify(login.json));
   const superToken = login.json?.data?.accessToken;
   check('super admin has token', !!superToken);
   check('super admin is superadmin', login.json?.data?.admin?.role === 'superadmin');
 
   console.log('\n== Login failure cases ==');
-  const badLogin = await req('POST', '/auth/login', { body: { email: 'admin@qaroo.in', password: 'wrongpass' } });
+  const badLogin = await req('POST', '/auth/login', { body: { email: ADMIN_EMAIL, password: 'wrongpass' } });
   check('wrong password rejected', badLogin.status === 401);
   const noLogin = await req('POST', '/auth/login', { body: { email: 'nobody@qaroo.in', password: 'something' } });
   check('nonexistent user rejected', noLogin.status === 401);

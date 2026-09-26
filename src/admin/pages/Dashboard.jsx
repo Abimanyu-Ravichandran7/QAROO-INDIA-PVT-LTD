@@ -6,13 +6,14 @@ import { csrApi } from '../../api/csrApi.js';
 import { learningApi } from '../../api/learningApi.js';
 import { businessSolutionApi } from '../../api/businessSolutionApi.js';
 import { contactApi } from '../../api/contactApi.js';
+import { applicationApi } from '../../api/applicationApi.js';
 import { adminApi } from '../../api/adminApi.js';
-import { useUnreadMessages } from '../hooks/useUnreadMessages.js';
+import { useNotifications } from '../context/NotificationContext.jsx';
 import { useToast } from '../../context/ToastContext';
 
 export default function Dashboard() {
   const { admin, hasPermission } = useAuth();
-  const { unread } = useUnreadMessages();
+  const { newMessages, newApplications } = useNotifications();
   const toast = useToast();
   const [onboardDismissed, setOnboardDismissed] = useState(() => {
     try { return localStorage.getItem('qaroo_onboarding_dismissed') === '1'; } catch { return false; }
@@ -23,6 +24,7 @@ export default function Dashboard() {
     learning: 0,
     business: 0,
     messages: 0,
+    applications: 0,
     admins: 0,
   });
   const [statsError, setStatsError] = useState(false);
@@ -32,7 +34,7 @@ export default function Dashboard() {
 
   const loadStats = useCallback(async () => {
     setStatsError(false);
-    const next = { mous: 0, csr: 0, learning: 0, business: 0, messages: 0, admins: 0 };
+    const next = { mous: 0, csr: 0, learning: 0, business: 0, messages: 0, applications: 0, admins: 0 };
     let failed = false;
     try {
       const calls = [];
@@ -41,6 +43,7 @@ export default function Dashboard() {
       if (can('learning.read')) calls.push(learningApi.list({}).then((r) => { next.learning = r.count || 0; }));
       if (can('business.read')) calls.push(businessSolutionApi.list({}).then((r) => { next.business = r.count || 0; }));
       if (can('contact.read')) calls.push(contactApi.list({}).then((r) => { next.messages = r.count || 0; }));
+      if (can('applications.read')) calls.push(applicationApi.list({}).then((r) => { next.applications = r.count || 0; }));
       if (isSuper) calls.push(adminApi.list().then((r) => { next.admins = r.data?.admins?.length || 0; }).catch(() => { failed = true; }));
       await Promise.all(calls);
       setStats(next);
@@ -67,10 +70,24 @@ export default function Dashboard() {
           <div className="num">{stats.mous}</div>
           <div className="label">Total MOUs</div>
         </div>
-        <div className="admin-stat">
-          <div className="num">{stats.messages}</div>
-          <div className="label">Contact Messages</div>
-        </div>
+        {can('contact.read') && (
+          <div className="admin-stat">
+            <div className="num">{stats.messages}</div>
+            <div className="label">
+              Contact Messages
+              {newMessages > 0 && <span className="admin-badge red">{newMessages} new</span>}
+            </div>
+          </div>
+        )}
+        {can('applications.read') && (
+          <div className="admin-stat">
+            <div className="num">{stats.applications}</div>
+            <div className="label">
+              Job Applications
+              {newApplications > 0 && <span className="admin-badge red">{newApplications} new</span>}
+            </div>
+          </div>
+        )}
         <div className="admin-stat">
           <div className="num">{stats.csr}</div>
           <div className="label">CSR Projects</div>
@@ -107,7 +124,8 @@ export default function Dashboard() {
           {can('learning.read') && <Link to="/admin/learning">Manage Learning Programs</Link>}
           {can('business.read') && <Link to="/admin/business-solutions">Manage Business Solutions</Link>}
           {can('home.update') && <Link to="/admin/content">Manage Website Content</Link>}
-          {can('contact.read') && <Link to="/admin/messages">Contact Messages{unread > 0 ? ` (${unread} new)` : ''}</Link>}
+          {can('applications.read') && <Link to="/admin/applications">Job Applications{newApplications > 0 ? ` (${newApplications} new)` : ''}</Link>}
+          {can('contact.read') && <Link to="/admin/messages">Contact Messages{newMessages > 0 ? ` (${newMessages} new)` : ''}</Link>}
           {isSuper && <Link to="/admin/admins">Manage Admins</Link>}
         </div>
       </div>

@@ -4,7 +4,7 @@ import { MOUS } from '../data/seedData.js';
 export async function seedMous(admin) {
   const existing = await MOU.countDocuments();
   if (existing > 0) {
-    console.log(`${existing} MOUs already exist — skipping MOU seeding.`);
+    console.log(`${existing} MOUs already exist - skipping MOU seeding.`);
     return;
   }
 

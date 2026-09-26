@@ -1,0 +1,216 @@
+/* ============================================================
+   MOU DIRECTORY - image lightbox
+   The detail view is already a modal, so the viewer stacks above it on its
+   own z-index rather than relying on modal-stacking order.
+   ============================================================ */
+
+/* ---- affordance on the carousel slide ---- */
+.mou-gal-open {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+}
+
+.mou-gal-open img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.mou-gal-hint {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(23, 42, 70, 0.82);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+  pointer-events: none;
+}
+
+.mou-gal-open:hover .mou-gal-hint,
+.mou-gal-open:focus-visible .mou-gal-hint {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mou-gal-open:focus-visible {
+  outline: 2px solid var(--eduact-secondary);
+  outline-offset: -3px;
+}
+
+/* ---- the viewer ---- */
+.mou-lightbox-backdrop.modal-backdrop {
+  z-index: 1080;
+  background: #0b0407;
+}
+
+.mou-lightbox-backdrop.modal-backdrop.show {
+  opacity: 0.92;
+}
+
+.mou-lightbox.modal {
+  z-index: 1090;
+}
+
+.mou-lightbox .modal-dialog {
+  max-width: min(1180px, 94vw);
+}
+
+.mou-lightbox .modal-content {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.mou-lightbox__stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+}
+
+.mou-lightbox__stage img {
+  max-width: 100%;
+  max-height: 78vh;
+  object-fit: contain;
+  display: block;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+}
+
+.mou-lightbox__nav,
+.mou-lightbox__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  background: rgba(15, 22, 36, 0.72);
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.mou-lightbox__nav:hover,
+.mou-lightbox__close:hover,
+.mou-lightbox__nav:focus-visible,
+.mou-lightbox__close:focus-visible {
+  background: rgba(var(--eduact-base-rgb), 0.9);
+  border-color: rgba(255, 255, 255, 0.55);
+}
+
+.mou-lightbox__nav {
+  position: absolute;
+  top: 50%;
+  width: 46px;
+  height: 46px;
+  margin-top: -23px;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.mou-lightbox__nav--prev { left: -8px; }
+.mou-lightbox__nav--next { right: -8px; }
+
+.mou-lightbox__close {
+  position: absolute;
+  top: -46px;
+  right: 0;
+  width: 38px;
+  height: 38px;
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* ---- indicators ---- */
+.mou-lightbox__bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.82rem;
+}
+
+.mou-lightbox__count {
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.mou-lightbox__name {
+  font-weight: 600;
+  color: #fff;
+}
+
+.mou-lightbox__dots {
+  display: flex;
+  gap: 7px;
+  margin-left: auto;
+}
+
+.mou-lightbox__dots button {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.mou-lightbox__dots button:hover {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.mou-lightbox__dots button.is-active {
+  background: var(--eduact-secondary);
+  transform: scale(1.35);
+}
+
+.mou-lightbox__hintkeys {
+  width: 100%;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.74rem;
+}
+
+@media (max-width: 575px) {
+  .mou-lightbox__nav { width: 38px; height: 38px; margin-top: -19px; font-size: 18px; }
+  .mou-lightbox__nav--prev { left: 2px; }
+  .mou-lightbox__nav--next { right: 2px; }
+  .mou-lightbox__close { top: -42px; }
+  .mou-lightbox__stage img { max-height: 66vh; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mou-gal-hint,
+  .mou-lightbox__nav,
+  .mou-lightbox__close,
+  .mou-lightbox__dots button {
+    transition: none !important;
+  }
+}

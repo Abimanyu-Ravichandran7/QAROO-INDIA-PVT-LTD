@@ -42,8 +42,8 @@ const listCSR = async (req, res, next) => {
       ];
     }
     const projects = await CSRProject.find(query)
-      .populate('createdBy', 'name email')
-      .populate('updatedBy', 'name email')
+      .populate('createdBy', 'name')
+      .populate('updatedBy', 'name')
       .sort('-year');
     res.json({ success: true, count: projects.length, data: { projects } });
   } catch (err) {
@@ -55,6 +55,9 @@ const getCSR = async (req, res, next) => {
   try {
     const project = await CSRProject.findById(req.params.id);
     if (!project) return res.status(404).json({ success: false, message: 'Project not found' });
+    if (!req.admin && project.status !== 'published') {
+      return res.status(404).json({ success: false, message: 'Project not found' });
+    }
     res.json({ success: true, data: { project } });
   } catch (err) {
     next(err);

@@ -28,9 +28,15 @@ const adminSchema = new mongoose.Schema(
     passwordOTP: { type: String, default: null, select: false },
     passwordOTPExpires: { type: Date, default: null, select: false },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', default: null },
+    // Sparse-unique bootstrap marker: at most ONE admin can ever hold it, which
+    // atomically decides the "first registrant" even under concurrent races.
+    // The holder is promoted to Super Admin once they verify their email.
+    bootstrap: { type: Boolean, default: null, sparse: true },
   },
   { timestamps: true }
 );
+
+adminSchema.index({ bootstrap: 1 }, { unique: true, sparse: true });
 
 adminSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();

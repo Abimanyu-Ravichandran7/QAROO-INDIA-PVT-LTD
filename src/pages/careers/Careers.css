@@ -1,0 +1,399 @@
+/* ============================================================
+   CAREERS - index listing, job detail blocks and the apply form
+   ============================================================ */
+
+/* ---------- department filter ---------- */
+.careers-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.careers-filter {
+  padding: 9px 20px;
+  border: 1px solid var(--eduact-soft4);
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--heading-font);
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--eduact-text);
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.careers-filter:hover {
+  border-color: var(--eduact-base);
+  color: var(--eduact-base);
+}
+
+.careers-filter.is-active {
+  background: var(--eduact-base);
+  border-color: var(--eduact-base);
+  color: #fff;
+}
+
+/* ---------- role cards ---------- */
+.careers-card__title {
+  font-size: 19px;
+  margin: 0 0 10px;
+  color: var(--eduact-heading);
+}
+
+.careers-card__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+  font-size: 12.5px;
+  color: var(--eduact-text-muted);
+}
+
+.careers-card__facts li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.careers-card__facts .q-icon {
+  color: var(--eduact-base);
+  flex-shrink: 0;
+}
+
+.careers-card__desc {
+  font-size: 14px;
+  color: var(--eduact-body);
+  margin: 0 0 16px;
+  /* Overviews vary a lot in length; keep the cards on a even grid. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+
+.careers-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--eduact-base);
+}
+
+.careers-card__link .q-icon {
+  transition: transform 0.28s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.careers-card__link:hover .q-icon {
+  transform: translateX(4px);
+}
+
+/* ---------- recruitment rounds ---------- */
+.careers-round {
+  height: 100%;
+  padding: 26px 24px;
+  border: 1px solid rgba(var(--eduact-white-rgb), 0.12);
+  border-radius: 16px;
+  background: rgba(var(--eduact-white-rgb), 0.04);
+}
+
+.careers-round h3 {
+  font-size: 17px;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.careers-round > p {
+  font-size: 13.5px;
+  color: rgba(var(--eduact-white-rgb), 0.68);
+  margin-bottom: 16px;
+}
+
+.careers-round__group + .careers-round__group {
+  margin-top: 14px;
+}
+
+.careers-round__group h4 {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--eduact-secondary);
+  margin-bottom: 8px;
+}
+
+.careers-round__group ul {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 5px;
+  font-size: 13px;
+  color: rgba(var(--eduact-white-rgb), 0.78);
+}
+
+/* ---------- growth ladder ---------- */
+.careers-ladder {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: rgba(var(--eduact-white-rgb), 0.08);
+  border: 1px solid rgba(var(--eduact-white-rgb), 0.08);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.careers-ladder li {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 22px;
+  background: var(--eduact-black);
+  color: #fff;
+  font-family: var(--heading-font);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.careers-ladder__n {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--eduact-secondary);
+  flex-shrink: 0;
+}
+
+/* ---------- job detail ---------- */
+.job-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.job-facts li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.job-facts .q-icon {
+  color: var(--eduact-secondary);
+  flex-shrink: 0;
+}
+
+.job-body {
+  max-width: 880px;
+}
+
+.job-block + .job-block {
+  margin-top: 40px;
+}
+
+.job-block h2 {
+  font-size: 22px;
+  margin-bottom: 16px;
+  color: var(--eduact-heading);
+}
+
+.job-block > p {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--eduact-body);
+  margin-bottom: 14px;
+}
+
+.job-stack {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+.job-stack__group {
+  padding: 18px 20px;
+  border: 1px solid var(--eduact-soft4);
+  border-radius: 14px;
+  background: var(--eduact-soft5);
+}
+
+.job-stack__group h3 {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--eduact-base);
+  margin-bottom: 10px;
+}
+
+.job-stack__group ul {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 5px;
+  font-size: 13.5px;
+  color: var(--eduact-text);
+}
+
+.job-note {
+  margin-top: 14px;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--eduact-text-muted);
+}
+
+.job-back {
+  margin-top: 44px;
+  padding-top: 24px;
+  border-top: 1px solid var(--eduact-soft4);
+}
+
+.job-back a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--eduact-base);
+}
+
+/* ---------- apply form ---------- */
+.job-apply {
+  margin-top: 48px;
+  padding: 30px 28px;
+  border: 1px solid var(--eduact-soft4);
+  border-radius: 18px;
+  background: var(--eduact-soft5);
+  scroll-margin-top: 90px;
+}
+
+.apply-form {
+  margin-top: 20px;
+}
+
+.apply-form .form-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--eduact-black);
+  margin-bottom: 6px;
+}
+
+.apply-form .form-control {
+  border-radius: 12px;
+  border: 1px solid var(--eduact-soft4);
+  padding: 11px 14px;
+  font-size: 14px;
+}
+
+.apply-form .form-control:focus {
+  border-color: var(--eduact-base);
+  box-shadow: 0 0 0 3px rgba(var(--eduact-base-rgb), 0.12);
+}
+
+.apply-form button[type='submit'] {
+  margin-top: 22px;
+  border: none;
+  cursor: pointer;
+}
+
+.apply-hint,
+.apply-file,
+.apply-error {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+}
+
+.apply-hint {
+  color: var(--eduact-text-muted);
+}
+
+.apply-file {
+  color: var(--eduact-base);
+  font-weight: 600;
+}
+
+.apply-error {
+  color: var(--eduact-base);
+  font-weight: 600;
+}
+
+/* The declaration sits between the fields and the submit button, because it is
+   what the button confirms - the button stays disabled until it is ticked. */
+.apply-declaration {
+  margin-top: 22px;
+  padding: 14px 16px;
+  border: 1px solid var(--eduact-soft4);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.apply-declaration .form-check {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+}
+
+.apply-declaration .form-check-input {
+  flex: 0 0 auto;
+  margin: 3px 0 0;
+  width: 17px;
+  height: 17px;
+  border-color: var(--eduact-soft4);
+  cursor: pointer;
+}
+
+.apply-declaration .form-check-input:checked {
+  background-color: var(--eduact-base);
+  border-color: var(--eduact-base);
+}
+
+.apply-declaration .form-check-input:focus {
+  border-color: var(--eduact-base);
+  box-shadow: 0 0 0 3px rgba(var(--eduact-base-rgb), 0.12);
+}
+
+.apply-declaration .form-check-label {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--eduact-body);
+  cursor: pointer;
+}
+
+.apply-done {
+  text-align: center;
+  padding: 26px 20px;
+}
+
+.apply-done .q-icon {
+  color: #2e7d32;
+  margin-bottom: 12px;
+}
+
+.apply-done h3 {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.apply-done p {
+  font-size: 14.5px;
+  color: var(--eduact-body);
+  max-width: 460px;
+  margin: 0 auto 18px;
+}
+
+@media (max-width: 575px) {
+  .job-apply {
+    padding: 22px 18px;
+  }
+}

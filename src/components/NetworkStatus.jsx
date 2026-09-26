@@ -18,7 +18,7 @@ export default function NetworkStatus() {
 
   return (
     <div className="network-banner" role="alert">
-      You're offline. Some content may be unavailable — check your connection and we'll catch you up when you're back online.
+      You're offline. Some content may be unavailable - check your connection and we'll catch you up when you're back online.
     </div>
   );
 }

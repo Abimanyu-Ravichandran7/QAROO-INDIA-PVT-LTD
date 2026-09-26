@@ -55,7 +55,7 @@ export default function MOUList() {
     }
   };
 
-  const fmt = (d) => (d ? new Date(d).toLocaleDateString() : '—');
+  const fmt = (d) => (d ? new Date(d).toLocaleDateString() : '-');
 
   return (
     <PermissionGuard permission="mou.read">

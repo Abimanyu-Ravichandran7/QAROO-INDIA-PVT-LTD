@@ -2,14 +2,17 @@ import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { Container, Row, Col, Modal, Badge } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Seo from '../components/Seo.jsx';
+import Icon from '../components/Icon';
 import { Shimmer, EmptyState, ErrorState } from '../components/ui/States';
 import { mouApi } from '../api/mouApi.js';
 import { contentApi } from '../api/contentApi.js';
+import './MOUDirectory.css';
+import PageHero from '../components/PageHero';
 
 const DEFAULT_MOU_PAGE = {
   eyebrow: 'Institutional Partnerships',
   title: 'MOU Directory',
-  description: 'Every memorandum of understanding on record — who the partner is, what it can offer students, and our read on how strong the collaboration actually is.',
+  description: 'Every memorandum of understanding on record - who the partner is, what it can offer students, and our read on how strong the collaboration actually is.',
 };
 
 function initials(name) {
@@ -73,7 +76,7 @@ function PartnerLogo({ name, logo, size = 48, radius = 12, light = false }) {
         justifyContent: 'center',
         marginBottom: '16px',
         flexShrink: 0,
-        boxShadow: light ? '0 6px 16px rgba(42,37,77,0.18)' : 'none',
+        boxShadow: light ? '0 6px 16px rgba(23, 42, 70,0.18)' : 'none',
         ...logoSize(init),
       }}>{init}</span>
     );
@@ -92,7 +95,7 @@ function PartnerLogo({ name, logo, size = 48, radius = 12, light = false }) {
       flexShrink: 0,
       overflow: 'hidden',
       padding: '4px',
-      boxShadow: light ? '0 6px 16px rgba(42,37,77,0.18)' : 'none',
+      boxShadow: light ? '0 6px 16px rgba(23, 42, 70,0.18)' : 'none',
     }}>
       <img src={img} alt={name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
     </span>
@@ -139,6 +142,11 @@ export default function MOUDirectory() {
   const [modalIndex, setModalIndex] = useState(0);
   const [activeImg, setActiveImg] = useState(0);
   const [autoPaused, setAutoPaused] = useState(false);
+  // Full-size viewer stacked over the detail modal. It keeps its own index so
+  // navigating inside it is instant, rather than waiting on the carousel's
+  // smooth-scroll to settle and report a new index.
+  const [lightbox, setLightbox] = useState(false);
+  const [lightboxIdx, setLightboxIdx] = useState(0);
   const [mous, setMous] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -166,7 +174,7 @@ export default function MOUDirectory() {
     aliveRef.current = true;
     reload();
     contentApi.get('mou', { credentials: 'omit' })
-      .then((res) => { if (aliveRef.current) setContent({ ...DEFAULT_MOU_PAGE, ...(res.data.content.data || {}) }); })
+      .then((res) => { if (aliveRef.current) setContent({ ...DEFAULT_MOU_PAGE, ...(res.data?.content?.data || {}) }); })
       .catch(() => {});
     return () => {
       aliveRef.current = false;
@@ -174,6 +182,18 @@ export default function MOUDirectory() {
   }, [reload]);
 
   const tags = useMemo(() => ["All", ...new Set(mous.map(m => m.tag).filter(Boolean))], [mous]);
+
+  // Counted from the published MoUs rather than stated, so the number in the
+  // hero is always the number of cards below it.
+  const heroFacts = mous.length
+    ? [
+        { num: mous.length, label: mous.length === 1 ? 'MoU signed' : 'MoUs signed' },
+        {
+          num: tags.length - 1,
+          label: tags.length === 2 ? 'Category' : 'Categories',
+        },
+      ]
+    : [];
 
   const filtered = useMemo(() => {
     if (activeTag === 'All') return mous;
@@ -216,8 +236,46 @@ export default function MOUDirectory() {
     setActiveImg(Math.max(0, Math.min(galCount - 1, i)));
   }, [galCount]);
 
+  const openLightbox = useCallback((i) => {
+    setLightboxIdx(i);
+    setLightbox(true);
+  }, []);
+
+  const closeLightbox = useCallback(() => {
+    setLightbox(false);
+    // Leave the carousel on whatever image was last viewed.
+    scrollGal(lightboxIdx);
+  }, [scrollGal, lightboxIdx]);
+
+  const stepLightbox = useCallback((delta) => {
+    if (galCount < 1) return;
+    setLightboxIdx((prev) => (prev + delta + galCount) % galCount);
+  }, [galCount]);
+
+  // Arrow keys page through the viewer; Escape is handled by the modal itself.
   useEffect(() => {
-    if (!showModal || galCount <= 1 || autoPaused) return;
+    if (!lightbox) return undefined;
+    const onKey = (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        stepLightbox(1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        stepLightbox(-1);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [lightbox, stepLightbox]);
+
+  // Closing the detail view must not leave the viewer orphaned above it.
+  useEffect(() => {
+    if (!showModal && lightbox) setLightbox(false);
+  }, [showModal, lightbox]);
+
+  useEffect(() => {
+    // The carousel holds while the viewer is open, so it cannot advance behind it.
+    if (!showModal || galCount <= 1 || autoPaused || lightbox) return;
     const timer = setInterval(() => {
       setActiveImg((prev) => {
         const next = prev >= galCount - 1 ? 0 : prev + 1;
@@ -227,62 +285,45 @@ export default function MOUDirectory() {
       });
     }, 4000);
     return () => clearInterval(timer);
-  }, [showModal, galCount, autoPaused]);
+  }, [showModal, galCount, autoPaused, lightbox]);
 
   return (
     <>
       <Seo
-        title="MOU Directory — Qaroo India Private Limited | Institutional & CSR Partnerships"
-        description={`Browse ${mous.length || 20}+ Memorandums of Understanding signed by Qaroo India Private Limited with academic institutions and CSR partners across software development, branding and digital marketing.`}
+        title="MOU Directory - Qaroo India Private Limited | Institutional & CSR Partnerships"
+        description={`Browse ${mous.length || '20+'} Memorandums of Understanding signed by Qaroo India Private Limited with academic institutions and CSR partners across software development, branding and digital marketing.`}
         path="/mou-directory"
       />
       {/* Header */}
-      <div style={{
-        background: 'var(--eduact-base)',
-        padding: '56px 0 64px',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        <div style={{
-          content: '""',
-          position: 'absolute',
-          top: '-60px',
-          right: '-60px',
-          width: '260px',
-          height: '260px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(228,204,46,0.35), transparent 70%)',
-        }} />
-        <Container style={{ position: 'relative', zIndex: 2 }}>
-          <span style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            color: 'var(--eduact-secondary)',
-            fontWeight: 700,
-            letterSpacing: '0.12em',
-            textTransform: 'uppercase',
-            fontSize: '0.78rem',
-            marginBottom: '14px',
-          }}>
-            <span style={{ width: '26px', height: '2px', background: 'var(--eduact-secondary)', display: 'inline-block' }} />
-            {content.eyebrow}
-          </span>
-          <h1 style={{
-            fontFamily: 'var(--heading-font)',
-            fontWeight: 800,
-            color: '#fff',
-            fontSize: 'clamp(1.9rem, 4vw, 2.7rem)',
-            marginBottom: '10px',
-          }}>{content.title}</h1>
-          <p style={{
-            color: 'rgba(255,255,255,0.7)',
-            maxWidth: '640px',
-            fontSize: '1rem',
-            margin: 0,
-          }}>{content.description}</p>
-        </Container>
-      </div>
+      <PageHero padding="56px 0 64px" facts={heroFacts}>
+        <span style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '8px',
+          color: 'var(--eduact-secondary)',
+          fontWeight: 700,
+          letterSpacing: '0.12em',
+          textTransform: 'uppercase',
+          fontSize: '0.78rem',
+          marginBottom: '14px',
+        }}>
+          <span style={{ width: '26px', height: '2px', background: 'var(--eduact-secondary)', display: 'inline-block' }} />
+          {content.eyebrow}
+        </span>
+        <h1 style={{
+          fontFamily: 'var(--heading-font)',
+          fontWeight: 800,
+          color: '#fff',
+          fontSize: 'clamp(1.9rem, 4vw, 2.7rem)',
+          marginBottom: '10px',
+        }}>{content.title}</h1>
+        <p style={{
+          color: 'rgba(255,255,255,0.7)',
+          maxWidth: '640px',
+          fontSize: '1rem',
+          margin: 0,
+        }}>{content.description}</p>
+      </PageHero>
 
       {/* Filter Chips */}
       <div style={{
@@ -307,8 +348,8 @@ export default function MOUDirectory() {
               fontSize: '0.82rem',
               padding: '9px 18px',
               borderRadius: '999px',
-              boxShadow: '0 6px 18px rgba(42,37,77,0.08)',
-              transition: 'all 0.2s ease',
+              boxShadow: '0 6px 18px rgba(23, 42, 70,0.08)',
+              transition: 'background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease',
               cursor: 'pointer',
             }}
           >
@@ -328,7 +369,7 @@ export default function MOUDirectory() {
             <div style={{ width: '100%' }}>
               <EmptyState
                 title="No MOUs in this category"
-                text="We partner with new institutions regularly — check back soon, or contact us to explore a collaboration."
+                text="We partner with new institutions regularly - check back soon, or contact us to explore a collaboration."
                 action={<Link to="/contact" className="btn-eduact">Start a partnership</Link>}
               />
             </div>
@@ -350,7 +391,7 @@ export default function MOUDirectory() {
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-4px)';
-                    e.currentTarget.style.boxShadow = '0 20px 40px rgba(42,37,77,0.1)';
+                    e.currentTarget.style.boxShadow = '0 20px 40px rgba(23, 42, 70,0.1)';
                     e.currentTarget.style.borderColor = 'transparent';
                   }}
                   onMouseLeave={(e) => {
@@ -536,7 +577,7 @@ export default function MOUDirectory() {
                         }}>
                           {s.pathway.map((p, pi) => (
                             <span key={pi} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              {pi > 0 && <span style={{ color: 'var(--eduact-grey)', fontWeight: 400 }}>→</span>}
+                              {pi > 0 && <span style={{ color: 'var(--eduact-grey)', fontWeight: 400 }}>{'->'}</span>}
                               <span>{p}</span>
                             </span>
                           ))}
@@ -545,8 +586,8 @@ export default function MOUDirectory() {
 
                       {s.note && (
                         <div style={{
-                          background: 'rgba(228,204,46,0.12)',
-                          border: '1px solid rgba(228,204,46,0.3)',
+                          background: 'rgba(244, 196, 48,0.12)',
+                          border: '1px solid rgba(244, 196, 48,0.3)',
                           color: 'var(--eduact-black)',
                           borderRadius: '10px',
                           padding: '14px 16px',
@@ -601,11 +642,18 @@ export default function MOUDirectory() {
                             }}
                           >
                             {src ? (
-                              <img
-                                src={src}
-                                alt={`${m.name} ${idx + 1}`}
-                                style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
-                              />
+                              <button
+                                type="button"
+                                className="mou-gal-open"
+                                onClick={() => openLightbox(idx)}
+                                aria-label={`View image ${idx + 1}${galCount > 1 ? ` of ${galCount}` : ''} full size`}
+                              >
+                                <img src={src} alt={`${m.name} ${idx + 1}`} />
+                                <span className="mou-gal-hint">
+                                  <Icon name="maximize" size={13} strokeWidth={2} />
+                                  Click to enlarge
+                                </span>
+                              </button>
                             ) : (
                               <div style={{
                                 textAlign: 'center',
@@ -616,7 +664,7 @@ export default function MOUDirectory() {
                                   width: '52px',
                                   height: '52px',
                                   borderRadius: '50%',
-                                  background: 'rgba(42,37,77,0.08)',
+                                  background: 'rgba(23, 42, 70,0.08)',
                                   display: 'flex',
                                   alignItems: 'center',
                                   justifyContent: 'center',
@@ -646,7 +694,7 @@ export default function MOUDirectory() {
                           top: '10px',
                           left: '12px',
                           zIndex: 2,
-                          background: 'rgba(42,37,77,0.75)',
+                          background: 'rgba(23, 42, 70,0.75)',
                           color: '#fff',
                           fontSize: '0.72rem',
                           fontWeight: 700,
@@ -668,7 +716,7 @@ export default function MOUDirectory() {
                             height: '34px',
                             borderRadius: '50%',
                             border: 'none',
-                            background: 'rgba(42,37,77,0.85)',
+                            background: 'rgba(23, 42, 70,0.85)',
                             color: '#fff',
                             fontSize: '15px',
                             cursor: activeImg === 0 ? 'default' : 'pointer',
@@ -692,7 +740,7 @@ export default function MOUDirectory() {
                             height: '34px',
                             borderRadius: '50%',
                             border: 'none',
-                            background: 'rgba(42,37,77,0.85)',
+                            background: 'rgba(23, 42, 70,0.85)',
                             color: '#fff',
                             fontSize: '15px',
                             cursor: activeImg === galCount - 1 ? 'default' : 'pointer',
@@ -742,6 +790,87 @@ export default function MOUDirectory() {
             </Modal.Footer>
           </>
         )}
+      </Modal>
+
+      {/* Full-size image viewer, stacked over the detail modal. */}
+      <Modal
+        show={lightbox && !!m?.images?.[lightboxIdx]}
+        onHide={closeLightbox}
+        centered
+        size="xl"
+        className="mou-lightbox"
+        backdropClassName="mou-lightbox-backdrop"
+        aria-label={`${m?.name || 'MOU'} image viewer`}
+      >
+        {m?.images?.[lightboxIdx] ? (
+          <>
+            <div className="mou-lightbox__stage">
+              <button
+                type="button"
+                className="mou-lightbox__close"
+                onClick={closeLightbox}
+                aria-label="Close image viewer"
+              >
+                ×
+              </button>
+
+              {galCount > 1 && (
+                <button
+                  type="button"
+                  className="mou-lightbox__nav mou-lightbox__nav--prev"
+                  onClick={() => stepLightbox(-1)}
+                  aria-label="Previous image"
+                >
+                  ‹
+                </button>
+              )}
+
+              <img
+                src={m.images[lightboxIdx]}
+                alt={`${m.name} - image ${lightboxIdx + 1} of ${galCount}`}
+              />
+
+              {galCount > 1 && (
+                <button
+                  type="button"
+                  className="mou-lightbox__nav mou-lightbox__nav--next"
+                  onClick={() => stepLightbox(1)}
+                  aria-label="Next image"
+                >
+                  ›
+                </button>
+              )}
+            </div>
+
+            <div className="mou-lightbox__bar">
+              <span className="mou-lightbox__count">
+                {lightboxIdx + 1} / {galCount}
+              </span>
+              <span className="mou-lightbox__name">{m.name}</span>
+
+              {galCount > 1 && (
+                <div className="mou-lightbox__dots">
+                  {m.images.map((_, dIdx) => (
+                    <button
+                      key={dIdx}
+                      type="button"
+                      className={dIdx === lightboxIdx ? 'is-active' : ''}
+                      onClick={() => setLightboxIdx(dIdx)}
+                      aria-label={`Go to image ${dIdx + 1}`}
+                      aria-current={dIdx === lightboxIdx}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {galCount > 1 && (
+                <p className="mou-lightbox__hintkeys">
+                  Use the arrow keys to move between images, Esc to close.
+                </p>
+              )}
+            </div>
+          </>
+        ) : null}
       </Modal>
 
       <style>{`

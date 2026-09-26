@@ -1,8 +1,15 @@
-// Centralized API client. Uses Vite dev proxy (BASE = '/api').
+// Centralized API client. Uses Vite dev proxy (BASE = '/api') by default.
+// Set VITE_API_BASE_URL at build time to point the frontend at a backend on
+// another same-site origin (e.g. https://api.example.com). A trailing slash is
+// stripped so URL joins below stay predictable.
 // Sends credentials (HTTP-only cookies) with every request and
 // transparently refreshes the access token when it expires.
 
-const BASE = '/api';
+export const API_BASE = (typeof import.meta.env !== 'undefined' && import.meta.env.VITE_API_BASE_URL
+  ? String(import.meta.env.VITE_API_BASE_URL).replace(/\/+$/, '')
+  : '/api');
+
+const BASE = API_BASE;
 
 let refreshPromise = null;
 

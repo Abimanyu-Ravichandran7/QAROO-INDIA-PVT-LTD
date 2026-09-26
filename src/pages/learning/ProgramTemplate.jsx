@@ -4,9 +4,10 @@ import Seo from '../../components/Seo.jsx';
 import InkLines from '../../components/InkLines.jsx';
 import GradientBlobBackground from '../../components/GradientBlobBackground.jsx';
 import { COMPANY } from '../../data/company.js';
+import { downloadBrochure } from '../../utils/downloadBrochure.js';
 import './ProgramTemplate.css';
 
-const BLOB_COLORS = ['#2A254D', '#931913', '#e4cc2e'];
+const BLOB_COLORS = ['#172A46', '#B3262D', '#F4C430'];
 
 function SectionTitle({ eyebrow, title, desc }) {
   return (
@@ -50,6 +51,20 @@ function CheckList({ items, cols = 2 }) {
 export default function ProgramTemplate({ program, otherPrograms }) {
   const path = `/learning-programs/${program.slug}`;
 
+  const sections = [
+    { heading: 'Key highlights', items: program.highlights },
+    { heading: 'What you will learn', items: program.learn },
+    { heading: 'Tools & technologies', items: program.tools },
+    {
+      heading: 'Course modules',
+      items: (program.modules || []).map((m) => `${m.title}: ${(m.items || []).join(', ')}`),
+    },
+    { heading: 'Career opportunities', items: program.careers },
+    { heading: 'Who can join', items: program.audience },
+    { heading: 'Course benefits', items: program.benefits },
+    { heading: 'Learning modes', items: program.modes },
+  ];
+
   return (
     <div className="learning-template">
       <div className="lt-blobs" aria-hidden="true">
@@ -62,16 +77,7 @@ export default function ProgramTemplate({ program, otherPrograms }) {
       />
 
       {/* Hero */}
-      <div className="lt-hero" style={{ position: 'relative', overflow: 'hidden' }}>
-        <div style={{
-          position: 'absolute',
-          top: '-60px',
-          right: '-60px',
-          width: '280px',
-          height: '280px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(228,204,46,0.35), transparent 70%)',
-        }} />
+      <div className="lt-hero red-stage" style={{ position: 'relative', overflow: 'hidden' }}>
         <div className="lt-ring2" />
         <Container style={{ position: 'relative', zIndex: 2 }}>
           <Breadcrumb style={{ marginBottom: '14px' }}>
@@ -100,6 +106,17 @@ export default function ProgramTemplate({ program, otherPrograms }) {
             <Link to="/contact" className="btn-eduact" style={{ background: 'var(--eduact-secondary)', color: 'var(--eduact-black)' }}>
               Request Course Details
             </Link>
+            <button
+              onClick={() => downloadBrochure({
+                title: program.pageName,
+                subtitle: program.shortDescription,
+                sections,
+              })}
+              className="btn-eduact-outline"
+              style={{ color: '#fff', borderColor: '#F4C430', cursor: 'pointer' }}
+            >
+              Download Brochure
+            </button>
             <Link to="/learning-programs" className="btn-eduact-outline" style={{ color: '#fff' }}>
               View All Programs
             </Link>
@@ -107,7 +124,7 @@ export default function ProgramTemplate({ program, otherPrograms }) {
         </Container>
       </div>
 
-      {/* Introduction (section 2 — ink lines) */}
+      {/* Introduction (section 2 - ink lines) */}
       <section className="page-section lt-lines" style={{ position: 'relative', overflow: 'hidden' }}>
         <InkLines mode="light" />
         <Container style={{ position: 'relative', zIndex: 1 }}>
@@ -155,7 +172,7 @@ export default function ProgramTemplate({ program, otherPrograms }) {
         </Container>
       </section>
 
-      {/* Tools & Technologies (section 4 — ink lines) */}
+      {/* Tools & Technologies (section 4 - ink lines) */}
       <section className="page-section lt-lines" style={{ position: 'relative', overflow: 'hidden' }}>
         <InkLines mode="light" />
         <Container style={{ position: 'relative', zIndex: 1 }}>
@@ -192,7 +209,7 @@ export default function ProgramTemplate({ program, otherPrograms }) {
         </Container>
       </section>
 
-      {/* Career Opportunities (section 6 — ink lines) */}
+      {/* Career Opportunities (section 6 - ink lines) */}
       <section className="page-section lt-lines" style={{ position: 'relative', overflow: 'hidden' }}>
         <InkLines mode="light" />
         <Container style={{ position: 'relative', zIndex: 1 }}>
@@ -283,7 +300,7 @@ export default function ProgramTemplate({ program, otherPrograms }) {
                   <div className="eduact-card reveal" style={{ height: '100%' }}>
                     <h4>{p.pageName}</h4>
                     <p>{p.shortDescription}</p>
-                    <Link to={`/learning-programs/${p.slug}`} className="card-link">View program →</Link>
+                    <Link to={`/learning-programs/${p.slug}`} className="card-link">View program {'->'}</Link>
                   </div>
                 </Col>
               ))}

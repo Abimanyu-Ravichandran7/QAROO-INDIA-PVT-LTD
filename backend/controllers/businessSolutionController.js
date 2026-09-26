@@ -15,7 +15,7 @@ const cleanObjArr = (v, otherKeys = []) =>
           }
           return obj;
         })
-        .filter((x) => String(x.title || '').trim() !== '')
+        .filter((x) => String(x.title || x.q || '').trim() !== '')
     : v || [];
 
 const normalizeSolution = (b) => ({
@@ -78,8 +78,8 @@ const listSolutions = async (req, res, next) => {
       ];
     }
     const solutions = await BusinessSolution.find(query)
-      .populate('createdBy', 'name email')
-      .populate('updatedBy', 'name email')
+      .populate('createdBy', 'name')
+      .populate('updatedBy', 'name')
       .sort({ displayOrder: 1, createdAt: -1 });
     res.json({ success: true, count: solutions.length, data: { solutions } });
   } catch (err) {

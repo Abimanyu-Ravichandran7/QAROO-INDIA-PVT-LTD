@@ -4,7 +4,7 @@ import { CSR_PROJECTS } from '../data/seedData.js';
 export async function seedCSR(admin) {
   const existing = await CSRProject.countDocuments();
   if (existing > 0) {
-    console.log(`${existing} CSR projects already exist — skipping CSR seeding.`);
+    console.log(`${existing} CSR projects already exist - skipping CSR seeding.`);
     return;
   }
 

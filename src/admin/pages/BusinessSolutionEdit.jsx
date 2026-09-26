@@ -34,7 +34,7 @@ export default function BusinessSolutionEdit() {
     <PermissionGuard permission={isEdit ? 'business.update' : 'business.create'}>
       <div className="admin-section-title">
         <span>{isEdit ? 'Edit Business Solution' : 'Add Business Solution'}</span>
-        <button type="button" className="admin-outline-btn" onClick={() => navigate(-1)}>← Back</button>
+        <button type="button" className="admin-outline-btn" onClick={() => navigate(-1)}>{'<- Back'}</button>
       </div>
       <p className="page-sub">{isEdit ? 'Update solution details.' : 'Create a new business solution.'}</p>
       {success && <div className="admin-alert success">{success}</div>}

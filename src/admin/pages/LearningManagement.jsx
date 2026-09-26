@@ -67,8 +67,8 @@ export default function LearningManagement() {
             : programs.map((p) => (
               <tr key={p._id}>
                 <td><strong>{p.title}</strong></td>
-                <td>{p.category || '—'}</td>
-                <td><span style={{ fontSize: '12px' }}>{(p.skills || []).join(', ') || '—'}</span></td>
+                <td>{p.category || '-'}</td>
+                <td><span style={{ fontSize: '12px' }}>{(p.skills || []).join(', ') || '-'}</span></td>
                 <td><span className={`admin-badge ${p.status === 'published' ? 'green' : 'grey'}`}>{p.status}</span></td>
                 <td>
                   <div className="actions">

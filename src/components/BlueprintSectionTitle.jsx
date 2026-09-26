@@ -2,13 +2,13 @@
  * BlueprintSectionTitle
  * Drawing-annotation style section heading: a mono "PLAN VIEW" eyebrow,
  * a thin specimen rule with a diamond center mark, an optional left index
- * and right aside label — looks like a blueprint callout.
+ * and right aside label - looks like a blueprint callout.
  *
  * Usage:
  *   <BlueprintSectionTitle
  *     eyebrow="Plan view"
  *     title="Our Solutions"
- *     desc="…optional description…"
+ *     desc="...optional description..."
  *     index="02"
  *   />
  */

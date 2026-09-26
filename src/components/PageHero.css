@@ -1,0 +1,72 @@
+/* Shared header band for every page but the home page. The red field itself
+   comes from .page-hero and .red-stage in App.css; this only adds the light
+   and the figures that sit on it. */
+
+.page-hero__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  /* Under .page-hero::after, which keeps its edge falloff over the light. */
+  z-index: 0;
+}
+
+/* The atoms add light to the red field rather than covering it, the same way
+   they do on the home hero. */
+.page-hero__atoms {
+  opacity: 0.85;
+  mix-blend-mode: screen;
+}
+
+/* ---------- figures ---------- */
+
+.page-hero__facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.page-hero__fact {
+  padding: 16px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  /* Barely there: the panel should read as light on the field, not as a card
+     dropped on top of it. */
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(2px);
+}
+
+.page-hero__fact dt {
+  font-family: var(--heading-font);
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--eduact-secondary);
+}
+
+.page-hero__fact dd {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+@media (max-width: 991px) {
+  /* Stacked under the copy, so it reads as a footnote to the heading rather
+     than as a second column squeezed beside it. */
+  .page-hero__facts {
+    grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
+    margin-top: 6px;
+  }
+
+  .page-hero__fact {
+    padding: 13px 15px;
+  }
+
+  .page-hero__atoms {
+    opacity: 0.6;
+  }
+}

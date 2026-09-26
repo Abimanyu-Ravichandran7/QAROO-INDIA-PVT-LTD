@@ -15,7 +15,7 @@ const cleanObjArr = (v, otherKeys = []) =>
           }
           return obj;
         })
-        .filter((x) => String(x.title || '').trim() !== '')
+        .filter((x) => String(x.title || x.q || '').trim() !== '')
     : v || [];
 
 const normalizeProgram = (b) => ({
@@ -81,8 +81,8 @@ const listPrograms = async (req, res, next) => {
       ];
     }
     const programs = await LearningProgram.find(query)
-      .populate('createdBy', 'name email')
-      .populate('updatedBy', 'name email')
+      .populate('createdBy', 'name')
+      .populate('updatedBy', 'name')
       .sort({ displayOrder: 1, createdAt: -1 });
     res.json({ success: true, count: programs.length, data: { programs } });
   } catch (err) {

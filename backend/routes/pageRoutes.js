@@ -24,6 +24,7 @@ const PAGE_PERMISSION = {
   contact: 'contact.update',
   mou: 'mou.update',
   footer: 'footer.update',
+  careers: 'careers.update',
 };
 
 router.put('/:page', protect, requireVerifiedApproved, (req, res, next) => {

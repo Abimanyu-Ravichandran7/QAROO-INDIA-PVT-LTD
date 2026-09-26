@@ -1,13 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
-import { useUnreadMessages } from '../hooks/useUnreadMessages.js';
+import { useNotifications } from '../context/NotificationContext.jsx';
 import { useAdminTheme } from '../context/AdminThemeContext.jsx';
 
 export default function AdminNavbar({ onMenuClick }) {
   const { admin, logout, hasPermission } = useAuth();
   const { theme, toggle } = useAdminTheme();
   const navigate = useNavigate();
-  const { unread } = useUnreadMessages();
+  const { newMessages, newApplications } = useNotifications();
   const inBeta = import.meta.env.VITE_BETA_MODE === 'true';
 
   const handleLogout = async () => {
@@ -20,7 +20,7 @@ export default function AdminNavbar({ onMenuClick }) {
       <button className="admin-menu-btn" onClick={onMenuClick} aria-label="Toggle navigation menu">☰</button>
       <div className="admin-topbar-title">Admin Panel</div>
       <div className="admin-topbar-right">
-        {inBeta && <span className="admin-badge yellow" title="Beta build — set VITE_BETA_MODE=true in your .env to show/hide">Beta</span>}
+        {inBeta && <span className="admin-badge yellow" title="Beta build - set VITE_BETA_MODE=true in your .env to show/hide">Beta</span>}
         <button
           className="admin-theme-toggle"
           onClick={toggle}
@@ -31,14 +31,26 @@ export default function AdminNavbar({ onMenuClick }) {
             ? <span aria-hidden="true">☀️</span>
             : <span aria-hidden="true">🌙</span>}
         </button>
-        {hasPermission('contact.read') && unread > 0 && (
+        {/* Shown only when there is something new, so an empty icon never
+            reads as an unread count of nothing. */}
+        {hasPermission('applications.read') && newApplications > 0 && (
+          <Link
+            to="/admin/applications"
+            className="admin-outline-btn"
+            title={`${newApplications} new application${newApplications > 1 ? 's' : ''}`}
+            aria-label={`${newApplications} new application${newApplications > 1 ? 's' : ''}`}
+          >
+            ⤓ <span className="admin-nav-badge">{newApplications}</span>
+          </Link>
+        )}
+        {hasPermission('contact.read') && newMessages > 0 && (
           <Link
             to="/admin/messages"
             className="admin-outline-btn"
-            title={`${unread} new message${unread > 1 ? 's' : ''}`}
-            aria-label={`${unread} new message${unread > 1 ? 's' : ''}`}
+            title={`${newMessages} new message${newMessages > 1 ? 's' : ''}`}
+            aria-label={`${newMessages} new message${newMessages > 1 ? 's' : ''}`}
           >
-            ✉ <span className="admin-nav-badge">{unread}</span>
+            ✉ <span className="admin-nav-badge">{newMessages}</span>
           </Link>
         )}
         <Link to="/" target="_blank" className="admin-outline-btn">View Website</Link>

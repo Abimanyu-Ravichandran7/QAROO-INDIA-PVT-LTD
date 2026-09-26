@@ -2,20 +2,23 @@
   --hue: 27;
   --sat: 69%;
   --white: hsl(0, 0%, 100%);
-  --purple-primary: rgba(132, 0, 255, 1);
-  --purple-glow: rgba(132, 0, 255, 0.2);
-  --purple-border: rgba(132, 0, 255, 0.8);
+  /* Fallbacks only - MagicBento sets --glow-color per card from its
+     `glowColor` prop, and every glow below reads that. */
+  --glow-color: 179, 38, 45;
   --border-color: #2F293A;
-  --background-dark: #120F17;
-  color-scheme: light dark;
+  /* The footer colour, so the cards sit in the same family as the rest of
+     the dark surfaces on the site rather than the stock near-black. */
+  --background-dark: var(--eduact-black);
 }
 
 .card-grid {
   display: grid;
-  gap: 0.5em;
-  padding: 0.75em;
-  max-width: 54em;
-  font-size: clamp(1rem, 0.9rem + 0.5vw, 1.5rem);
+  grid-template-columns: 1fr;
+  gap: 14px;
+  /* Was capped at 54em and centred, which left the cards narrower than the
+     section heading above them. Fills the container instead. */
+  max-width: 100%;
+  padding: 0;
 }
 
 .magic-bento-card {
@@ -23,14 +26,19 @@
   flex-direction: column;
   justify-content: space-between;
   position: relative;
-  aspect-ratio: 4/3;
-  min-height: 200px;
+  /* No aspect-ratio: the card carries a label, a metric, a title, two lines of
+     description and a link. A 4:3 box clipped all of that against
+     overflow:hidden, so the height is set by a floor that fits the content and
+     the grid keeps every card in a row equal. */
+  min-height: 264px;
+  gap: 14px;
   width: 100%;
   max-width: 100%;
-  padding: 1.25em;
-  border-radius: 20px;
+  padding: 22px;
+  border-radius: 18px;
   border: 1px solid var(--border-color);
   background: var(--background-dark);
+  color: var(--white);
   font-weight: 300;
   overflow: hidden;
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
@@ -74,10 +82,68 @@
   font-size: 16px;
 }
 
+/* ---- live metric ---- */
+.magic-bento-card__metric {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 0.4em;
+  color: var(--white);
+  line-height: 1;
+}
+
+.magic-bento-card__metric-value {
+  font-family: var(--heading-font, inherit);
+  font-size: clamp(30px, 2.4vw, 40px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--eduact-secondary, #f4c430);
+  text-shadow: 0 0 26px rgba(244, 196, 48, 0.35);
+  font-variant-numeric: tabular-nums;
+}
+
+.magic-bento-card__metric-unit {
+  font-size: 13px;
+  opacity: 0.72;
+}
+
+/* Only shown when the figure really came back from the API. */
+.magic-bento-card__metric-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  align-self: center;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.magic-bento-card__metric-live::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #6ee7a8;
+  box-shadow: 0 0 0 0 rgba(110, 231, 168, 0.7);
+  animation: magic-bento-live 2.4s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+}
+
+@keyframes magic-bento-live {
+  0% { box-shadow: 0 0 0 0 rgba(110, 231, 168, 0.6); }
+  70% { box-shadow: 0 0 0 7px rgba(110, 231, 168, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(110, 231, 168, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .magic-bento-card__metric-live::before { animation: none; }
+}
+
 .magic-bento-card__title,
 .magic-bento-card__description {
-  --clamp-title: 1;
-  --clamp-desc: 2;
+  --clamp-title: 2;
+  --clamp-desc: 3;
 }
 
 .magic-bento-card__title {
@@ -90,6 +156,59 @@
   font-size: 12px;
   line-height: 1.2;
   opacity: 0.9;
+}
+
+/* ---- card link ---- */
+.magic-bento-card__cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  width: fit-content;
+  margin-top: 0.9em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid rgba(var(--eduact-secondary-rgb, 244, 196, 48), 0.4);
+  font-family: var(--heading-font, inherit);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--eduact-secondary, #f4c430);
+  text-decoration: none;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+/* The whole card is the target, so the link reacts to hovering the card. */
+.magic-bento-card:hover .magic-bento-card__cta,
+.magic-bento-card__cta:hover,
+.magic-bento-card__cta:focus-visible {
+  color: #ffd85c;
+  border-color: #ffd85c;
+}
+
+.magic-bento-card__cta .q-icon {
+  transition: transform 0.28s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.magic-bento-card:hover .magic-bento-card__cta .q-icon,
+.magic-bento-card__cta:hover .q-icon,
+.magic-bento-card__cta:focus-visible .q-icon {
+  transform: translateX(4px);
+}
+
+.magic-bento-card__cta:focus-visible {
+  outline: 2px solid var(--eduact-secondary, #f4c430);
+  outline-offset: 4px;
+  border-radius: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .magic-bento-card__cta,
+  .magic-bento-card__cta .q-icon {
+    transition: none !important;
+  }
+  .magic-bento-card:hover .magic-bento-card__cta .q-icon {
+    transform: none;
+  }
 }
 
 .magic-bento-card--text-autohide .magic-bento-card__title,
@@ -111,16 +230,9 @@
 }
 
 @media (max-width: 599px) {
-  .card-grid {
-    grid-template-columns: 1fr;
-    width: 90%;
-    margin: 0 auto;
-    padding: 0.5em;
-  }
-
   .magic-bento-card {
-    width: 100%;
-    min-height: 180px;
+    min-height: 236px;
+    padding: 20px;
   }
 }
 
@@ -134,20 +246,14 @@
   .card-grid {
     grid-template-columns: repeat(4, 1fr);
   }
+}
 
-  .magic-bento-card:nth-child(3) {
-    grid-column: span 2;
-    grid-row: span 2;
-  }
-
-  .magic-bento-card:nth-child(4) {
-    grid-column: 1 / span 2;
-    grid-row: 2 / span 2;
-  }
-
-  .magic-bento-card:nth-child(6) {
-    grid-column: 4;
-    grid-row: 3;
+/* Narrow columns at the 4-up breakpoint: keep the figure from crowding the
+   unit beside it. */
+@media (min-width: 1024px) and (max-width: 1299px) {
+  .magic-bento-card__metric {
+    flex-wrap: wrap;
+    row-gap: 2px;
   }
 }
 
@@ -158,8 +264,8 @@
   padding: 6px;
   background: radial-gradient(
     var(--glow-radius) circle at var(--glow-x) var(--glow-y),
-    rgba(132, 0, 255, calc(var(--glow-intensity) * 0.8)) 0%,
-    rgba(132, 0, 255, calc(var(--glow-intensity) * 0.4)) 30%,
+    rgba(var(--glow-color), calc(var(--glow-intensity) * 0.8)) 0%,
+    rgba(var(--glow-color), calc(var(--glow-intensity) * 0.4)) 30%,
     transparent 60%
   );
   border-radius: inherit;
@@ -183,8 +289,8 @@
 
 .magic-bento-card--border-glow:hover {
   box-shadow:
-    0 4px 20px rgba(46, 24, 78, 0.4),
-    0 0 30px var(--purple-glow);
+    0 4px 20px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(var(--glow-color), 0.25);
 }
 
 .particle-container {
@@ -199,15 +305,15 @@
   left: -2px;
   right: -2px;
   bottom: -2px;
-  background: rgba(132, 0, 255, 0.2);
+  background: rgba(var(--glow-color), 0.2);
   border-radius: 50%;
   z-index: -1;
 }
 
 .particle-container:hover {
   box-shadow:
-    0 4px 20px rgba(46, 24, 78, 0.2),
-    0 0 30px var(--purple-glow);
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    0 0 30px rgba(var(--glow-color), 0.2);
 }
 
 .global-spotlight {

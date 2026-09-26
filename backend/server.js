@@ -10,6 +10,7 @@ import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 
 import { connectDB } from './config/db.js';
+import validateEnv from './config/validateEnv.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 import authRoutes from './routes/authRoutes.js';
@@ -20,10 +21,21 @@ import csrRoutes from './routes/csrRoutes.js';
 import statsRoutes from './routes/statsRoutes.js';
 import learningRoutes from './routes/learningRoutes.js';
 import businessSolutionRoutes from './routes/businessSolutionRoutes.js';
+import careerRoutes from './routes/careerRoutes.js';
+import applicationRoutes from './routes/applicationRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
 import clientErrorRoutes from './routes/clientErrorRoutes.js';
 
 const app = express();
+
+// Fail fast on a misconfigured environment before opening the port.
+const { errors: envErrors, warnings: envWarnings } = validateEnv();
+for (const w of envWarnings) console.warn(`[env] ${w}`);
+if (envErrors.length > 0) {
+  console.error('[env] Configuration error(s):');
+  for (const e of envErrors) console.error(`  - ${e}`);
+  process.exit(1);
+}
 
 connectDB();
 
@@ -37,9 +49,20 @@ app.use(
   })
 );
 app.use(compression());
+// Allow a comma-separated CLIENT_URL list (or a single origin) while keeping
+// credentials-based CORS locked to explicitly-listed origins.
+const allowedOrigins = String(process.env.CLIENT_URL || 'http://localhost:5173')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
   })
 );
@@ -85,10 +108,13 @@ app.use('/api/stats', statsRoutes);
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/admins', writeApiLimiter, adminRoutes);
 app.use('/api/mous', writeApiLimiter, mouRoutes);
-app.use('/api/content', writeApiLimiter, pageRoutes);
+app.use('/api/content', pageRoutes);
 app.use('/api/csr', writeApiLimiter, csrRoutes);
 app.use('/api/learning', writeApiLimiter, learningRoutes);
 app.use('/api/business-solutions', writeApiLimiter, businessSolutionRoutes);
+app.use('/api/careers', writeApiLimiter, careerRoutes);
+// Applications have their own submit limiter inside the router, like contact.
+app.use('/api/applications', applicationRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/client-errors', clientErrorRoutes);
 

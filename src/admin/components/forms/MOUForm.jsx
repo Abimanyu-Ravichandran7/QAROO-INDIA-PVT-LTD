@@ -98,7 +98,7 @@ export default function MOUForm({ initial, onSubmit, submitting }) {
         pathway: s.pathway.filter((x) => x.trim() !== ''),
         note: s.note.trim(),
       })),
-      status: form.status,
+      status: 'published',
     });
   };
 
@@ -130,11 +130,11 @@ export default function MOUForm({ initial, onSubmit, submitting }) {
                   }
                 }}
               >
-                <option value="">Select category…</option>
+                <option value="">Select category...</option>
                 {categories.map((cat) => (
                   <option key={cat} value={cat}>{cat}</option>
                 ))}
-                <option value={ADD_NEW}>➕ Add new category…</option>
+                <option value={ADD_NEW}>➕ Add new category...</option>
               </select>
             )}
             {newTagMode && (
@@ -224,7 +224,7 @@ export default function MOUForm({ initial, onSubmit, submitting }) {
           </div>
 
           <div className="field">
-            <label>Pathway (e.g. College → Training → Employment)</label>
+            <label>{'Pathway (e.g. College -> Training -> Employment)'}</label>
             {section.pathway.map((pw, pi) => (
               <div key={pi} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
                 <input type="text" value={pw} onChange={(e) => setPathway(si, pi, e.target.value)} placeholder="Step" />

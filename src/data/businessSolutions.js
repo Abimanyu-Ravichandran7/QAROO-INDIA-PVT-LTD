@@ -8,7 +8,7 @@ export const BUSINESS_SOLUTIONS = [
     slug: 'crm-solutions',
     pageName: 'CRM Solutions',
     keyword: 'CRM implementation services Coimbatore',
-    metaTitle: 'CRM Implementation & Customization Services — Qaroo India',
+    metaTitle: 'CRM Implementation & Customization Services - Qaroo India',
     metaDescription:
       'CRM strategy, implementation, customization, integration and pipeline reporting that fit how your sales team sells. Choose and adopt the right CRM with Qaroo India.',
     shortDescription:
@@ -86,7 +86,7 @@ export const BUSINESS_SOLUTIONS = [
       'Tight, practical scope that delivers real value',
     ],
     faq: [
-      { q: 'Which CRM should my business choose?', a: 'It depends on your team size, sales process and budget. We recommend a platform based on how you sell, the tools you already use, and the reporting you need — from options such as Zoho, Salesforce, HubSpot and Freshworks.' },
+      { q: 'Which CRM should my business choose?', a: 'It depends on your team size, sales process and budget. We recommend a platform based on how you sell, the tools you already use, and the reporting you need - from options such as Zoho, Salesforce, HubSpot and Freshworks.' },
       { q: 'How long does CRM implementation take?', a: 'Most implementations can be structured in weeks, not months. The timeline depends on your data volume, integrations and how much customization your process requires.' },
       { q: 'Can you migrate our data from spreadsheets or another CRM?', a: 'Yes. A large part of the work is cleaning and consolidating customer data so you start with a single, reliable source of truth rather than a messy import.' },
       { q: 'Do you train our team on the CRM?', a: 'Yes. Training and adoption support are part of the engagement so the CRM is actually used, not just installed.' },
@@ -96,13 +96,13 @@ export const BUSINESS_SOLUTIONS = [
     slug: 'digital-marketing',
     pageName: 'Digital Marketing',
     keyword: 'Digital marketing services Coimbatore',
-    metaTitle: 'Digital Marketing & SEO Services — Qaroo India',
+    metaTitle: 'Digital Marketing & SEO Services - Qaroo India',
     metaDescription:
-      'SEO, content and performance marketing built around measurable business growth — not vanity metrics. From keyword strategy to conversion optimization with Qaroo India.',
+      'SEO, content and performance marketing built around measurable business growth - not vanity metrics. From keyword strategy to conversion optimization with Qaroo India.',
     shortDescription:
       'SEO, content and performance marketing built around measurable business growth, not vanity metrics. From keyword strategy to conversion optimization.',
     fullDescription:
-      'Digital marketing should move a metric that matters to your business — leads, sales, enquiries — not just generate traffic. We build campaigns around keyword strategy, content and performance, then measure what actually converts.\n\nWe start with what makes your business different, research the terms your customers actually search for, and build content and campaigns around them.\n\nReporting is tied to business outcomes so you always know what is working and why.',
+      'Digital marketing should move a metric that matters to your business - leads, sales, enquiries - not just generate traffic. We build campaigns around keyword strategy, content and performance, then measure what actually converts.\n\nWe start with what makes your business different, research the terms your customers actually search for, and build content and campaigns around them.\n\nReporting is tied to business outcomes so you always know what is working and why.',
     services: [
       'Search engine optimization (SEO)',
       'Keyword & competitor research',
@@ -172,7 +172,7 @@ export const BUSINESS_SOLUTIONS = [
     faq: [
       { q: 'How long before I see SEO results?', a: 'Organic SEO typically takes a few months to build, because it depends on search engines discovering and trusting your content. We set clear expectations and show progress against a realistic timeline.' },
       { q: 'Do you run paid ads as well as SEO?', a: 'Yes. We can run performance campaigns like Google Ads alongside SEO. The right mix depends on your goals and timeline.' },
-      { q: 'How do you measure success?', a: 'We report against outcomes that matter to your business — enquiries, leads, sales or sign-ups — not just traffic and impressions.' },
+      { q: 'How do you measure success?', a: 'We report against outcomes that matter to your business - enquiries, leads, sales or sign-ups - not just traffic and impressions.' },
       { q: 'Do you create the content?', a: 'Yes. Content creation is part of the service, and it is written to genuinely help your customers while supporting your search visibility.' },
     ],
   },
@@ -180,13 +180,13 @@ export const BUSINESS_SOLUTIONS = [
     slug: 'graphic-design-branding',
     pageName: 'Graphic Design & Branding',
     keyword: 'Graphic design & branding services Coimbatore',
-    metaTitle: 'Graphic Design & Branding Services — Qaroo India',
+    metaTitle: 'Graphic Design & Branding Services - Qaroo India',
     metaDescription:
       'Brand identity, collateral and creative systems that hold up across every channel. Logos, brand guidelines, social assets and print-ready designs from Qaroo India.',
     shortDescription:
       'Brand identity, collateral and creative systems that hold up across every channel you use. Logos, brand guidelines, social assets, and print-ready designs.',
     fullDescription:
-      'Good branding makes your business recognisable and consistent across every touchpoint. We design identity systems and marketing collateral that hold together whether they appear on a screen, a product label or a billboard.\n\nWe begin by understanding your positioning and audience, then craft a visual identity — logo, color, typography and guidelines — that communicates who you are.\n\nEvery asset we produce is designed to be practical and consistent, so your brand looks intentional wherever it appears.',
+      'Good branding makes your business recognizable and consistent across every touchpoint. We design identity systems and marketing collateral that hold together whether they appear on a screen, a product label or a billboard.\n\nWe begin by understanding your positioning and audience, then craft a visual identity - logo, color, typography and guidelines - that communicates who you are.\n\nEvery asset we produce is designed to be practical and consistent, so your brand looks intentional wherever it appears.',
     services: [
       'Logo & brand identity design',
       'Brand guidelines',
@@ -203,7 +203,7 @@ export const BUSINESS_SOLUTIONS = [
       'Practical brand guidelines your team can use',
     ],
     benefits: [
-      'A recognisable, consistent brand',
+      'A recognizable, consistent brand',
       'Professional presence across channels',
       'Time saved with ready-to-use assets',
       'Clear guidelines for future work',
@@ -250,7 +250,7 @@ export const BUSINESS_SOLUTIONS = [
     ],
     faq: [
       { q: 'What do you need to start a branding project?', a: 'We start with your business goals, target audience and any existing materials. From there we define a creative direction before designing logos and identity systems.' },
-      { q: 'Do you provide files for print and digital?', a: 'Yes. We deliver the right formats for both — including print-ready files and web-optimized assets for social and digital use.' },
+      { q: 'Do you provide files for print and digital?', a: 'Yes. We deliver the right formats for both - including print-ready files and web-optimized assets for social and digital use.' },
       { q: 'Can you create brand guidelines for my team?', a: 'Yes. We document logo usage, color, typography and examples so your team can keep the brand consistent after the project ends.' },
       { q: 'I already have a logo. Can you help with other assets?', a: 'Absolutely. Many projects focus on collateral and guidelines around an existing logo to bring everything into one consistent system.' },
     ],
@@ -259,13 +259,13 @@ export const BUSINESS_SOLUTIONS = [
     slug: 'web-development',
     pageName: 'Web Development',
     keyword: 'Web development services Coimbatore',
-    metaTitle: 'Web & E-commerce Development Services — Qaroo India',
+    metaTitle: 'Web & E-commerce Development Services - Qaroo India',
     metaDescription:
-      'Fast, SEO-friendly business websites — from landing pages to full e-commerce builds. React, WordPress or custom stacks based on your needs with Qaroo India.',
+      'Fast, SEO-friendly business websites - from landing pages to full e-commerce builds. React, WordPress or custom stacks based on your needs with Qaroo India.',
     shortDescription:
-      'Fast, SEO-friendly business websites — from landing pages to full e-commerce builds. React, WordPress, or custom stacks based on your needs.',
+      'Fast, SEO-friendly business websites - from landing pages to full e-commerce builds. React, WordPress, or custom stacks based on your needs.',
     fullDescription:
-      'Your website is often the first impression a customer gets of your business. We build fast, SEO-friendly websites — from focused landing pages to full e-commerce builds — designed to convert visitors into enquiries and sales.\n\nWe choose the right stack for each project, whether that is a lightweight React build or a WordPress platform your team can manage itself.\n\nPerformance, clarity and search visibility are built in from the start, not bolted on later.',
+      'Your website is often the first impression a customer gets of your business. We build fast, SEO-friendly websites - from focused landing pages to full e-commerce builds - designed to convert visitors into enquiries and sales.\n\nWe choose the right stack for each project, whether that is a lightweight React build or a WordPress platform your team can manage itself.\n\nPerformance, clarity and search visibility are built in from the start, not bolted on later.',
     services: [
       'Business websites & landing pages',
       'E-commerce builds',
@@ -340,13 +340,13 @@ export const BUSINESS_SOLUTIONS = [
     slug: 'software-development',
     pageName: 'Software Development',
     keyword: 'Custom software development Coimbatore',
-    metaTitle: 'Custom Software Development Services — Qaroo India',
+    metaTitle: 'Custom Software Development Services - Qaroo India',
     metaDescription:
       'Custom software, internal tools and SaaS products built to solve one specific business problem well. End-to-end development with ongoing support from Qaroo India.',
     shortDescription:
       'Custom software, internal tools and SaaS products built to solve one specific business problem well. End-to-end development with ongoing support.',
     fullDescription:
-      'Off-the-shelf software rarely fits every business process. We build custom software, internal tools and SaaS products that solve one specific problem well — end to end, from planning through development to ongoing support.\n\nWe focus on scope. A clear problem, a tight build and a useful result is worth more than a sprawling product that tries to do everything.\n\nOur team designs, develops and maintains the software, keeping the interface simple and the code maintainable.',
+      'Off-the-shelf software rarely fits every business process. We build custom software, internal tools and SaaS products that solve one specific problem well - end to end, from planning through development to ongoing support.\n\nWe focus on scope. A clear problem, a tight build and a useful result is worth more than a sprawling product that tries to do everything.\n\nOur team designs, develops and maintains the software, keeping the interface simple and the code maintainable.',
     services: [
       'Custom business applications',
       'Internal tools & dashboards',
@@ -414,20 +414,20 @@ export const BUSINESS_SOLUTIONS = [
       { q: 'How do you decide what to build?', a: 'We start with the problem, not the technology. We scope the smallest useful version that solves it well, and build from there based on what works.' },
       { q: 'Can you automate our existing manual processes?', a: 'Yes. Many projects start by automating a repetitive, error-prone process a team does by hand.' },
       { q: 'Do you support the software after launch?', a: 'Yes. Ongoing maintenance and support are part of how we work, so the product stays reliable and improves over time.' },
-      { q: 'Can you build a custom dashboard for our data?', a: 'Yes. Custom dashboards and internal tools are a common project — bringing scattered data into one clear, useful view.' },
+      { q: 'Can you build a custom dashboard for our data?', a: 'Yes. Custom dashboards and internal tools are a common project - bringing scattered data into one clear, useful view.' },
     ],
   },
   {
     slug: 'ui-ux-design',
     pageName: 'UI/UX Design',
     keyword: 'UI/UX design services Coimbatore',
-    metaTitle: 'UI/UX Design Services — Qaroo India',
+    metaTitle: 'UI/UX Design Services - Qaroo India',
     metaDescription:
-      'Wireframes to design systems — usability and conversion, not just visual polish. We design digital experiences that users actually enjoy with Qaroo India.',
+      'Wireframes to design systems - usability and conversion, not just visual polish. We design digital experiences that users actually enjoy with Qaroo India.',
     shortDescription:
-      'Wireframes to design systems — usability and conversion, not just visual polish. We design experiences that users actually enjoy.',
+      'Wireframes to design systems - usability and conversion, not just visual polish. We design experiences that users actually enjoy.',
     fullDescription:
-      'A product can only succeed if it is genuinely pleasant to use. We design interfaces that balance usability, clarity and visual quality — from early wireframes through to complete design systems.\n\nWe focus on the user journey, not just how a screen looks. Every decision is made to help users complete tasks easily and comfortably.\n\nThe result is a design that looks intentional, feels intuitive, and supports your business goals.',
+      'A product can only succeed if it is genuinely pleasant to use. We design interfaces that balance usability, clarity and visual quality - from early wireframes through to complete design systems.\n\nWe focus on the user journey, not just how a screen looks. Every decision is made to help users complete tasks easily and comfortably.\n\nThe result is a design that looks intentional, feels intuitive, and supports your business goals.',
     services: [
       'UX research & user flows',
       'Wireframing & prototyping',
@@ -500,13 +500,13 @@ export const BUSINESS_SOLUTIONS = [
     slug: 'ux-research',
     pageName: 'UX Research',
     keyword: 'UX research services Coimbatore',
-    metaTitle: 'UX Research & Usability Testing Services — Qaroo India',
+    metaTitle: 'UX Research & Usability Testing Services - Qaroo India',
     metaDescription:
       'User interviews, usability testing and journey mapping that inform product decisions before you build. Data-driven design thinking with Qaroo India.',
     shortDescription:
       'User interviews, usability testing and journey mapping that inform product decisions before you build. Data-driven design thinking.',
     fullDescription:
-      'The best product decisions are based on evidence, not guesswork. We help teams understand their users through interviews, usability testing and journey mapping — so you build the right thing, the first time.\n\nResearch before development saves time, money and rework by revealing what users actually need and where an experience breaks down.\n\nWe turn findings into clear, actionable direction your product and design teams can use directly.',
+      'The best product decisions are based on evidence, not guesswork. We help teams understand their users through interviews, usability testing and journey mapping - so you build the right thing, the first time.\n\nResearch before development saves time, money and rework by revealing what users actually need and where an experience breaks down.\n\nWe turn findings into clear, actionable direction your product and design teams can use directly.',
     services: [
       'User interviews & discovery',
       'Usability testing',
@@ -568,7 +568,7 @@ export const BUSINESS_SOLUTIONS = [
       'Timed to save you rework',
     ],
     faq: [
-      { q: 'When is the best time to run UX research?', a: 'Early. Research is most valuable before decisions are locked in — whether you are defining a new product, a feature or a redesign.' },
+      { q: 'When is the best time to run UX research?', a: 'Early. Research is most valuable before decisions are locked in - whether you are defining a new product, a feature or a redesign.' },
       { q: 'Do you test with real users?', a: 'Yes. Usability testing is run with real target users so the findings reflect actual behavior rather than internal assumptions.' },
       { q: 'What do we get at the end?', a: 'You get a clear report with findings, patterns and actionable recommendations your product and design teams can use directly.' },
       { q: 'Can research help us before we build?', a: 'Yes. Discovery research and journey mapping before build helps ensure you build what users actually need, avoiding expensive rework.' },
@@ -578,13 +578,13 @@ export const BUSINESS_SOLUTIONS = [
     slug: 'business-strategy',
     pageName: 'Business Strategy',
     keyword: 'Business strategy consulting Coimbatore',
-    metaTitle: 'Business Growth & Strategy Consulting — Qaroo India',
+    metaTitle: 'Business Growth & Strategy Consulting - Qaroo India',
     metaDescription:
       'Growth, go-to-market and digital transformation strategy with a clear discover-to-measure methodology. Roadmaps that actually get executed with Qaroo India.',
     shortDescription:
       'Growth, go-to-market and digital transformation strategy with a clear discover-to-measure methodology. Roadmaps that actually get executed.',
     fullDescription:
-      'A strategy is only useful if it can actually be executed. We help businesses define clear growth, go-to-market and digital transformation strategies — then turn them into roadmaps the team can follow.\n\nOur discover-to-measure methodology keeps things practical: understand where you are, set a clear direction, build a plan, execute and measure.\n\nWe focus on decisions that move your business forward, not documents that sit on a shelf.',
+      'A strategy is only useful if it can actually be executed. We help businesses define clear growth, go-to-market and digital transformation strategies - then turn them into roadmaps the team can follow.\n\nOur discover-to-measure methodology keeps things practical: understand where you are, set a clear direction, build a plan, execute and measure.\n\nWe focus on decisions that move your business forward, not documents that sit on a shelf.',
     services: [
       'Growth strategy',
       'Go-to-market planning',
@@ -648,7 +648,7 @@ export const BUSINESS_SOLUTIONS = [
       'Measurement built into the plan',
     ],
     faq: [
-      { q: 'How do you keep strategy actionable?', a: 'We use a discover-to-measure methodology that ends in a clear roadmap with priorities, responsibilities and metrics — so it translates into action, not just a document.' },
+      { q: 'How do you keep strategy actionable?', a: 'We use a discover-to-measure methodology that ends in a clear roadmap with priorities, responsibilities and metrics - so it translates into action, not just a document.' },
       { q: 'Do you work with small businesses?', a: 'Yes. We work with founders and small teams, where focus on the few highest-impact moves matters most.' },
       { q: 'How do you measure strategy success?', a: 'We define the metrics that matter for each goal up front and track them through execution, so progress is visible and the plan adapts.' },
       { q: 'Do you help with go-to-market for a launch?', a: 'Yes. Go-to-market planning is a core service, from defining the offer and audience to the channels and roadmap for launch.' },

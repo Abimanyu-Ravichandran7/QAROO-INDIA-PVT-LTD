@@ -39,14 +39,14 @@ export default function AdminLogin() {
   return (
     <div className="admin-auth-page">
       <div className="admin-auth-card">
-        <button type="button" onClick={goBackToWebsite} className="admin-auth-back" title="Back to website" aria-label="Back to website">← Back to website</button>
+        <button type="button" onClick={goBackToWebsite} className="admin-auth-back" title="Back to website" aria-label="Back to website">{'<- Back to website'}</button>
 
         <div className="brand">
           <Link to="/" className="brand-logo" title="Qaroo India Private Limited" aria-label="Go to Qaroo website">
             <img src="/logos/qaroo-logo.jpg" alt="Qaroo India" />
           </Link>
           <h1>Qaroo India Private Limited</h1>
-          <p>Admin Login — Manage website content</p>
+          <p>Admin Login - Manage website content</p>
         </div>
 
         {error && <div className="admin-alert error">{error}</div>}

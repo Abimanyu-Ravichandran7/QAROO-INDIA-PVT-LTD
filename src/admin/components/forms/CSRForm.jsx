@@ -27,7 +27,7 @@ export default function CSRForm({ initial, onSubmit, submitting }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(form);
+    onSubmit({ ...form, status: 'published' });
   };
 
   return (
@@ -62,11 +62,11 @@ export default function CSRForm({ initial, onSubmit, submitting }) {
                   }
                 }}
               >
-                <option value="">Select category…</option>
+                <option value="">Select category...</option>
                 {categories.map((cat) => (
                   <option key={cat} value={cat}>{cat}</option>
                 ))}
-                <option value={ADD_NEW}>➕ Add new category…</option>
+                <option value={ADD_NEW}>➕ Add new category...</option>
               </select>
             )}
             {newTagMode && (

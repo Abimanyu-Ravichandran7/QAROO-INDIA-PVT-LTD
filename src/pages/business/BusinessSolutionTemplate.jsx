@@ -1,7 +1,9 @@
 import { Container, Row, Col, Accordion, Breadcrumb } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Seo from '../../components/Seo.jsx';
+import { downloadBrochure } from '../../utils/downloadBrochure.js';
 import { COMPANY } from '../../data/company.js';
+import PageHero from '../../components/PageHero';
 
 function SectionTitle({ eyebrow, title, desc }) {
   return (
@@ -28,7 +30,7 @@ function ChipList({ items }) {
             background: 'var(--eduact-soft3)',
             padding: '6px 14px',
             borderRadius: '999px',
-            border: '1px solid rgba(147,25,19,0.1)',
+            border: '1px solid rgba(179, 38, 45,0.1)',
           }}
         >
           {item}
@@ -80,6 +82,23 @@ function CardList({ items, numPrefix }) {
 export default function BusinessSolutionTemplate({ solution, otherSolutions }) {
   const path = `/business-solutions/${solution.slug}`;
 
+  const sections = [
+    { heading: 'Key services', items: solution.services },
+    { heading: 'Business problems we solve', items: solution.problems },
+    { heading: 'How we solve them', items: solution.solutions },
+    { heading: 'What you get', items: solution.features },
+    { heading: 'Why it matters', items: solution.benefits },
+    { heading: 'Technologies & tools', items: solution.techniques },
+    {
+      heading: 'Our process',
+      items: (solution.process || []).map((p) => `${p.title}: ${(p.items || []).join(', ')}`),
+    },
+    { heading: 'Common use cases', items: solution.useCases },
+    { heading: 'Industries we serve', items: solution.industries },
+    { heading: 'Who we work with', items: solution.audience },
+    { heading: 'Why choose this solution', items: solution.whyChoose },
+  ];
+
   return (
     <>
       <Seo
@@ -89,54 +108,49 @@ export default function BusinessSolutionTemplate({ solution, otherSolutions }) {
       />
 
       {/* Hero */}
-      <div style={{
-        background: 'var(--eduact-base)',
-        padding: '56px 0 72px',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        <div style={{
-          position: 'absolute',
-          top: '-60px',
-          right: '-60px',
-          width: '280px',
-          height: '280px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(228,204,46,0.35), transparent 70%)',
-        }} />
-        <Container style={{ position: 'relative', zIndex: 2 }}>
-          <Breadcrumb style={{ marginBottom: '14px' }}>
-            <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/' }} style={{ color: 'rgba(255,255,255,0.6)' }}>
-              Home
-            </Breadcrumb.Item>
-            <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/business-solutions' }} style={{ color: 'rgba(255,255,255,0.6)' }}>
-              Business Solutions
-            </Breadcrumb.Item>
-            <Breadcrumb.Item active style={{ color: '#fff' }}>
-              {solution.pageName}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <span className="eyebrow">Business Solution</span>
-          <h1 style={{
-            fontFamily: 'var(--heading-font)',
-            fontWeight: 800,
-            color: '#fff',
-            fontSize: 'clamp(2rem, 4vw, 3rem)',
-            marginTop: '10px',
-          }}>{solution.pageName}</h1>
-          <p style={{ color: 'rgba(255,255,255,0.75)', maxWidth: '640px', marginTop: '14px', fontSize: '16px' }}>
-            {solution.shortDescription}
-          </p>
-          <div style={{ marginTop: '22px', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-            <Link to="/contact" className="btn-eduact" style={{ background: 'var(--eduact-secondary)', color: 'var(--eduact-black)' }}>
-              Discuss Your Project
-            </Link>
-            <Link to="/business-solutions" className="btn-eduact-outline" style={{ color: '#fff' }}>
-              View All Solutions
-            </Link>
-          </div>
-        </Container>
-      </div>
+      <PageHero padding="56px 0 72px">
+        <Breadcrumb style={{ marginBottom: '14px' }}>
+          <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/' }} style={{ color: 'rgba(255,255,255,0.6)' }}>
+            Home
+          </Breadcrumb.Item>
+          <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/business-solutions' }} style={{ color: 'rgba(255,255,255,0.6)' }}>
+            Business Solutions
+          </Breadcrumb.Item>
+          <Breadcrumb.Item active style={{ color: '#fff' }}>
+            {solution.pageName}
+          </Breadcrumb.Item>
+        </Breadcrumb>
+        <span className="eyebrow">Business Solution</span>
+        <h1 style={{
+          fontFamily: 'var(--heading-font)',
+          fontWeight: 800,
+          color: '#fff',
+          fontSize: 'clamp(2rem, 4vw, 3rem)',
+          marginTop: '10px',
+        }}>{solution.pageName}</h1>
+        <p style={{ color: 'rgba(255,255,255,0.75)', maxWidth: '640px', marginTop: '14px', fontSize: '16px' }}>
+          {solution.shortDescription}
+        </p>
+        <div style={{ marginTop: '22px', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          <Link to="/contact" className="btn-eduact" style={{ background: 'var(--eduact-secondary)', color: 'var(--eduact-black)' }}>
+            Discuss Your Project
+          </Link>
+          <button
+            onClick={() => downloadBrochure({
+              title: solution.pageName,
+              subtitle: solution.shortDescription,
+              sections,
+            })}
+            className="btn-eduact-outline"
+            style={{ color: '#fff', borderColor: '#F4C430', cursor: 'pointer' }}
+          >
+            Download Brochure
+          </button>
+          <Link to="/business-solutions" className="btn-eduact-outline" style={{ color: '#fff' }}>
+            View All Solutions
+          </Link>
+        </div>
+      </PageHero>
 
       {/* Introduction */}
       <section className="page-section">
@@ -297,7 +311,7 @@ export default function BusinessSolutionTemplate({ solution, otherSolutions }) {
                   <div className="eduact-card reveal" style={{ height: '100%' }}>
                     <h4>{s.pageName}</h4>
                     <p>{s.shortDescription}</p>
-                    <Link to={`/business-solutions/${s.slug}`} className="card-link">View solution →</Link>
+                    <Link to={`/business-solutions/${s.slug}`} className="card-link">View solution {'->'}</Link>
                   </div>
                 </Col>
               ))}

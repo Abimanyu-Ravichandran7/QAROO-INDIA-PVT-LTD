@@ -4,6 +4,9 @@ node_modules/
 # Build output
 dist/
 
+# Uploaded candidate resumes — never commit personal data
+backend/uploads/
+
 # Environment & secrets
 backend/.env
 *.local
@@ -23,3 +26,7 @@ Thumbs.db
 
 # Local tooling config
 compass-connections.json
+
+# Stray / backup leftovers
+*.bak
+ChatGPT Image*.png

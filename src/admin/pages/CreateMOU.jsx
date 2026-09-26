@@ -27,7 +27,7 @@ export default function CreateMOU() {
     <PermissionGuard permission="mou.create">
       <div className="admin-section-title">
         <span>Add MOU</span>
-        <button type="button" className="admin-outline-btn" onClick={() => navigate(-1)}>← Back</button>
+        <button type="button" className="admin-outline-btn" onClick={() => navigate(-1)}>{'<- Back'}</button>
       </div>
       <p className="page-sub">Create a new memorandum of understanding.</p>
 

@@ -1,0 +1,97 @@
+/* Layout only. Every colour here is one of the project's existing variables -
+   this component introduces none of its own. */
+
+.flipbook {
+  container: flipbook / inline-size;
+  width: 100%;
+}
+
+.flipbook {
+  /* Room the section needs around the book: the heading above it, the
+     controls and hint below, and the gap either side. The book is sized so
+     that all of it fits the viewport together, rather than the reader having
+     to scroll to reach the controls. */
+  --fb-chrome: 300px;
+  /* 600 / 500. A page is this much taller than it is wide, so the height a
+     given width implies is width x this. */
+  --fb-ratio: 1.2;
+  --fb-room: calc(100vh - var(--fb-chrome));
+}
+
+/* dvh where it is supported: on mobile it excludes the browser's own bars,
+   which vh does not, and the difference is most of a control row. */
+@supports (height: 100dvh) {
+  .flipbook {
+    --fb-room: calc(100dvh - var(--fb-chrome));
+  }
+}
+
+.flipbook__stage {
+  width: 100%;
+  /* Two 500px pages side by side, or narrower if that is all the height
+     allows - each page is half the stage, so the stage can be twice as wide
+     as the height permits for one page. */
+  max-width: min(1000px, calc(var(--fb-room) / var(--fb-ratio) * 2));
+  margin-inline: auto;
+}
+
+/* Below a full spread, one portrait page - again capped by the height. */
+@container flipbook (max-width: 999.98px) {
+  .flipbook__stage {
+    width: min(500px, calc(var(--fb-room) / var(--fb-ratio)), 100%);
+  }
+}
+
+/* A very short window (a landscape phone, or a laptop with a lot of browser
+   chrome) would leave the book unreadably small. Past that point it keeps a
+   usable size and the section scrolls instead. */
+@media (max-height: 620px) {
+  .flipbook {
+    --fb-room: 420px;
+  }
+}
+
+.flipbook__book {
+  margin: 0 auto;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.flipbook-page {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  /* Tuned to the 500x600 leaf: every page's content is measured against the
+     632 -> 548px this leaves, and pages are clipped rather than scrolled. */
+  padding: 26px 30px;
+  overflow: hidden;
+  /* Opaque, or a page reads as see-through mid-turn. Taken from the project's
+     surface colour rather than declared here. */
+  background: var(--surface);
+  color: var(--eduact-body);
+  /* The library rotates each leaf in 3D. Hiding the back face stops the
+     reverse side bleeding through at shallow angles, and these two keep the
+     text from shimmering as the transform interpolates. Position, width,
+     height, display, transform and clip-path are still left to the library,
+     which sets them inline. */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The library's own wrapper. Promoting it once keeps the whole book on a
+   single compositor layer for the length of a turn, instead of the browser
+   deciding per leaf. A blur filter on the shadow elements was the other
+   option and was dropped: it re-rasterises every frame, which costs more
+   smoothness than the softer edge buys. */
+.flipbook__book .stf__parent {
+  transform: translateZ(0);
+}
+
+.flipbook-page__content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}

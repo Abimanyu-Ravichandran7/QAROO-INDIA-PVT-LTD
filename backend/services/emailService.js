@@ -25,7 +25,7 @@ function getTransporter() {
 
 // Returns the fallback verification link when email is not configured.
 function fallbackLog(to, subject, text) {
-  console.log('\n[EmailService: SMTP not configured — email not sent]');
+  console.log('\n[EmailService: SMTP not configured - email not sent]');
   console.log(`  To: ${to}`);
   console.log(`  Subject: ${subject}`);
   console.log(`  Body:\n${text}\n`);
@@ -81,8 +81,8 @@ export async function sendRejectionEmail(email, name) {
 // The code is emailed to the ADMIN who creates the new user, not to the new user.
 export async function sendAdminVerificationOTPEmail(creatorEmail, creatorName, userName, userEmail, otp) {
   const subject = `Verify the new Qaroo admin: ${userName}`;
-  const text = `Hi ${creatorName || 'there'},\n\nYou created a new admin account:\nName: ${userName}\nEmail: ${userEmail}\n\nTheir verification code is:\n${otp}\n\nEnter this code in the Admin panel (Admin Management → Verify) to confirm ${userEmail}. The code expires in 10 minutes.\n\nDo not share this code.`;
-  const html = `<p>Hi ${creatorName || 'there'},</p><p>You created a new admin account:</p><p><strong>${userName}</strong> (${userEmail})</p><p>Their verification code is:</p><p style="font-size:28px;font-weight:bold;letter-spacing:6px;color:#931913;text-align:center;padding:12px;background:#f4f4f4;border-radius:8px;">${otp}</p><p>Enter this code in the Admin panel (<strong>Admin Management → Verify</strong>) to confirm ${userEmail}. The code expires in 10 minutes.</p><p><em>Do not share this code.</em></p>`;
+  const text = `Hi ${creatorName || 'there'},\n\nYou created a new admin account:\nName: ${userName}\nEmail: ${userEmail}\n\nTheir verification code is:\n${otp}\n\nEnter this code in the Admin panel (Admin Management -> Verify) to confirm ${userEmail}. The code expires in 10 minutes.\n\nDo not share this code.`;
+  const html = `<p>Hi ${creatorName || 'there'},</p><p>You created a new admin account:</p><p><strong>${userName}</strong> (${userEmail})</p><p>Their verification code is:</p><p style="font-size:28px;font-weight:bold;letter-spacing:6px;color:#B3262D;text-align:center;padding:12px;background:#f4f4f4;border-radius:8px;">${otp}</p><p>Enter this code in the Admin panel (<strong>Admin Management -> Verify</strong>) to confirm ${userEmail}. The code expires in 10 minutes.</p><p><em>Do not share this code.</em></p>`;
   return sendMail({ to: creatorEmail, subject, text, html });
 }
 
@@ -91,7 +91,7 @@ export async function sendAdminVerificationOTPEmail(creatorEmail, creatorName, u
 export async function sendVerificationSuccessEmail(email, name, initialPassword) {
   const baseUrl = process.env.CLIENT_URL || 'http://localhost:5173';
   const loginUrl = `${baseUrl}/admin/login`;
-  const subject = 'Your Qaroo Admin account is verified — sign in with these credentials';
+  const subject = 'Your Qaroo Admin account is verified - sign in with these credentials';
   const cred =
     initialPassword
       ? `\n\nUsername: ${email}\nPassword: ${initialPassword}\n`
@@ -109,7 +109,7 @@ export async function sendVerificationSuccessEmail(email, name, initialPassword)
 export async function sendPasswordChangeOtpEmail(email, name, otp) {
   const subject = 'Your Qaroo Admin password change code';
   const text = `Hi ${name || 'there'},\n\nYour verification code for changing your Qaroo Admin password is:\n\n${otp}\n\nEnter this code in the Change Password page. It expires in 10 minutes.\n\nIf you did not request this, you can safely ignore this email.`;
-  const html = `<p>Hi ${name || 'there'},</p><p>Your verification code for changing your Qaroo Admin password is:</p><p style="font-size:28px;font-weight:bold;letter-spacing:6px;color:#931913;text-align:center;padding:12px;background:#f4f4f4;border-radius:8px;">${otp}</p><p>Enter this code in the <strong>Change Password</strong> page. It expires in 10 minutes.</p><p>If you did not request this, you can safely ignore this email.</p>`;
+  const html = `<p>Hi ${name || 'there'},</p><p>Your verification code for changing your Qaroo Admin password is:</p><p style="font-size:28px;font-weight:bold;letter-spacing:6px;color:#B3262D;text-align:center;padding:12px;background:#f4f4f4;border-radius:8px;">${otp}</p><p>Enter this code in the <strong>Change Password</strong> page. It expires in 10 minutes.</p><p>If you did not request this, you can safely ignore this email.</p>`;
   return sendMail({ to: email, subject, text, html });
 }
 

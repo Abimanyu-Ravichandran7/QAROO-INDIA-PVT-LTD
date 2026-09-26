@@ -28,6 +28,15 @@ export const ALL_PERMISSIONS = [
   'csr.update',
   'csr.delete',
 
+  'careers.create',
+  'careers.read',
+  'careers.update',
+  'careers.delete',
+
+  'applications.read',
+  'applications.update',
+  'applications.delete',
+
   'contact.read',
   'contact.delete',
 

@@ -1,8 +1,6 @@
 .learning-template .lt-hero {
-  background:
-    radial-gradient(circle at 88% 18%, rgba(228, 204, 46, 0.3), transparent 46%),
-    radial-gradient(circle at 6% 110%, rgba(42, 37, 77, 0.55), transparent 60%),
-    linear-gradient(135deg, #7a140f 0%, var(--eduact-base) 55%, #5e0f0b 100%);
+  /* Colour field comes from the shared .red-stage class on the element, so this
+     band matches the home hero and every other page header. */
   padding: 56px 0 88px;
 }
 .learning-template .lt-hero::before {
@@ -12,7 +10,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, var(--eduact-secondary) 0%, rgba(228, 204, 46, 0.35) 100%);
+  background: linear-gradient(90deg, var(--eduact-secondary) 0%, rgba(244, 196, 48, 0.35) 100%);
 }
 .learning-template .lt-hero::after {
   content: "";
@@ -73,13 +71,13 @@
   color: var(--eduact-black);
   height: 100%;
   background: linear-gradient(180deg, #ffffff, #fbfbfe);
-  box-shadow: 0 1px 2px rgba(42, 37, 77, 0.04), 0 8px 20px rgba(42, 37, 77, 0.06);
+  box-shadow: 0 1px 2px rgba(23, 42, 70, 0.04), 0 8px 20px rgba(23, 42, 70, 0.06);
   transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
 }
 .learning-template .lt-highlight:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 28px rgba(42, 37, 77, 0.1);
-  border-color: rgba(147, 25, 19, 0.28);
+  box-shadow: 0 12px 28px rgba(23, 42, 70, 0.1);
+  border-color: rgba(179, 38, 45, 0.28);
 }
 .learning-template .lt-medal {
   position: absolute;
@@ -108,14 +106,14 @@
   font-weight: 600;
   color: var(--eduact-base);
   background: var(--eduact-soft3);
-  border: 1px solid rgba(147, 25, 19, 0.1);
+  border: 1px solid rgba(179, 38, 45, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 .learning-template .lt-chip:hover {
   transform: translateY(-2px);
   background: var(--eduact-base);
   color: #fff;
-  box-shadow: 0 6px 14px rgba(147, 25, 19, 0.25);
+  box-shadow: 0 6px 14px rgba(179, 38, 45, 0.25);
 }
 
 .learning-template .lt-tick {
@@ -139,7 +137,7 @@
   overflow: hidden;
   margin-bottom: 10px;
   background: var(--eduact-white);
-  box-shadow: 0 2px 10px rgba(42, 37, 77, 0.04);
+  box-shadow: 0 2px 10px rgba(23, 42, 70, 0.04);
 }
 .learning-template .accordion-button {
   font-weight: 600;
@@ -154,8 +152,8 @@
 
 .learning-template .lt-cta {
   background:
-    radial-gradient(circle at 14% 30%, rgba(228, 204, 46, 0.32), transparent 40%),
-    radial-gradient(circle at 88% 80%, rgba(42, 37, 77, 0.5), transparent 55%),
+    radial-gradient(circle at 14% 30%, rgba(244, 196, 48, 0.32), transparent 40%),
+    radial-gradient(circle at 88% 80%, rgba(23, 42, 70, 0.5), transparent 55%),
     var(--eduact-base);
   position: relative;
   overflow: hidden;

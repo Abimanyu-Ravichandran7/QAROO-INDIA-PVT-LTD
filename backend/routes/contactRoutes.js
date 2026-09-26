@@ -14,7 +14,7 @@ import { requirePermission } from '../middleware/permissionMiddleware.js';
 
 const router = Router();
 
-// Public submission — rate-limited to prevent spam/abuse without blocking
+// Public submission - rate-limited to prevent spam/abuse without blocking
 // real visitors (10 submissions per 15 minutes per IP is generous for a
 // human, while stopping scripted flooding). Admin operations below are not
 // throttled.

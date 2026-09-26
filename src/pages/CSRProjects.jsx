@@ -7,6 +7,7 @@ import { Shimmer, EmptyState, ErrorState } from '../components/ui/States';
 import { csrApi } from '../api/csrApi.js';
 import { contentApi } from '../api/contentApi.js';
 import { statsApi } from '../api/statsApi.js';
+import PageHero from '../components/PageHero';
 
 const DEFAULT_CSR_PAGE = {
   eyebrow: 'Corporate Social Responsibility',
@@ -50,7 +51,7 @@ export default function CSRProjects() {
     aliveRef.current = true;
     reload();
     contentApi.get('csr', { credentials: 'omit' })
-      .then((res) => { if (aliveRef.current) setContent({ ...DEFAULT_CSR_PAGE, ...(res.data.content.data || {}) }); })
+      .then((res) => { if (aliveRef.current) setContent({ ...DEFAULT_CSR_PAGE, ...(res.data?.content?.data || {}) }); })
       .catch(() => {});
     statsApi.getStats()
       .then((res) => { if (aliveRef.current && res?.data?.mouCount != null) setMouCount(res.data.mouCount); })
@@ -64,42 +65,36 @@ export default function CSRProjects() {
   const current = projects[activeYear] || [];
   const hasYears = years.length > 0;
 
+  // Projects are grouped by year, so the hero counts across every group rather
+  // than only the tab that happens to be open.
+  const totalProjects = years.reduce((sum, year) => sum + (projects[year]?.length || 0), 0);
+  const heroFacts = totalProjects
+    ? [
+        { num: totalProjects, label: totalProjects === 1 ? 'Project' : 'Projects' },
+        { num: years.length, label: years.length === 1 ? 'Year' : 'Years' },
+      ]
+    : [];
+
   return (
     <>
       <Seo
-        title="CSR Projects — Qaroo India Private Limited | Corporate Social Responsibility & Skill Development"
-        description="Corporate Social Responsibility projects by Qaroo India Private Limited — workforce readiness, education access and digital empowerment programs delivered in partnership with CSR & academic institutions across Tamil Nadu."
+        title="CSR Projects - Qaroo India Private Limited | Corporate Social Responsibility & Skill Development"
+        description="Corporate Social Responsibility projects by Qaroo India Private Limited - workforce readiness, education access and digital empowerment programs delivered in partnership with CSR & academic institutions across Tamil Nadu."
         path="/csr-projects"
       />
-      <div style={{
-        background: 'var(--eduact-base)',
-        padding: '80px 0 100px',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        <div style={{
-          position: 'absolute',
-          top: '-60px',
-          right: '-60px',
-          width: '260px',
-          height: '260px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(228,204,46,0.35), transparent 70%)',
-        }} />
-        <Container style={{ position: 'relative', zIndex: 2 }}>
-          <span className="eyebrow">{content.eyebrow}</span>
-          <h1 style={{
-            fontFamily: 'var(--heading-font)',
-            fontWeight: 800,
-            color: '#fff',
-            fontSize: 'clamp(2rem, 4vw, 3rem)',
-            marginTop: '10px',
-          }}>{content.title}</h1>
-          <p style={{ color: 'rgba(255,255,255,0.7)', maxWidth: '560px', marginTop: '14px' }}>
-            {content.description}
-          </p>
-        </Container>
-      </div>
+      <PageHero padding="80px 0 100px" facts={heroFacts}>
+        <span className="eyebrow">{content.eyebrow}</span>
+        <h1 style={{
+          fontFamily: 'var(--heading-font)',
+          fontWeight: 800,
+          color: '#fff',
+          fontSize: 'clamp(2rem, 4vw, 3rem)',
+          marginTop: '10px',
+        }}>{content.title}</h1>
+        <p style={{ color: 'rgba(255,255,255,0.7)', maxWidth: '560px', marginTop: '14px' }}>
+          {content.description}
+        </p>
+      </PageHero>
 
       <Container className="page-section">
         {/* Year Tabs */}
@@ -118,7 +113,7 @@ export default function CSRProjects() {
                 color: activeYear === tab ? '#fff' : 'var(--eduact-text)',
                 background: activeYear === tab ? 'var(--eduact-base)' : 'transparent',
                 borderColor: activeYear === tab ? 'var(--eduact-base)' : 'var(--eduact-soft4)',
-                transition: 'all 0.2s ease',
+                transition: 'background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease',
                 cursor: 'pointer',
               }}
             >
@@ -151,7 +146,7 @@ export default function CSRProjects() {
 
         {/* Flagship ZoomReveal Cards */}
         <div className="reveal" style={{ marginBottom: '48px' }}>
-          <p className="eyebrow">Featured Projects — Click to reveal</p>
+          <p className="eyebrow">Featured Projects - Click to reveal</p>
           <Row className="g-4" style={{ marginTop: '8px' }}>
             {(loading ? [] : current.slice(0, 3)).map((project, i) => (
               <Col key={i} md={6} lg={4}>
@@ -231,7 +226,7 @@ export default function CSRProjects() {
 
         {/* Full Projects Grid */}
         <div className="reveal">
-          <p className="eyebrow">All Projects — 20{activeYear}</p>
+          <p className="eyebrow">All Projects - 20{activeYear}</p>
         </div>
         <Row className="g-4 reveal-stagger">
           {loading ? (

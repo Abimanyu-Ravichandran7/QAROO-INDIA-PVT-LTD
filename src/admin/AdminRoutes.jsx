@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext.jsx';
 import { AdminThemeProvider } from './context/AdminThemeContext.jsx';
+import { NotificationProvider } from './context/NotificationContext.jsx';
 import AdminLayout from './layouts/AdminLayout.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import ToastProvider from '../context/ToastContext';
@@ -22,6 +23,9 @@ import LearningManagement from './pages/LearningManagement.jsx';
 import LearningEdit from './pages/LearningEdit.jsx';
 import BusinessSolutionManagement from './pages/BusinessSolutionManagement.jsx';
 import BusinessSolutionEdit from './pages/BusinessSolutionEdit.jsx';
+import CareerManagement from './pages/CareerManagement.jsx';
+import CareerEdit from './pages/CareerEdit.jsx';
+import Applications from './pages/Applications.jsx';
 import Messages from './pages/Messages.jsx';
 import AdminManagement from './pages/AdminManagement.jsx';
 import ChangePassword from './pages/ChangePassword.jsx';
@@ -30,6 +34,7 @@ export default function AdminRoutes() {
   return (
     <AuthProvider>
       <AdminThemeProvider>
+        <NotificationProvider>
         <ErrorBoundary>
           <ToastProvider>
             <NetworkStatus />
@@ -63,6 +68,10 @@ export default function AdminRoutes() {
             <Route path="business-solutions" element={<BusinessSolutionManagement />} />
             <Route path="business-solutions/create" element={<BusinessSolutionEdit />} />
             <Route path="business-solutions/:id/edit" element={<BusinessSolutionEdit />} />
+            <Route path="careers" element={<CareerManagement />} />
+            <Route path="careers/create" element={<CareerEdit />} />
+            <Route path="careers/:id/edit" element={<CareerEdit />} />
+            <Route path="applications" element={<Applications />} />
             <Route path="messages" element={<Messages />} />
             <Route path="admins" element={<AdminManagement />} />
             <Route path="change-password" element={<ChangePassword />} />
@@ -70,6 +79,7 @@ export default function AdminRoutes() {
         </Routes>
           </ToastProvider>
         </ErrorBoundary>
+        </NotificationProvider>
       </AdminThemeProvider>
     </AuthProvider>
   );

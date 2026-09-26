@@ -1,5 +1,21 @@
 import ClientError from '../models/ClientError.js';
 
+// Extra is arbitrary, so bound it on the wire and again before storage instead
+// of allowing documents of unbounded size.
+const CAP_EXTRA = 5000;
+
+const boundedExtra = (extra) => {
+  if (extra === undefined || extra === null) return {};
+  let serialized;
+  try {
+    serialized = JSON.stringify(extra);
+  } catch {
+    return {};
+  }
+  if (serialized.length > CAP_EXTRA) return {};
+  return extra;
+};
+
 export const reportClientError = async (req, res, next) => {
   try {
     const { message, stack, url, userAgent, extra } = req.body || {};
@@ -11,7 +27,7 @@ export const reportClientError = async (req, res, next) => {
       stack: String(stack || '').slice(0, 8000),
       url: String(url || '').slice(0, 2000),
       userAgent: String(userAgent || '').slice(0, 500),
-      extra: extra || {},
+      extra: boundedExtra(extra),
     });
     res.json({ success: true });
   } catch (err) {

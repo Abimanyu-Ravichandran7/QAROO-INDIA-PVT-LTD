@@ -34,7 +34,7 @@ export default function LearningEdit() {
     <PermissionGuard permission={isEdit ? 'learning.update' : 'learning.create'}>
       <div className="admin-section-title">
         <span>{isEdit ? 'Edit Learning Program' : 'Add Learning Program'}</span>
-        <button type="button" className="admin-outline-btn" onClick={() => navigate(-1)}>← Back</button>
+        <button type="button" className="admin-outline-btn" onClick={() => navigate(-1)}>{'<- Back'}</button>
       </div>
       <p className="page-sub">{isEdit ? 'Update program details.' : 'Create a new learning program.'}</p>
       {success && <div className="admin-alert success">{success}</div>}

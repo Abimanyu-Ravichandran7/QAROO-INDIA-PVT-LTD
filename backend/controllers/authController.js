@@ -28,31 +28,45 @@ const register = async (req, res, next) => {
       return res.status(409).json({ success: false, message: 'An admin with this email already exists' });
     }
 
-    const totalAdmins = await Admin.countDocuments();
+    // A brand-new database lets the first registrant CLAIM the Super Admin slot.
+    // The sparse-unique `bootstrap` marker makes the claim atomic, so concurrent
+    // first registrants cannot both win. Promotion only completes after the
+    // registrant verifies their email (see verifyEmail).
+    const mayBootstrap = (await Admin.estimatedDocumentCount()) === 0;
 
-    // First ever admin becomes the Super Admin automatically (verified + approved).
-    const isFirst = totalAdmins === 0;
+    const createPending = (bootstrap) =>
+      Admin.create({
+        name,
+        email: email.toLowerCase(),
+        password,
+        role: 'admin',
+        permissions: [],
+        isEmailVerified: false,
+        isApproved: false,
+        bootstrap,
+        verificationToken: generateVerificationToken(),
+        verificationTokenExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      });
 
-    const admin = await Admin.create({
-      name,
-      email: email.toLowerCase(),
-      password,
-      role: isFirst ? 'superadmin' : 'admin',
-      permissions: isFirst ? ALL_PERMISSIONS : [],
-      isEmailVerified: isFirst,
-      isApproved: isFirst,
-      verificationToken: isFirst ? null : generateVerificationToken(),
-      verificationTokenExpires: isFirst ? null : new Date(Date.now() + 24 * 60 * 60 * 1000),
-    });
-
-    if (!isFirst) {
-      await sendVerificationEmail(admin.email, admin.verificationToken);
+    let admin;
+    try {
+      admin = await createPending(mayBootstrap ? true : null);
+    } catch (err) {
+      // Another concurrent registration claimed the bootstrap slot: fall back
+      // to a plain pending admin instead of failing the request.
+      if (err && err.code === 11000 && /bootstrap/i.test(String(err.message))) {
+        admin = await createPending(null);
+      } else {
+        throw err;
+      }
     }
+
+    await sendVerificationEmail(admin.email, admin.verificationToken);
 
     res.status(201).json({
       success: true,
-      message: isFirst
-        ? 'Super Admin created successfully'
+      message: admin.bootstrap
+        ? 'Super Admin slot claimed. Verify your email to activate the account.'
         : 'Admin registered. Please check your email to verify your account.',
       data: { admin },
     });
@@ -119,6 +133,14 @@ const refresh = async (req, res, next) => {
     }
     const admin = await Admin.findById(decoded.id);
     if (!admin || admin.isDisabled) {
+      return res.status(401).json({ success: false, message: 'Account no longer available' });
+    }
+    // Re-apply the same gate as login: a rejected or unverified admin must not
+    // keep minting access tokens from an older refresh token.
+    if (!admin.isEmailVerified || !admin.isApproved) {
+      const clear = { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: '/' };
+      res.clearCookie('accessToken', clear);
+      res.clearCookie('refreshToken', clear);
       return res.status(401).json({ success: false, message: 'Account no longer available' });
     }
     const accessToken = jwt.sign(
@@ -188,13 +210,22 @@ const verifyEmail = async (req, res, next) => {
     if (admin.verificationTokenExpires && admin.verificationTokenExpires < new Date()) {
       return res.status(400).json({ success: false, message: 'Verification token has expired' });
     }
+    const wasBootstrap = admin.bootstrap === true;
     admin.isEmailVerified = true;
     admin.verificationToken = null;
     admin.verificationTokenExpires = null;
+    if (wasBootstrap) {
+      // The first registrant who proves their email owns the Super Admin slot.
+      admin.role = 'superadmin';
+      admin.permissions = ALL_PERMISSIONS;
+      admin.isApproved = true;
+    }
     await admin.save();
     res.json({
       success: true,
-      message: 'Email verified successfully. Your account is now pending Super Admin approval.',
+      message: wasBootstrap
+        ? 'Email verified. Your Super Admin account is now active.'
+        : 'Email verified successfully. Your account is now pending Super Admin approval.',
       data: { admin },
     });
   } catch (err) {

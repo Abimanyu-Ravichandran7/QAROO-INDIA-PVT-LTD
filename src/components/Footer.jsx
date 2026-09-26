@@ -7,7 +7,7 @@ import { mailtoHref } from '../utils/mailto.js';
 
 const DEFAULT_FOOTER = {
   brandName: COMPANY.name,
-  tagline: 'Business solutions and career-ready learning, from one team in Tamil Nadu.',
+  tagline: 'Business solutions and career-ready learning, from One Team in Tamil Nadu.',
   email: COMPANY.email,
   phones: [...COMPANY.phones],
   socials: [
@@ -92,7 +92,7 @@ function SocialIcon({ platform, url }) {
         borderRadius: '10px',
         background: 'rgba(255,255,255,0.08)',
         color: 'rgba(255,255,255,0.7)',
-        transition: 'all 0.18s ease',
+        transition: 'background-color 0.18s ease, color 0.18s ease',
       }}
       onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--eduact-secondary)'; e.currentTarget.style.color = '#fff'; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = 'rgba(255,255,255,0.7)'; }}
@@ -134,8 +134,10 @@ export default function Footer() {
             <Link to="/admin/login" aria-label="Admin login" style={{ display: 'inline-block', lineHeight: 0 }}>
               <span style={{ display: 'inline-block', background: '#fff', borderRadius: '10px', padding: '8px 12px', marginBottom: '16px', lineHeight: 0 }}>
                 <img
-                  src="/logos/qaroo-logo.jpg"
+                  src="/logos/qaroo-logo.png"
                   alt={cfg.brandName}
+                  width="472"
+                  height="132"
                   style={{ height: '40px', width: 'auto', objectFit: 'contain', display: 'block' }}
                 />
               </span>
@@ -200,11 +202,11 @@ export default function Footer() {
               <Link key={item.label} to={item.path} style={{
                 display: 'block',
                 fontSize: '13.5px',
-                color: 'rgba(255,255,255,0.6)',
+                color: '#D1D5DB',
                 marginBottom: '10px',
                 transition: 'color 0.15s',
               }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--eduact-secondary)'}
-                onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = '#D1D5DB'}
               >{item.label}</Link>
             ))}
           </Col>
@@ -223,11 +225,11 @@ export default function Footer() {
               <Link key={item.label} to={item.path} style={{
                 display: 'block',
                 fontSize: '13.5px',
-                color: 'rgba(255,255,255,0.6)',
+                color: '#D1D5DB',
                 marginBottom: '10px',
                 transition: 'color 0.15s',
               }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--eduact-secondary)'}
-                onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = '#D1D5DB'}
               >{item.label}</Link>
             ))}
           </Col>
@@ -269,7 +271,7 @@ export default function Footer() {
           fontSize: '12.5px',
           color: 'rgba(255,255,255,0.5)',
         }}>
-          <span>&copy; 2026 <span style={{ color: '#fff', fontWeight: 600 }}>{cfg.brandName}</span> {cfg.copyright ? `— ${cfg.copyright}` : '. All rights reserved.'}</span>
+          <span>&copy; 2026 <span style={{ color: '#fff', fontWeight: 600 }}>{cfg.brandName}</span> {cfg.copyright ? `- ${cfg.copyright}` : '. All rights reserved.'}</span>
           <span>
             <Link to="/privacy-policy" style={{ color: 'inherit', textDecoration: 'none', marginRight: '10px' }}>Privacy Policy</Link>
             <Link to="/terms" style={{ color: 'inherit', textDecoration: 'none', marginRight: '10px' }}>Terms</Link>

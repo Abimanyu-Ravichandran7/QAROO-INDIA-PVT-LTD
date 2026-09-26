@@ -45,6 +45,23 @@ const PERM_GROUPS = [
     ],
   },
   {
+    label: 'Careers',
+    perms: [
+      { k: 'careers.create', label: 'Create' },
+      { k: 'careers.read', label: 'View' },
+      { k: 'careers.update', label: 'Update' },
+      { k: 'careers.delete', label: 'Delete' },
+    ],
+  },
+  {
+    label: 'Job Applications',
+    perms: [
+      { k: 'applications.read', label: 'View' },
+      { k: 'applications.update', label: 'Update status' },
+      { k: 'applications.delete', label: 'Delete' },
+    ],
+  },
+  {
     label: 'Website Content',
     perms: [
       { k: 'home.update', label: 'Home' },
@@ -107,7 +124,7 @@ function PermissionEditor({ admin, onClose }) {
   return (
     <div className="admin-card">
       <div className="admin-section-title">
-        <span>Edit Permissions — {admin.name}</span>
+        <span>Edit Permissions - {admin.name}</span>
         <button className="admin-icon-btn" onClick={onClose}>Close</button>
       </div>
       {saved && <div className="admin-alert success">Permissions saved ✓</div>}
@@ -237,7 +254,7 @@ function VerifyEditor({ admin, onDone, onCancel }) {
   return (
     <div className="admin-card">
       <div className="admin-section-title">
-        <span>Verify — {admin.name} ({admin.email})</span>
+        <span>Verify - {admin.name} ({admin.email})</span>
         <button className="admin-icon-btn" onClick={onCancel}>Cancel</button>
       </div>
       <p className="hint" style={{ marginBottom: '14px' }}>
@@ -336,7 +353,7 @@ export default function AdminManagement() {
         <strong style={{ color: 'var(--admin-dark)' }}>Email verification</strong>
         {' '}
         <span style={{ color: 'var(--admin-muted)' }}>
-          — when you create a user, the 6-digit code is emailed to <strong>you</strong>. Click <strong>Verify</strong> on
+          - when you create a user, the 6-digit code is emailed to <strong>you</strong>. Click <strong>Verify</strong> on
           the user's row to enter the code and confirm them. Use <strong>Send Code</strong> to email a new code to yourself.
         </span>
       </div>

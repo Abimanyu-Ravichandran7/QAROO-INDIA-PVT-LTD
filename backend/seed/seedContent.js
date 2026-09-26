@@ -5,7 +5,7 @@ export async function seedContent(admin) {
   for (const [page, data] of Object.entries(PAGE_CONTENT)) {
     const existing = await PageContent.findOne({ page });
     if (existing) {
-      console.log(`Page content "${page}" already exists — skipping.`);
+      console.log(`Page content "${page}" already exists - skipping.`);
       continue;
     }
     await PageContent.create({

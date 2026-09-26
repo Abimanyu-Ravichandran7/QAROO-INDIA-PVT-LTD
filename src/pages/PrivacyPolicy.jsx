@@ -7,7 +7,7 @@ export default function PrivacyPolicy() {
   return (
     <>
       <Seo
-        title="Privacy Policy — Qaroo India Private Limited"
+        title="Privacy Policy - Qaroo India Private Limited"
         description="Privacy Policy for Qaroo India Private Limited. Learn how we collect, use and protect your personal information."
         path="/privacy-policy"
       />

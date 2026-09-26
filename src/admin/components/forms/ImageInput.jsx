@@ -53,7 +53,7 @@ export default function ImageInput({ value = '', onChange, allowUrl = true, acce
 
       {isFile ? (
         <div className="admin-alert info image-input__note">
-          Selected from device{allowUrl ? ' — or paste a URL below to use an external image instead.' : ''}
+          Selected from device{allowUrl ? ' - or paste a URL below to use an external image instead.' : ''}
         </div>
       ) : null}
 

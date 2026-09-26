@@ -103,11 +103,11 @@ export function SeoFields({ get, set }) {
       <div className="form-grid">
         <div className="field">
           <label>SEO Title</label>
-          <input type="text" value={f('seoTitle') || ''} onChange={(e) => s('seoTitle')(e.target.value)} placeholder="50–60 chars recommended" />
+          <input type="text" value={f('seoTitle') || ''} onChange={(e) => s('seoTitle')(e.target.value)} placeholder="50-60 chars recommended" />
         </div>
         <div className="field">
           <label>SEO Description</label>
-          <input type="text" value={f('seoDescription') || ''} onChange={(e) => s('seoDescription')(e.target.value)} placeholder="150–160 chars recommended" />
+          <input type="text" value={f('seoDescription') || ''} onChange={(e) => s('seoDescription')(e.target.value)} placeholder="150-160 chars recommended" />
         </div>
       </div>
       <div className="field">

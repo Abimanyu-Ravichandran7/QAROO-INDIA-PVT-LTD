@@ -29,7 +29,7 @@ export default class ErrorBoundary extends Component {
               <span className="state-icon error" aria-hidden="true">!</span>
               <p className="state-title">Something went wrong</p>
               <p className="state-text">
-                An unexpected error occurred while rendering this page. Please reload — if it keeps happening,
+                An unexpected error occurred while rendering this page. Please reload - if it keeps happening,
                 reach out to us through the contact page.
               </p>
               <button type="button" className="state-btn" onClick={this.handleReload}>Reload page</button>

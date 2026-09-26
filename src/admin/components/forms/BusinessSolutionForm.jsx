@@ -65,7 +65,7 @@ export default function BusinessSolutionForm({ initial, onSubmit, submitting }) 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(cleanup(form));
+    onSubmit({ ...cleanup(form), status: 'published' });
   };
 
   return (

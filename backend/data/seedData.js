@@ -97,7 +97,7 @@ export const MOUS = [
     blurb: "Operates within India's national skill-development ecosystem through partnerships.",
     images: [],
     sections: [
-      { heading: "What Is It?", paragraphs: ["The scan appears to say \"N.S.D.C.\" — this almost certainly refers to the National Skill Development Corporation (NSDC).", "NSDC operates within India's skill-development ecosystem and works through partnerships to support skills and employability."] },
+      { heading: "What Is It?", paragraphs: ["The scan appears to say \"N.S.D.C.\" - this almost certainly refers to the National Skill Development Corporation (NSDC).", "NSDC operates within India's skill-development ecosystem and works through partnerships to support skills and employability."] },
       { heading: "What Does An NSDC-Related MOU Mean?", list: ["Skill development", "Job-oriented training", "Industry-aligned courses", "Training ecosystem", "Certifications", "Employability", "Skill ecosystem partnerships"] },
       { heading: "Very Important", note: "An NSDC MOU does not automatically mean NSDC is giving jobs to students. It generally relates to the skill-development ecosystem." },
       { heading: "Our Assessment", paragraphs: ["Strategically important for a skill-development institution."] }
@@ -112,7 +112,7 @@ export const MOUS = [
       { heading: "What Is It?", paragraphs: ["NCVET stands for National Council for Vocational Education and Training.", "It is India's overarching regulator for the vocational education and training ecosystem. NCVET establishes standards and regulates areas including awarding bodies and assessment agencies."] },
       { heading: "What Does NCVET Mean For Students?", list: ["Vocational education", "Skill qualifications", "Standards", "Assessment", "Certification ecosystem", "Quality assurance", "NSQF-aligned qualifications"] },
       { heading: "Critical Distinction", note: "An MOU involving NCVET is not the same thing as saying every course is NCVET-approved. Check the exact course, qualification, awarding body, assessment agency and recognition status." },
-      { heading: "Our Assessment", paragraphs: ["Very important from a vocational/skill qualification perspective — but the exact MOU must be examined."] }
+      { heading: "Our Assessment", paragraphs: ["Very important from a vocational/skill qualification perspective - but the exact MOU must be examined."] }
     ]
   },
   {
@@ -150,13 +150,13 @@ export const MOUS = [
   },
   {
     tag: "Institution Partnership",
-    name: "Christ the King Polytechnic College",
-    blurb: "Coimbatore diploma institution (est. 1985) with an established Industry-Institute Interaction system.",
+    name: "Christ the King Engineering College",
+    blurb: "Coimbatore engineering institution with an established Industry-Institute Interaction system.",
     images: [],
     sections: [
-      { heading: "What Is It?", paragraphs: ["The most relevant verified institution matching \"Christ the King\" in the context of Tamil Nadu technical education is Christ the King Polytechnic College, Coimbatore, established in 1985.", "It offers diploma programmes in Civil, Mechanical, Electrical & Electronics, Electronics & Communication, Computer Engineering, Automobile Engineering, and Artificial Intelligence & Machine Learning.", "It has an established Industry-Institute Interaction system and states it has signed several MOUs with industries to enrich students' education."] },
+      { heading: "What Is It?", paragraphs: ["Christ the King Engineering College is an engineering institution in Coimbatore, Tamil Nadu.", "It has an established Industry-Institute Interaction system and states it has signed several MOUs with industries to enrich students' education."] },
       { heading: "What Can The MOU Provide?", list: ["Technical training", "Industrial visits", "Internships", "On-the-job training", "Industry exposure", "Practical learning", "Workshops", "Projects", "Placement opportunities", "Industry interaction", "Research/collaborative activities"] },
-      { heading: "Student Benefit", pathway: ["Academic Learning", "Technical Training", "Industry Exposure", "Internship/OJT", "Practical Skills", "Placement Opportunity"], paragraphs: ["For example, the college has documented an industry MoU involving an add-on programme on IoT and 3D Printing, including hands-on training, mini-project work, industry applications and certification."] },
+      { heading: "Student Benefit", pathway: ["Academic Learning", "Technical Training", "Industry Exposure", "Internship/OJT", "Practical Skills", "Placement Opportunity"] },
       { heading: "Areas Particularly Relevant To Students", list: ["Computer Engineering", "Artificial Intelligence & Machine Learning", "Electronics & Communication", "Electrical & Electronics", "Mechanical Engineering", "Automobile Engineering", "Civil Engineering"] }
     ]
   }
@@ -182,7 +182,7 @@ export const CSR_PROJECTS = {
 };
 
 export const LEARNING_PROGRAMS = [
-  { title: 'Data Science & Business Analytics', desc: 'Two focused tracks — Data Science and Business Analytics — for different roles and starting points. Python, SQL, statistics, visualization, and machine learning fundamentals.', skills: ['Python', 'SQL', 'Power BI', 'Machine Learning', 'Statistics'] },
+  { title: 'Data Science & Business Analytics', desc: 'Two focused tracks - Data Science and Business Analytics - for different roles and starting points. Python, SQL, statistics, visualization, and machine learning fundamentals.', skills: ['Python', 'SQL', 'Power BI', 'Machine Learning', 'Statistics'] },
   { title: 'Full Stack Development', desc: 'Python or Java-based full stack tracks covering frontend, backend, APIs and deployment. Build real projects from day one.', skills: ['React', 'Node.js', 'Python/Java', 'MongoDB', 'REST APIs'] },
   { title: 'UI/UX Design', desc: 'Research through prototyping, ending in a portfolio built from real projects. Figma, user testing, design systems, and more.', skills: ['Figma', 'User Research', 'Prototyping', 'Design Systems', 'Usability Testing'] },
   { title: 'Cyber Security & Ethical Hacking', desc: 'Security fundamentals through to hands-on ethical hacking practice. Network security, penetration testing, and incident response.', skills: ['Network Security', 'Penetration Testing', 'Kali Linux', 'Incident Response', 'Cryptography'] },
@@ -195,9 +195,9 @@ export const BUSINESS_SERVICES = [
   { idx: '01', title: 'CRM Solutions', desc: 'Strategy, implementation, customization and pipeline reporting built around how your sales team actually sells. We help you choose, configure, and adopt the right CRM for your workflow.' },
   { idx: '02', title: 'Digital Marketing', desc: 'SEO, content and performance marketing built around measurable business growth, not vanity metrics. From keyword strategy to conversion optimization.' },
   { idx: '03', title: 'Graphic Design & Branding', desc: 'Brand identity, collateral and creative systems that hold up across every channel you use. Logos, brand guidelines, social assets, and print-ready designs.' },
-  { idx: '04', title: 'Web Development', desc: 'Fast, SEO-friendly business websites — from landing pages to full e-commerce builds. React, WordPress, or custom stacks based on your needs.' },
+  { idx: '04', title: 'Web Development', desc: 'Fast, SEO-friendly business websites - from landing pages to full e-commerce builds. React, WordPress, or custom stacks based on your needs.' },
   { idx: '05', title: 'Software Development', desc: 'Custom software, internal tools and SaaS products built to solve one specific business problem well. End-to-end development with ongoing support.' },
-  { idx: '06', title: 'UI/UX Design', desc: 'Wireframes to design systems — usability and conversion, not just visual polish. We design experiences that users actually enjoy.' },
+  { idx: '06', title: 'UI/UX Design', desc: 'Wireframes to design systems - usability and conversion, not just visual polish. We design experiences that users actually enjoy.' },
   { idx: '07', title: 'UX Research', desc: 'User interviews, usability testing and journey mapping that inform product decisions before you build. Data-driven design thinking.' },
   { idx: '08', title: 'Business Strategy', desc: 'Growth, go-to-market and digital transformation strategy with a clear discover-to-measure methodology. Roadmaps that actually get executed.' },
 ];
@@ -205,9 +205,9 @@ export const BUSINESS_SERVICES = [
 // Default page content used for seeding & fallback when no CMS content exists yet.
 export const PAGE_CONTENT = {
   home: {
-    heroEyebrow: 'Coimbatore · Chennai',
-    heroTitle: 'Business solutions and career-ready skills, from one team.',
-    heroDescription: 'Qaroo India Private Limited builds digital solutions for businesses — CRM, marketing, design, software, strategy — and builds careers for people through practical, industry-linked training.',
+    heroEyebrow: 'Coimbatore - Chennai',
+    heroTitle: 'Business solutions and career-ready skills, from One Team.',
+    heroDescription: 'Qaroo India Private Limited builds digital solutions for businesses - CRM, marketing, design, software, strategy - and builds careers for people through practical, industry-linked training.',
     buttons: [
       { text: 'Explore Business Solutions', link: '/business-solutions', style: 'yellow' },
       { text: 'Explore Learning Programs', link: '/learning-programs', style: 'white' },
@@ -215,7 +215,7 @@ export const PAGE_CONTENT = {
     statistics: [
       { num: 20, label: 'Memorandums of Understanding (MoUs) signed' },
       { num: 9, label: 'Active institutional & CSR partners' },
-      { num: 2, label: 'Office locations — Coimbatore & Chennai' },
+      { num: 2, label: 'Office locations - Coimbatore & Chennai' },
     ],
   },
   about: {
@@ -241,11 +241,11 @@ export const PAGE_CONTENT = {
   },
   contact: {
     offices: [
-      { title: 'Head Office — Coimbatore', lines: ['No.3A, 3rd Floor, Sri Ram Towers,', 'Lakshmi Mills Junction, P N Palayam,', 'Coimbatore – 641 037'] },
-      { title: 'Branch Office — Chennai', lines: ['No.13/4, Chavadi Street,', 'Pallavaram, Chennai – 600 043'] },
+      { title: 'Head Office - Coimbatore', lines: ['No.3A, 3rd Floor, Sri Ram Towers,', 'Lakshmi Mills Junction, P N Palayam,', 'Coimbatore - 641 037'] },
+      { title: 'Branch Office - Chennai', lines: ['No.13/4, Chavadi Street,', 'Pallavaram, Chennai - 600 043'] },
     ],
     contact: { email: 'qarootech@gmail.com', phones: ['+91 90439 27967', '+91 90439 97967', '+91 99449 91217'] },
-    hours: { days: 'Monday – Saturday', time: '9:00 AM – 6:00 PM IST' },
+    hours: { days: 'Monday - Saturday', time: '9:00 AM - 6:00 PM IST' },
   },
   business: {
     services: BUSINESS_SERVICES,
@@ -254,7 +254,7 @@ export const PAGE_CONTENT = {
   learning: {
     eyebrow: 'The Qaroo Launchpad',
     heading: 'Skills that move your career forward.',
-    description: 'Practical, project-based training across technology, design and analytics — grouped by career path.',
+    description: 'Practical, project-based training across technology, design and analytics - grouped by career path.',
     stepperHeading: 'From enquiry to certification in 6 steps.',
     stepperDesc: 'Our structured enrollment process ensures you get the right training for your career goals.',
     steps: [
@@ -278,12 +278,12 @@ export const PAGE_CONTENT = {
   mou: {
     eyebrow: 'Institutional Partnerships',
     title: 'MOU Directory',
-    description: 'Every memorandum of understanding on record — who the partner is, what it can offer students, and our read on how strong the collaboration actually is.',
+    description: 'Every memorandum of understanding on record - who the partner is, what it can offer students, and our read on how strong the collaboration actually is.',
   },
 
   footer: {
     brandName: 'Qaroo India Private Limited',
-    tagline: 'Business solutions and career-ready learning, from one team in Tamil Nadu.',
+    tagline: 'Business solutions and career-ready learning, from One Team in Tamil Nadu.',
     email: 'qarootech@gmail.com',
     phones: ['+91 90439 27967', '+91 90439 97967'],
     socials: [

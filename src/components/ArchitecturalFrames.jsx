@@ -11,9 +11,9 @@
  *   </div>
  */
 export default function ArchitecturalFrames({
-  color = "rgba(42, 37, 77, 0.55)",
-  accent = "rgba(147, 25, 19, 0.5)",
-  gold = "rgba(228, 204, 46, 0.55)",
+  color = "rgba(23, 42, 70, 0.55)",
+  accent = "rgba(179, 38, 45, 0.5)",
+  gold = "rgba(244, 196, 48, 0.55)",
   opacity = 0.5,
 }) {
   return (

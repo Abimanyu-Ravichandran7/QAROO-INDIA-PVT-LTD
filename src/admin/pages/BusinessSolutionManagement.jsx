@@ -67,7 +67,7 @@ export default function BusinessSolutionManagement() {
             : solutions.map((s) => (
               <tr key={s._id}>
                 <td><strong>{s.pageName || s.title}</strong></td>
-                <td><code style={{ fontSize: '12px' }}>{s.slug || '—'}</code></td>
+                <td><code style={{ fontSize: '12px' }}>{s.slug || '-'}</code></td>
                 <td><span className={`admin-badge ${s.status === 'published' ? 'green' : 'grey'}`}>{s.status}</span></td>
                 <td>
                   <div className="actions">
