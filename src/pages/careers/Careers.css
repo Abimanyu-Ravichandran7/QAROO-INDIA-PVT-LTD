@@ -397,3 +397,23 @@
     padding: 22px 18px;
   }
 }
+
+/* ---------- page backdrop lift ----------
+   PageBackdrop is fixed at z-index 0 and sits last in the DOM, so every band
+   that carries content has to be raised above it. A section left at z-index
+   auto is painted underneath and simply disappears. */
+.careers-page {
+  position: relative;
+}
+.careers-page > .page-hero,
+.careers-page > .lined-section,
+.careers-page > section.page-section,
+.careers-page > .page-section,
+.careers-page > div[style] {
+  position: relative;
+  z-index: 1;
+}
+
+/* .job-body was the width cap on the job page's container. That column is now
+   capped by LinedSection's maxWidth, so the rule only has to stay valid for any
+   markup still using the class. */

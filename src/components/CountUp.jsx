@@ -2,7 +2,9 @@ import { useInView, useMotionValue, useSpring } from 'motion/react';
 import { useCallback, useEffect, useRef } from 'react';
 
 export default function CountUp({
-  to,
+  // Defaulted so a caller passing a value straight from data cannot pass
+  // `undefined` into the motion value and render "NaN".
+  to = 0,
   from = 0,
   direction = 'up',
   delay = 0,
@@ -27,6 +29,11 @@ export default function CountUp({
   const isInView = useInView(ref, { once: true, margin: '0px' });
 
   const getDecimalPlaces = num => {
+    // Guarded because this is a shared primitive: one caller passes a value
+    // straight from data (MagicBento's card metric), and an absent number used
+    // to throw here, which took the whole page down through the ErrorBoundary
+    // rather than simply showing nothing.
+    if (typeof num !== 'number' || !Number.isFinite(num)) return 0;
     const str = num.toString();
 
     if (str.includes('.')) {

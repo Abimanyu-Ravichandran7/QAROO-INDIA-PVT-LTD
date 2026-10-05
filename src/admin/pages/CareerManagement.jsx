@@ -3,8 +3,39 @@ import { Link } from 'react-router-dom';
 import { careerApi } from '../../api/careerApi.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import PermissionGuard from '../components/PermissionGuard.jsx';
+import DetailModal from '../components/DetailModal.jsx';
+import RecordView from '../components/RecordView.jsx';
 import { ShimmerPanel, EmptyState, ErrorState } from '../../components/ui/States';
 import { useToast } from '../../context/ToastContext';
+
+const VIEW_LABELS = [
+  ['title', 'Job title'],
+  ['pageName', 'Page name'],
+  ['slug', 'Slug'],
+  ['department', 'Department'],
+  ['location', 'Location'],
+  ['jobType', 'Job type'],
+  ['experience', 'Experience'],
+  ['employmentType', 'Employment type'],
+  ['status', 'Status'],
+  ['overview', 'Overview'],
+  ['responsibilities', 'Responsibilities'],
+  ['techStack', 'Tech stack'],
+  ['requiredSkills', 'Required skills'],
+  ['preferredSkills', 'Preferred skills'],
+  ['qualifications', 'Qualifications'],
+  ['trainingAreas', 'Training areas'],
+  ['idealCandidate', 'Ideal candidate'],
+  ['benefits', 'Benefits'],
+  ['knowledgeAreas', 'Knowledge areas'],
+  ['note', 'Note'],
+  ['keyword', 'Keyword'],
+  ['seoTitle', 'SEO title'],
+  ['seoDescription', 'SEO description'],
+  ['displayOrder', 'Display order'],
+  ['createdAt', 'Created'],
+  ['updatedAt', 'Updated'],
+];
 
 export default function CareerManagement() {
   const { hasPermission } = useAuth();
@@ -12,6 +43,8 @@ export default function CareerManagement() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
+  const [searchInput, setSearchInput] = useState('');
+  const [viewId, setViewId] = useState(null);
   const toast = useToast();
 
   const fetchJobs = useCallback(async () => {
@@ -29,6 +62,13 @@ export default function CareerManagement() {
   }, [search]);
 
   useEffect(() => { fetchJobs(); }, [fetchJobs]);
+
+  useEffect(() => {
+    const t = setTimeout(() => setSearch(searchInput), 400);
+    return () => clearTimeout(t);
+  }, [searchInput]);
+
+  const view = jobs.find((j) => j._id === viewId) || null;
 
   const handleDelete = async (j) => {
     if (!window.confirm(`Delete job posting "${j.title}"?\n\nApplications already received for this role are kept.`)) return;
@@ -56,18 +96,34 @@ export default function CareerManagement() {
       <h1>Careers</h1>
       <p className="page-sub">Manage job postings. Only published roles appear on the website.</p>
 
-      <div className="admin-card" style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+      <div className="admin-card admin-filter-bar">
         <input
           type="text"
           placeholder="Search roles..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{ flex: 1, minWidth: '200px', padding: '10px 12px', borderRadius: '10px', border: '1px solid var(--admin-border)' }}
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          className="admin-filter admin-filter--grow"
         />
+        {searchInput && (
+          <button
+            type="button"
+            className="admin-btn outline"
+            onClick={() => { setSearchInput(''); setSearch(''); }}
+          >
+            Clear
+          </button>
+        )}
         {hasPermission('careers.create') && (
           <Link to="/admin/careers/create" className="admin-btn">+ Add Job Posting</Link>
         )}
       </div>
+
+      {!loading && !error && (
+        <p className="admin-filter-meta">
+          Showing <strong>{jobs.length}</strong> job posting{jobs.length === 1 ? '' : 's'}
+          {search ? ' matching the current filters' : ''}
+        </p>
+      )}
 
       <div className="admin-table-wrap">
         <table className="admin-table">
@@ -90,16 +146,17 @@ export default function CareerManagement() {
                   <td><span className={`admin-badge ${j.status === 'published' ? 'green' : 'grey'}`}>{j.status}</span></td>
                   <td>
                     <div className="actions">
+                      <button type="button" className="admin-icon-btn act-view" onClick={() => setViewId(j._id)}>View</button>
                       {hasPermission('careers.update') && (
                         <>
-                          <button className="admin-icon-btn act-publish" onClick={() => handlePublish(j)}>
+                          <button type="button" className="admin-icon-btn act-publish" onClick={() => handlePublish(j)}>
                             {j.status === 'published' ? 'Unpublish' : 'Publish'}
                           </button>
                           <Link to={`/admin/careers/${j._id}/edit`} className="admin-icon-btn act-edit">Edit</Link>
                         </>
                       )}
                       {hasPermission('careers.delete') && (
-                        <button className="admin-icon-btn danger" onClick={() => handleDelete(j)}>Delete</button>
+                        <button type="button" className="admin-icon-btn danger" onClick={() => handleDelete(j)}>Delete</button>
                       )}
                     </div>
                   </td>
@@ -109,6 +166,10 @@ export default function CareerManagement() {
           </tbody>
         </table>
       </div>
+
+      <DetailModal show={!!viewId} onHide={() => setViewId(null)} title="Job posting details" subtitle={view?.pageName || view?.title}>
+        {view && <RecordView record={view} labels={VIEW_LABELS} />}
+      </DetailModal>
     </PermissionGuard>
   );
 }

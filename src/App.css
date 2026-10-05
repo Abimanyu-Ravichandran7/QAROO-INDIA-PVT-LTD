@@ -537,6 +537,9 @@ a.contact-card__number:hover {
   display: block;
   letter-spacing: 0.06em;
 }
+/* h3 and h4 look identical here: cards sit under a section h2, so their
+   heading is an h3 for document order, while older markup still uses h4. */
+.eduact-card h3,
 .eduact-card h4 {
   font-size: 18px;
   margin-bottom: 10px;
@@ -574,6 +577,7 @@ a.track-card:hover .btn-eduact {
 .page-section.dark .eduact-card:hover {
   background: rgba(var(--eduact-white-rgb), 0.05);
 }
+.page-section.dark .eduact-card h3,
 .page-section.dark .eduact-card h4 { color: var(--eduact-white); }
 .page-section.dark .eduact-card p { color: rgba(var(--eduact-white-rgb), 0.7); }
 .page-section.dark .eduact-card .card-link { color: var(--eduact-secondary); }
@@ -1167,4 +1171,25 @@ a.track-card:hover .btn-eduact {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+/* ---------- skip link ----------
+   Off-screen until focused, so it costs nothing visually but gives keyboard and
+   screen-reader users a way past the navigation on every page. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 10000;
+  padding: 12px 20px;
+  background: var(--eduact-base, #B3262D);
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  border-bottom-right-radius: 10px;
+}
+.skip-link:focus {
+  left: 0;
+  outline: 3px solid var(--eduact-secondary, #F4C430);
+  outline-offset: 2px;
 }

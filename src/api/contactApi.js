@@ -6,5 +6,6 @@ export const contactApi = {
   get: (id) => get(`/contact/${id}`),
   toggleRead: (id) => post(`/contact/${id}/read`),
   resolve: (id) => post(`/contact/${id}/resolve`),
+  saveRemarks: (id, remarks) => post(`/contact/${id}/remarks`, { remarks }),
   remove: (id) => del(`/contact/${id}`),
 };

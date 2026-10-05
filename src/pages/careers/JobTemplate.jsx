@@ -1,4 +1,4 @@
-import { Container, Breadcrumb } from 'react-bootstrap';
+import { Breadcrumb } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Seo from '../../components/Seo.jsx';
 import FeatureLine from '../../components/FeatureLine';
@@ -7,6 +7,8 @@ import ApplyForm from './ApplyForm.jsx';
 import { COMPANY } from '../../data/company.js';
 import './Careers.css';
 import PageHero from '../../components/PageHero';
+import PageBackdrop from '../../components/PageBackdrop.jsx';
+import LinedSection from '../../components/LinedSection.jsx';
 
 const SITE = 'https://www.qarootech.in';
 
@@ -86,7 +88,9 @@ export default function JobTemplate({ job }) {
   };
 
   return (
-    <>
+    <div className="careers-page">
+      <PageBackdrop />
+
       <Seo
         title={job.seoTitle || `${title} - Careers at ${COMPANY.name}`}
         description={job.seoDescription || job.overview?.slice(0, 160) || ''}
@@ -148,7 +152,7 @@ export default function JobTemplate({ job }) {
         </a>
       </PageHero>
 
-      <Container className="page-section job-body">
+      <LinedSection maxWidth="880px">
         {job.overview ? (
           <section className="job-block reveal">
             <h2>Job Overview</h2>
@@ -183,7 +187,7 @@ export default function JobTemplate({ job }) {
             All open positions
           </Link>
         </p>
-      </Container>
-    </>
+      </LinedSection>
+    </div>
   );
 }

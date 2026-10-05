@@ -3,16 +3,30 @@ import { Link } from 'react-router-dom';
 import { mouApi } from '../../api/mouApi.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import PermissionGuard from '../components/PermissionGuard.jsx';
+import DetailModal from '../components/DetailModal.jsx';
+import RecordView from '../components/RecordView.jsx';
 import { ShimmerPanel, EmptyState, ErrorState } from '../../components/ui/States';
 import { useToast } from '../../context/ToastContext';
+
+const VIEW_LABELS = [
+  ['name', 'MOU name'],
+  ['tag', 'Category'],
+  ['status', 'Status'],
+  ['blurb', 'Blurb'],
+  ['sections', 'Sections'],
+  ['createdAt', 'Created'],
+  ['updatedAt', 'Updated'],
+];
 
 export default function MOUList() {
   const { hasPermission } = useAuth();
   const [mous, setMous] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [searchInput, setSearchInput] = useState('');
   const [status, setStatus] = useState('all');
   const [error, setError] = useState('');
+  const [viewId, setViewId] = useState(null);
   const toast = useToast();
 
   const fetchMous = useCallback(async () => {
@@ -31,6 +45,13 @@ export default function MOUList() {
   useEffect(() => {
     fetchMous();
   }, [fetchMous]);
+
+  useEffect(() => {
+    const t = setTimeout(() => setSearch(searchInput), 400);
+    return () => clearTimeout(t);
+  }, [searchInput]);
+
+  const view = mous.find((m) => m._id === viewId) || null;
 
   const handleDelete = async (mou) => {
     if (!window.confirm(`Are you sure you want to delete this MOU?\n\n${mou.name}`)) return;
@@ -62,25 +83,41 @@ export default function MOUList() {
       <h1>MOU Directory</h1>
       <p className="page-sub">Manage memorandums of understanding shown on the public website.</p>
 
-      <div className="admin-card" style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+      <div className="admin-card admin-filter-bar">
         <input
           type="text"
           placeholder="Search MOUs..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{ flex: 1, minWidth: '220px', padding: '10px 12px', borderRadius: '10px', border: '1px solid var(--admin-border)' }}
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          className="admin-filter admin-filter--grow"
         />
-        <select value={status} onChange={(e) => setStatus(e.target.value)} style={{ padding: '10px 12px', borderRadius: '10px', border: '1px solid var(--admin-border)' }}>
+        <select value={status} onChange={(e) => setStatus(e.target.value)} className="admin-filter">
           <option value="all">All statuses</option>
           <option value="published">Published</option>
           <option value="draft">Draft</option>
         </select>
+        {(searchInput || status !== 'all') && (
+          <button
+            type="button"
+            className="admin-btn outline"
+            onClick={() => { setSearchInput(''); setSearch(''); setStatus('all'); }}
+          >
+            Clear
+          </button>
+        )}
         {hasPermission('mou.create') && (
           <Link to="/admin/mous/create" className="admin-btn">+ Add MOU</Link>
         )}
       </div>
 
       {error && <div className="admin-alert error">{error}</div>}
+
+      {!loading && !error && (
+        <p className="admin-filter-meta">
+          Showing <strong>{mous.length}</strong> MOU{mous.length === 1 ? '' : 's'}
+          {search || status !== 'all' ? ' matching the current filters' : ''}
+        </p>
+      )}
 
       <div className="admin-table-wrap">
         <table className="admin-table">
@@ -113,16 +150,17 @@ export default function MOUList() {
                   <td>{fmt(m.updatedAt)}</td>
                   <td>
                     <div className="actions">
+                      <button type="button" className="admin-icon-btn act-view" onClick={() => setViewId(m._id)}>View</button>
                       {hasPermission('mou.update') && (
                         <>
-                          <button className="admin-icon-btn act-publish" onClick={() => handlePublish(m)}>
+                          <button type="button" className="admin-icon-btn act-publish" onClick={() => handlePublish(m)}>
                             {m.status === 'published' ? 'Unpublish' : 'Publish'}
                           </button>
                           <Link to={`/admin/mous/${m._id}/edit`} className="admin-icon-btn act-edit">Edit</Link>
                         </>
                       )}
                       {hasPermission('mou.delete') && (
-                        <button className="admin-icon-btn danger" onClick={() => handleDelete(m)}>Delete</button>
+                        <button type="button" className="admin-icon-btn danger" onClick={() => handleDelete(m)}>Delete</button>
                       )}
                     </div>
                   </td>
@@ -132,6 +170,10 @@ export default function MOUList() {
           </tbody>
         </table>
       </div>
+
+      <DetailModal show={!!viewId} onHide={() => setViewId(null)} title="MOU details" subtitle={view?.name}>
+        {view && <RecordView record={view} labels={VIEW_LABELS} />}
+      </DetailModal>
     </PermissionGuard>
   );
 }

@@ -1,13 +1,15 @@
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ScrollExpand from '../components/ScrollExpand';
 import Seo from '../components/Seo.jsx';
 import ArchitecturalFrames from '../components/ArchitecturalFrames.jsx';
 import BlueprintSectionTitle from '../components/BlueprintSectionTitle.jsx';
-import FlipBook from '../components/FlipBook/FlipBook';
-import Page from '../components/FlipBook/Page';
+import useMediaQuery from '../hooks/useMediaQuery';
+import FlexCarousel from '../components/FlexCarousel/FlexCarousel';
+import { renderRoadmapCard } from './business/roadmapCards.js';
 import TiltCard from '../components/TiltCard.jsx';
+import BrochureGate from '../components/BrochureGate';
 import { businessSolutionApi } from '../api/businessSolutionApi.js';
 import { BUSINESS_SOLUTIONS } from '../data/businessSolutions.js';
 import './business/BusinessSolutions.css';
@@ -26,6 +28,15 @@ const DEFAULT_SERVICES = BUSINESS_SOLUTIONS.map((s, i) => ({
   benefits: s.benefits,
 }));
 
+// Body for the generated brochure, used only as a fallback if the published
+// overview PDF is missing. Derived from the same source as the cards.
+const OVERVIEW_SECTIONS = [
+  {
+    heading: 'Our business solutions',
+    items: BUSINESS_SOLUTIONS.map((s) => `${s.pageName}: ${s.shortDescription}`),
+  },
+];
+
 /** Guarantees the arrays the roadmap cards read, whatever the source. */
 const withRoadmap = (list) =>
   list.map((s) => ({ process: [], problems: [], benefits: [], ...s }));
@@ -33,6 +44,9 @@ const withRoadmap = (list) =>
 export default function BusinessSolutions() {
   const [services, setServices] = useState(() => withRoadmap(DEFAULT_SERVICES));
   const [errors, setErrors] = useState('');
+  // The overview proposal is handed over only after the visitor has said who
+  // they are, the same way each solution's own brochure is.
+  const [overviewOpen, setOverviewOpen] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -66,121 +80,70 @@ export default function BusinessSolutions() {
     return () => { active = false; };
   }, []);
 
-  // Built once per solutions list: react-pageflip reads its children to build
-  // the book, so a fresh array on every render would rebuild it mid-turn.
-  // Covers are hard, and the count stays even so the back cover closes the
-  // book on its own.
-  // A book shows one leaf and hides the rest, so it needs to say where the
-  // reader is and give them a way through that does not depend on discovering
-  // that a corner can be dragged.
-  const bookRef = useRef(null);
-  const [leaf, setLeaf] = useState(0);
+  // Which card is centred, as the carousel reports it.
+  const [activeCard, setActiveCard] = useState(0);
+  const navigate = useNavigate();
+  // Below this width the WebGL row is dropped for a plain swipe gallery: the
+  // lens bends the type as it curves the cards, which is fine at desktop size
+  // and unreadable once a card is phone-sized. The same flag switches the card
+  // face to its compact layout, so a gallery slide always carries the larger
+  // one.
+  const compact = useMediaQuery('(max-width: 799px)');
 
-  const turn = useCallback((direction) => {
-    const api = bookRef.current?.pageFlip?.();
-    if (!api) return;
-    if (direction < 0) api.flipPrev();
-    else api.flipNext();
-  }, []);
+  const active = services[activeCard] || services[0];
 
-  // The solutions request usually returns exactly what the fallback already
-  // showed, but as a new array - and a new pages array makes react-pageflip
-  // tear the book down and rebuild it, losing the reader's place. Keying the
-  // memo on the content rather than the array identity means the book is only
-  // rebuilt when something actually changed.
-  const roadmapKey = services
-    .map((s) => `${s.slug}:${s.title}:${s.process.length}`)
-    .join('|');
 
-  const roadmapPages = useMemo(() => {
-    // The three brand colours, rotated leaf by leaf. Ink and accent per
-    // colour are set in CSS; all three pass AA as page backgrounds. The
-    // rotation is offset by one so the first page does not repeat the navy
-    // front cover - opening the book should show a colour change.
-    const TONES = ['rm-leaf--navy', 'rm-leaf--red', 'rm-leaf--gold'];
-    const leaves = [
-      <Page key="cover" hard className="rm-leaf--navy rm-leaf--cover">
-        <div className="rm-cover">
-          <span className="rm-cover__label">Roadmap</span>
-          <h3 className="rm-cover__title">Eight stages, front to back.</h3>
-          <p className="rm-cover__text">
-            One page per solution: what it is, what it fixes, how we run it and
-            what you end up with.
-          </p>
-          <p className="rm-cover__hint">Drag a corner, or click the edge, to turn the page.</p>
-        </div>
-      </Page>,
-      ...services.map((s, i) => (
-        <Page key={s.slug || s.title} className={TONES[(i + 1) % TONES.length]}>
-          <span className="rm-page__stage">Stage {s.idx}</span>
-          <h3 className="rm-page__title">{s.title}</h3>
-          <span className="rm-page__rule" aria-hidden="true" />
-          <p className="rm-page__desc">{s.desc}</p>
+  // The cards are painted onto a canvas, which needs a browser, so they are
+  // built in an effect rather than during render. Waiting for the font matters:
+  // without it the first cards would be drawn in a fallback face and every one
+  // would have to be repainted a moment later.
+  const [carouselItems, setCarouselItems] = useState([]);
 
-          {s.problems.length > 0 && (
-            <div className="rm-page__block">
-              <h4 className="rm-page__label">What this fixes</h4>
-              <ul className="rm-list">
-                {s.problems.slice(0, 2).map((problem) => (
-                  <li key={problem}>{problem}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+  useEffect(() => {
+    let alive = true;
+    const paint = () => {
+      if (!alive) return;
+      setCarouselItems(
+        services.map((solution, index) => ({
+          src: renderRoadmapCard(solution, index, { compact }),
+          // The row is a canvas, so this is all a screen reader gets: it
+          // carries the words that are drawn on the card.
+          alt: `Stage ${solution.idx}, ${solution.title}. ${solution.desc}`,
+          title: solution.title,
+        }))
+      );
+    };
+    if (document.fonts?.ready) document.fonts.ready.then(paint).catch(paint);
+    else paint();
+    return () => {
+      alive = false;
+    };
+  }, [services, compact]);
 
-          {s.process.length > 0 && (
-            <div className="rm-page__block">
-              <h4 className="rm-page__label">How we run it</h4>
-              <ol className="rm-flow">
-                {s.process.map((step, n) => (
-                  <li className="rm-flow__step" key={step.title || n}>
-                    <span className="rm-flow__node" aria-hidden="true">{n + 1}</span>
-                    <span className="rm-flow__body">
-                      <span className="rm-flow__title">{step.title}</span>
-                      {step.items?.[0] && (
-                        <span className="rm-flow__detail">{step.items[0]}</span>
-                      )}
-                    </span>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          )}
-
-          {s.benefits.length > 0 && (
-            <p className="rm-page__result">
-              <span>What you end up with</span>
-              {s.benefits[0]}
-            </p>
-          )}
-
-          <Link
-            to={s.slug ? `/business-solutions/${s.slug}` : '/business-solutions'}
-            className="rm-page__cta"
-          >
-            {'Explore this stage ->'}
-          </Link>
-        </Page>
-      )),
-      <Page key="back" hard className="rm-leaf--red rm-leaf--cover">
-        <div className="rm-cover">
-          <span className="rm-cover__label">End of the roadmap</span>
-          <h3 className="rm-cover__title">Start wherever you are.</h3>
-          <p className="rm-cover__text">
-            Most engagements begin at one stage and grow into the next. The full
-            specifications for each are below.
-          </p>
-          <Link to="/contact" className="rm-cover__cta">{'Talk to our team ->'}</Link>
-        </div>
-      </Page>,
-    ];
-    // An odd leaf count leaves the back cover facing a blank; pad to even.
-    if (leaves.length % 2 !== 0) {
-      leaves.splice(leaves.length - 1, 0, <Page key="blank" />);
-    }
-    return leaves;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roadmapKey]);
+  // The gallery is a scroll-snap strip, so the slide in view is read off its
+  // scroll position rather than reported by a component.
+  const trackRef = useRef(null);
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track || !compact) return undefined;
+    let raf = 0;
+    const read = () => {
+      raf = 0;
+      const slide = track.firstElementChild;
+      if (!slide) return;
+      const step = slide.getBoundingClientRect().width + 14;
+      setActiveCard(Math.max(0, Math.round(track.scrollLeft / step)));
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(read);
+    };
+    track.addEventListener('scroll', onScroll, { passive: true });
+    read();
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      track.removeEventListener('scroll', onScroll);
+    };
+  }, [compact, carouselItems.length]);
 
   return (
     <div className="business-template">
@@ -284,61 +247,106 @@ export default function BusinessSolutions() {
               ))}
           </div>
         </nav>
+      </Container>
 
-        {/* Roadmap: the same eight solutions, in the same order, as a stack
-            that assembles while you scroll. Driven by `services` so it can
-            never fall out of step with the grid below it. */}
-        <BlueprintSectionTitle
-          eyebrow="Roadmap"
-          title="The route through our solutions."
-          aside={`${services.length} Stages`}
-        />
+      {/* Roadmap: the same eight solutions, in the same order. A card is a
+          WebGL texture, so each one's words are painted into its image by
+          roadmapCards.js rather than written as markup.
 
-        {/* The eight solutions as a book: one leaf per stage, covers front
-            and back. Pages come from `services`, so the book follows whatever
-            is published, in the same order as the grid below. */}
-        <FlipBook
-          ref={bookRef}
-          className="solutions-roadmap"
-          label="Our solutions roadmap, as a flip book"
-          onFlip={(e) => setLeaf(e.data)}
-        >
-          {roadmapPages}
-        </FlipBook>
+          Outside the container on purpose, so the row runs the full width of
+          the page. That also takes it out of the z-index lift the container
+          has, which is why it is named in that rule in the stylesheet - a
+          section left at z-index auto here is painted under .af-blocks. */}
+      <div className="solutions-roadmap-band">
+          <BlueprintSectionTitle
+            eyebrow="Roadmap"
+            title="The route through our solutions."
+            aside={`${services.length} Stages`}
+          />
 
-        <div className="rm-controls">
-          <button
-            type="button"
-            className="rm-controls__btn"
-            onClick={() => turn(-1)}
-            disabled={leaf === 0}
-            aria-label="Previous page"
-          >
-            {'<-'}
-          </button>
+          {/* A plain swipe gallery under 800px. The WebGL row curves its cards
+              through a lens, which bends the type with them - handsome at
+              desktop size, illegible once a card is phone-sized. This is an
+              ordinary scroll-snap strip: native touch scrolling, no
+              distortion, and nothing to fight the page scroll. */}
+          {compact ? (
+            <div className="rm-gallery">
+              <ul className="rm-gallery__track" ref={trackRef}>
+                {carouselItems.map((item, index) => {
+                  const solution = services[index];
+                  return (
+                    <li className="rm-gallery__slide" key={item.title}>
+                      <Link
+                        to={solution?.slug ? `/business-solutions/${solution.slug}` : '/business-solutions'}
+                        aria-label={`Open ${item.title}`}
+                      >
+                        <img src={item.src} alt={item.alt} width="620" height="826" />
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
 
-          <p className="rm-controls__where" aria-live="polite">
-            {leaf === 0
-              ? 'Front cover'
-              : leaf >= roadmapPages.length - 1
-                ? 'Back cover'
-                : `Stage ${String(leaf).padStart(2, '0')} of ${String(services.length).padStart(2, '0')} - ${services[leaf - 1]?.title ?? ''}`}
-          </p>
+              <div className="rm-gallery__dots" aria-hidden="true">
+                {carouselItems.map((item, index) => (
+                  <span
+                    key={item.title}
+                    className={`rm-gallery__dot${index === activeCard ? ' is-on' : ''}`}
+                  />
+                ))}
+              </div>
 
-          <button
-            type="button"
-            className="rm-controls__btn"
-            onClick={() => turn(1)}
-            disabled={leaf >= roadmapPages.length - 1}
-            aria-label="Next page"
-          >
-            {'->'}
-          </button>
-        </div>
+              <p className="rm-gallery__count" aria-live="polite">
+                {active
+                  ? `Stage ${active.idx} of ${String(services.length).padStart(2, '0')} - ${active.title}`
+                  : ''}
+              </p>
+            </div>
+          ) : (
+          /* Held back until the cards exist: the carousel falls back to its
+             own sample photographs when handed an empty list, and those would
+             flash up before the first paint. */
+          <div className="rm-row">
+            {carouselItems.length > 0 && (
+            <FlexCarousel
+              items={carouselItems}
+              preset="liquid"
+              intro="rise"
+              fit="portrait"
+              /* The card takes almost the whole row on a phone: there is no
+                 room for neighbours to be useful at that size, and every
+                 pixel given to the centre card is type the reader can see. */
+              cardHeight={compact ? 0.94 : 0.84}
+              gap={compact ? 10 : 18}
+              radius={20}
+              squeeze={0.2}
+              /* The card carries its own title, so the caption underneath it
+                 would only repeat the words already drawn on the face. */
+              captions={false}
+              /* Clicking the centred card opens that solution. A side card is
+                 brought to the centre first, which is the library's own
+                 behaviour and reads correctly here. */
+              focusOnClick={false}
+              onChange={(index) => setActiveCard(index)}
+              onSelect={(index) => {
+                const chosen = services[index];
+                if (chosen?.slug) navigate(`/business-solutions/${chosen.slug}`);
+              }}
+            />
+            )}
+          </div>
+          )}
 
-        <p className="rm-controls__hint">
-          Turn the page with the arrows, or drag a corner of the book.
+        <p className="rm-row__hint">
+          {compact
+            ? 'Swipe through the stages. Tap a card to open it.'
+            : active
+              ? `Drag or scroll the row to move through the stages. Click the centred card to open ${active.title}.`
+              : 'Drag or scroll the row to move through the stages.'}
         </p>
+      </div>
+
+      <Container className="page-section pt-0">
         <BlueprintSectionTitle
           eyebrow="Plan view"
           index="01"
@@ -376,13 +384,33 @@ export default function BusinessSolutions() {
             align="center"
             aside="Contact"
           />
-          <Link to="/contact" className="btn-eduact">Get in Touch</Link>
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <Link to="/contact" className="btn-eduact">Get in Touch</Link>
+            <button
+              type="button"
+              onClick={() => setOverviewOpen(true)}
+              className="btn-eduact-outline"
+              style={{ cursor: 'pointer' }}
+            >
+              Download Services Overview
+            </button>
+          </div>
         </div>
       </Container>
       {/* Architectural background */}
       <div className="af-blocks" aria-hidden="true">
         <ArchitecturalFrames />
       </div>
+
+      <BrochureGate
+        show={overviewOpen}
+        onHide={() => setOverviewOpen(false)}
+        title="Business Solutions Overview"
+        slug="all-solutions"
+        group="business"
+        subtitle="Strategy, design, engineering and marketing delivered by one team."
+        sections={OVERVIEW_SECTIONS}
+      />
     </div>
   );
 }

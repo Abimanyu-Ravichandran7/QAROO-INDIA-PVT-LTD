@@ -4,7 +4,7 @@
 
 export const COMPANY = {
   name: 'Qaroo India Private Limited',
-  email: 'qarootech@gmail.com',
+  email: 'support@qaroo.in',
   phones: ['+91 90439 27967', '+91 90439 97967'],
   primaryPhone: '+91 90439 27967',
   chennaiPhone: '+91 99449 91217',

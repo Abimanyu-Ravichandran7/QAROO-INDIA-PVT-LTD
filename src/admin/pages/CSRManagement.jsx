@@ -3,8 +3,24 @@ import { Link } from 'react-router-dom';
 import { csrApi } from '../../api/csrApi.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import PermissionGuard from '../components/PermissionGuard.jsx';
+import DetailModal from '../components/DetailModal.jsx';
+import RecordView from '../components/RecordView.jsx';
 import { ShimmerPanel, EmptyState, ErrorState } from '../../components/ui/States';
 import { useToast } from '../../context/ToastContext';
+
+const VIEW_LABELS = [
+  ['title', 'Title'],
+  ['year', 'Year'],
+  ['tag', 'Tag'],
+  ['status', 'Status'],
+  ['desc', 'Description'],
+  ['partner', 'Partner'],
+  ['location', 'Location'],
+  ['beneficiaries', 'Beneficiaries'],
+  ['image', 'Image'],
+  ['createdAt', 'Created'],
+  ['updatedAt', 'Updated'],
+];
 
 export default function CSRManagement() {
   const { hasPermission } = useAuth();
@@ -12,7 +28,9 @@ export default function CSRManagement() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
+  const [searchInput, setSearchInput] = useState('');
   const [year, setYear] = useState('');
+  const [viewId, setViewId] = useState(null);
   const toast = useToast();
 
   const fetchProjects = useCallback(async () => {
@@ -28,6 +46,13 @@ export default function CSRManagement() {
   }, [search, year]);
 
   useEffect(() => { fetchProjects(); }, [fetchProjects]);
+
+  useEffect(() => {
+    const t = setTimeout(() => setSearch(searchInput), 400);
+    return () => clearTimeout(t);
+  }, [searchInput]);
+
+  const view = projects.find((p) => p._id === viewId) || null;
 
   const handleDelete = async (p) => {
     if (!window.confirm(`Delete project "${p.title}"?`)) return;
@@ -54,17 +79,29 @@ export default function CSRManagement() {
       <h1>CSR Projects</h1>
       <p className="page-sub">Manage corporate social responsibility projects.</p>
 
-      <div className="admin-card" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
-        <input type="text" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)}
-          style={{ flex: 1, minWidth: '200px', padding: '10px 12px', borderRadius: '10px', border: '1px solid var(--admin-border)' }} />
-        <select value={year} onChange={(e) => setYear(e.target.value)}
-          style={{ padding: '10px 12px', borderRadius: '10px', border: '1px solid var(--admin-border)' }}>
+      <div className="admin-card admin-filter-bar">
+        <input type="text" placeholder="Search projects..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)}
+          className="admin-filter admin-filter--grow" />
+        <select value={year} onChange={(e) => setYear(e.target.value)} className="admin-filter">
           <option value="">All years</option>
           <option value="24-25">24-25</option>
           <option value="25-26">25-26</option>
         </select>
+        {(searchInput || year !== '') && (
+          <button type="button" className="admin-btn outline"
+            onClick={() => { setSearchInput(''); setSearch(''); setYear(''); }}>
+            Clear
+          </button>
+        )}
         {hasPermission('csr.create') && <Link to="/admin/csr/create" className="admin-btn">+ Add Project</Link>}
       </div>
+
+      {!loading && !error && (
+        <p className="admin-filter-meta">
+          Showing <strong>{projects.length}</strong> project{projects.length === 1 ? '' : 's'}
+          {(search || year !== '') ? ' matching the current filters' : ''}
+        </p>
+      )}
 
       <div className="admin-table-wrap">
         <table className="admin-table">
@@ -83,13 +120,14 @@ export default function CSRManagement() {
                 <td><span className={`admin-badge ${p.status === 'published' ? 'green' : 'grey'}`}>{p.status}</span></td>
                 <td>
                   <div className="actions">
+                    <button type="button" className="admin-icon-btn act-view" onClick={() => setViewId(p._id)}>View</button>
                     {hasPermission('csr.update') && (
                       <>
-                        <button className="admin-icon-btn act-publish" onClick={() => handlePublish(p)}>{p.status === 'published' ? 'Unpublish' : 'Publish'}</button>
+                        <button type="button" className="admin-icon-btn act-publish" onClick={() => handlePublish(p)}>{p.status === 'published' ? 'Unpublish' : 'Publish'}</button>
                         <Link to={`/admin/csr/${p._id}/edit`} className="admin-icon-btn act-edit">Edit</Link>
                       </>
                     )}
-                    {hasPermission('csr.delete') && <button className="admin-icon-btn danger" onClick={() => handleDelete(p)}>Delete</button>}
+                    {hasPermission('csr.delete') && <button type="button" className="admin-icon-btn danger" onClick={() => handleDelete(p)}>Delete</button>}
                   </div>
                 </td>
               </tr>
@@ -97,6 +135,10 @@ export default function CSRManagement() {
           </tbody>
         </table>
       </div>
+
+      <DetailModal show={!!viewId} onHide={() => setViewId(null)} title="CSR project details" subtitle={view?.title}>
+        {view && <RecordView record={view} labels={VIEW_LABELS} />}
+      </DetailModal>
     </PermissionGuard>
   );
 }

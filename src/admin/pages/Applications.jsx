@@ -273,7 +273,7 @@ export default function Applications() {
                   <td><span className={`admin-badge ${BADGE[a.status] || 'grey'}`}>{a.status}</span></td>
                   <td>
                     <div className="actions">
-                      <button type="button" className="admin-icon-btn act-edit" onClick={() => openDetail(a)}>
+                      <button type="button" className="admin-icon-btn act-view" onClick={() => openDetail(a)}>
                         View
                       </button>
                       {hasPermission('applications.delete') && (

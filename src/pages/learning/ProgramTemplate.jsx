@@ -1,10 +1,11 @@
+import { useState } from 'react';
 import { Container, Row, Col, Accordion, Breadcrumb } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Seo from '../../components/Seo.jsx';
 import InkLines from '../../components/InkLines.jsx';
 import GradientBlobBackground from '../../components/GradientBlobBackground.jsx';
 import { COMPANY } from '../../data/company.js';
-import { downloadBrochure } from '../../utils/downloadBrochure.js';
+import BrochureGate from '../../components/BrochureGate';
 import './ProgramTemplate.css';
 
 const BLOB_COLORS = ['#172A46', '#B3262D', '#F4C430'];
@@ -50,6 +51,9 @@ function CheckList({ items, cols = 2 }) {
 
 export default function ProgramTemplate({ program, otherPrograms }) {
   const path = `/learning-programs/${program.slug}`;
+  // The brochure is handed over only after the visitor has told us who they
+  // are, so the button opens the form rather than the document.
+  const [brochureOpen, setBrochureOpen] = useState(false);
 
   const sections = [
     { heading: 'Key highlights', items: program.highlights },
@@ -107,11 +111,8 @@ export default function ProgramTemplate({ program, otherPrograms }) {
               Request Course Details
             </Link>
             <button
-              onClick={() => downloadBrochure({
-                title: program.pageName,
-                subtitle: program.shortDescription,
-                sections,
-              })}
+              type="button"
+              onClick={() => setBrochureOpen(true)}
               className="btn-eduact-outline"
               style={{ color: '#fff', borderColor: '#F4C430', cursor: 'pointer' }}
             >
@@ -194,7 +195,7 @@ export default function ProgramTemplate({ program, otherPrograms }) {
               <Col md={6} lg={4} key={mod.title}>
                 <div className="eduact-card reveal">
                   <span className="idx">Module {String(i + 1).padStart(2, '0')}</span>
-                  <h4>{mod.title}</h4>
+                  <h3>{mod.title}</h3>
                   <ul style={{ paddingLeft: '18px', margin: 0, listStyle: 'disc' }}>
                     {mod.items.map((item) => (
                       <li key={item} style={{ fontSize: '13.5px', color: 'var(--eduact-text)', marginBottom: '5px' }}>
@@ -249,21 +250,21 @@ export default function ProgramTemplate({ program, otherPrograms }) {
             <Col md={6} lg={4}>
               <div className="eduact-card reveal" style={{ height: '100%' }}>
                 <span className="idx">Certification</span>
-                <h4>Get certified</h4>
+                <h3>Get certified</h3>
                 <p>{program.certification}</p>
               </div>
             </Col>
             <Col md={6} lg={4}>
               <div className="eduact-card reveal" style={{ height: '100%' }}>
                 <span className="idx">Career Support</span>
-                <h4>Placement support</h4>
+                <h3>Placement support</h3>
                 <p>{program.placement}</p>
               </div>
             </Col>
             <Col md={12} lg={4}>
               <div className="eduact-card reveal" style={{ height: '100%' }}>
                 <span className="idx">Flexibility</span>
-                <h4>Learning modes</h4>
+                <h3>Learning modes</h3>
                 <ChipList items={program.modes} />
               </div>
             </Col>
@@ -298,7 +299,7 @@ export default function ProgramTemplate({ program, otherPrograms }) {
               {otherPrograms.map((p) => (
                 <Col md={6} lg={4} key={p.slug}>
                   <div className="eduact-card reveal" style={{ height: '100%' }}>
-                    <h4>{p.pageName}</h4>
+                    <h3>{p.pageName}</h3>
                     <p>{p.shortDescription}</p>
                     <Link to={`/learning-programs/${p.slug}`} className="card-link">View program {'->'}</Link>
                   </div>
@@ -323,6 +324,16 @@ export default function ProgramTemplate({ program, otherPrograms }) {
           </Link>
         </Container>
       </section>
+
+      <BrochureGate
+        show={brochureOpen}
+        onHide={() => setBrochureOpen(false)}
+        title={program.pageName}
+        slug={program.slug}
+        group="learning"
+        subtitle={program.shortDescription}
+        sections={sections}
+      />
     </div>
   );
 }

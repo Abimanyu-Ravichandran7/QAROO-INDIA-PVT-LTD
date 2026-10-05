@@ -1,0 +1,104 @@
+/* The form that stands between a visitor and a programme brochure. Colours are
+   the site's existing variables. */
+
+.brochure-gate__heading {
+  font-family: var(--heading-font);
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--eduact-black);
+}
+
+.brochure-gate__intro {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--eduact-text);
+  margin: 0 0 18px;
+}
+
+.brochure-gate__form .form-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--eduact-black);
+  margin-bottom: 6px;
+}
+
+.brochure-gate__form .form-control {
+  border-radius: 12px;
+  border: 1px solid var(--eduact-soft4);
+  padding: 11px 14px;
+  font-size: 14px;
+}
+
+.brochure-gate__form .form-control:focus {
+  border-color: var(--eduact-base);
+  box-shadow: 0 0 0 3px rgba(var(--eduact-base-rgb), 0.12);
+}
+
+/* Sits between the fields and the button, because the button is what it
+   confirms - which is why the button stays disabled until it is ticked. */
+.brochure-gate__declaration {
+  margin-top: 18px;
+  padding: 13px 15px;
+  border: 1px solid var(--eduact-soft4);
+  border-radius: 12px;
+  background: var(--eduact-soft5);
+}
+
+.brochure-gate__declaration .form-check {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+}
+
+.brochure-gate__declaration .form-check-input {
+  flex: 0 0 auto;
+  margin: 2px 0 0;
+  width: 17px;
+  height: 17px;
+  border-color: var(--eduact-soft4);
+  cursor: pointer;
+}
+
+.brochure-gate__declaration .form-check-input:checked {
+  background-color: var(--eduact-base);
+  border-color: var(--eduact-base);
+}
+
+.brochure-gate__declaration .form-check-label {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--eduact-text);
+  cursor: pointer;
+}
+
+.brochure-gate__error {
+  margin: 14px 0 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--eduact-base);
+}
+
+.brochure-gate__submit {
+  margin-top: 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.brochure-gate__done {
+  text-align: center;
+  padding: 14px 8px 6px;
+}
+
+.brochure-gate__done .q-icon {
+  color: #2e7d32;
+  margin-bottom: 12px;
+}
+
+.brochure-gate__done p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--eduact-text);
+  max-width: 420px;
+  margin: 0 auto 18px;
+}

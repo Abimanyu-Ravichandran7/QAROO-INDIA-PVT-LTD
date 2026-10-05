@@ -142,7 +142,7 @@ export default function Contact() {
                 <Form onSubmit={handleSubmit}>
                   <Row className="g-3">
                     <Col md={6}>
-                      <Form.Group>
+                      <Form.Group controlId="contact-name">
                         <Form.Label style={{ fontSize: '14px', fontWeight: 600, color: 'var(--eduact-black)' }}>Full Name</Form.Label>
                         <Form.Control
                           type="text"
@@ -160,7 +160,7 @@ export default function Contact() {
                       </Form.Group>
                     </Col>
                     <Col md={6}>
-                      <Form.Group>
+                      <Form.Group controlId="contact-email">
                         <Form.Label style={{ fontSize: '14px', fontWeight: 600, color: 'var(--eduact-black)' }}>Email</Form.Label>
                         <Form.Control
                           type="email"
@@ -178,7 +178,7 @@ export default function Contact() {
                       </Form.Group>
                     </Col>
                     <Col md={6}>
-                      <Form.Group>
+                      <Form.Group controlId="contact-phone">
                         <Form.Label style={{ fontSize: '14px', fontWeight: 600, color: 'var(--eduact-black)' }}>Phone</Form.Label>
                         <Form.Control
                           type="tel"
@@ -195,7 +195,7 @@ export default function Contact() {
                       </Form.Group>
                     </Col>
                     <Col md={6}>
-                      <Form.Group>
+                      <Form.Group controlId="contact-interest">
                         <Form.Label style={{ fontSize: '14px', fontWeight: 600, color: 'var(--eduact-black)' }}>I'm interested in</Form.Label>
                         <Form.Select
                           name="interest"
@@ -219,7 +219,9 @@ export default function Contact() {
                     </Col>
                     {INTEREST_FIELDS[formData.interest] ? INTEREST_FIELDS[formData.interest].map((field) => (
                       <Col xs={12} key={field.name}>
-                        <Form.Group>
+                        {/* Keyed off the field, because this group renders once
+                            per conditional field and a shared id would collide. */}
+                        <Form.Group controlId={`contact-${field.name}-${field.label.replace(/\W+/g, '-').toLowerCase()}`}>
                           <Form.Label style={{ fontSize: '14px', fontWeight: 600, color: 'var(--eduact-black)' }}>
                             {field.label}
                           </Form.Label>
@@ -261,7 +263,7 @@ export default function Contact() {
                       </Col>
                     )) : null}
                     <Col xs={12}>
-                      <Form.Group>
+                      <Form.Group controlId="contact-message">
                         <Form.Label style={{ fontSize: '14px', fontWeight: 600, color: 'var(--eduact-black)' }}>Message</Form.Label>
                         <Form.Control
                           as="textarea"

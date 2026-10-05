@@ -1,9 +1,13 @@
+import { useState } from 'react';
 import { Container, Row, Col, Accordion, Breadcrumb } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Seo from '../../components/Seo.jsx';
-import { downloadBrochure } from '../../utils/downloadBrochure.js';
+import LinedSection from '../../components/LinedSection.jsx';
+import PageBackdrop from '../../components/PageBackdrop.jsx';
+import BrochureGate from '../../components/BrochureGate';
 import { COMPANY } from '../../data/company.js';
 import PageHero from '../../components/PageHero';
+import './BusinessSolutionTemplate.css';
 
 function SectionTitle({ eyebrow, title, desc }) {
   return (
@@ -21,18 +25,7 @@ function ChipList({ items }) {
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
       {items.map((item) => (
-        <span
-          key={item}
-          style={{
-            fontSize: '12.5px',
-            fontWeight: 600,
-            color: 'var(--eduact-base)',
-            background: 'var(--eduact-soft3)',
-            padding: '6px 14px',
-            borderRadius: '999px',
-            border: '1px solid rgba(179, 38, 45,0.1)',
-          }}
-        >
+        <span key={item} className="st-chip">
           {item}
         </span>
       ))}
@@ -46,7 +39,7 @@ function CheckList({ items, cols = 2 }) {
       {items.map((item) => (
         <Col key={item} xs={12} md={6} lg={cols === 3 ? 4 : 6} style={{ marginBottom: '10px' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', fontSize: '14.5px', color: 'var(--eduact-text)' }}>
-            <span style={{ color: 'var(--eduact-secondary)', fontWeight: 800, marginTop: '1px' }}>✓</span>
+            <span className="st-tick">✓</span>
             <span>{item}</span>
           </div>
         </Col>
@@ -55,22 +48,14 @@ function CheckList({ items, cols = 2 }) {
   );
 }
 
-function CardList({ items, numPrefix }) {
+/** Numbered cards, matching the key-highlight cards on a programme page. */
+function HighlightList({ items }) {
   return (
     <Row className="g-3">
       {items.map((item, i) => (
         <Col xs={12} md={6} lg={4} key={item}>
-          <div style={{
-            border: '1px solid var(--eduact-soft4)',
-            borderRadius: '12px',
-            padding: '12px 16px',
-            fontSize: '14px',
-            fontWeight: 600,
-            color: 'var(--eduact-black)',
-            height: '100%',
-            background: 'var(--eduact-white)',
-          }}>
-            {numPrefix && <span className="idx">{numPrefix}{String(i + 1).padStart(2, '0')}</span>}
+          <div className="st-highlight">
+            <span className="st-medal">{String(i + 1).padStart(2, '0')}</span>
             {item}
           </div>
         </Col>
@@ -79,8 +64,38 @@ function CardList({ items, numPrefix }) {
   );
 }
 
+/** A section on the soft tint, no backdrop. */
+function SoftSection({ children, narrow }) {
+  return (
+    <section className="page-section" style={{ background: 'var(--eduact-soft2)' }}>
+      <Container style={narrow ? { maxWidth: '860px' } : undefined}>{children}</Container>
+    </section>
+  );
+}
+
+/** The paired two-column block this page uses repeatedly. */
+function TwoUp({ left, right }) {
+  return (
+    <Row className="g-5">
+      <Col md={6}>
+        <p className="eyebrow">{left.eyebrow}</p>
+        <h3 className="st-title" style={{ fontSize: '24px', color: 'var(--eduact-black)', marginBottom: '18px' }}>{left.title}</h3>
+        <CheckList items={left.items} cols={1} />
+      </Col>
+      <Col md={6}>
+        <p className="eyebrow">{right.eyebrow}</p>
+        <h3 className="st-title" style={{ fontSize: '24px', color: 'var(--eduact-black)', marginBottom: '18px' }}>{right.title}</h3>
+        <CheckList items={right.items} cols={1} />
+      </Col>
+    </Row>
+  );
+}
+
 export default function BusinessSolutionTemplate({ solution, otherSolutions }) {
   const path = `/business-solutions/${solution.slug}`;
+  // The proposal is handed over only after the visitor has said who they are,
+  // so the button opens the form rather than the document.
+  const [brochureOpen, setBrochureOpen] = useState(false);
 
   const sections = [
     { heading: 'Key services', items: solution.services },
@@ -100,15 +115,18 @@ export default function BusinessSolutionTemplate({ solution, otherSolutions }) {
   ];
 
   return (
-    <>
+    <div className="solution-template">
+      <PageBackdrop />
+
       <Seo
         title={solution.metaTitle}
         description={solution.metaDescription}
         path={path}
       />
 
-      {/* Hero */}
-      <PageHero padding="56px 0 72px">
+      {/* Hero - the shared band, with the gold rule, corner glow and foot
+          falloff the programme hero carries. */}
+      <PageHero padding="56px 0 88px">
         <Breadcrumb style={{ marginBottom: '14px' }}>
           <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/' }} style={{ color: 'rgba(255,255,255,0.6)' }}>
             Home
@@ -136,11 +154,8 @@ export default function BusinessSolutionTemplate({ solution, otherSolutions }) {
             Discuss Your Project
           </Link>
           <button
-            onClick={() => downloadBrochure({
-              title: solution.pageName,
-              subtitle: solution.shortDescription,
-              sections,
-            })}
+            type="button"
+            onClick={() => setBrochureOpen(true)}
             className="btn-eduact-outline"
             style={{ color: '#fff', borderColor: '#F4C430', cursor: 'pointer' }}
           >
@@ -152,176 +167,128 @@ export default function BusinessSolutionTemplate({ solution, otherSolutions }) {
         </div>
       </PageHero>
 
-      {/* Introduction */}
-      <section className="page-section">
-        <Container>
-          <div className="reveal" style={{ maxWidth: '860px' }}>
-            <p className="eyebrow">Overview</p>
-            <h2 style={{ fontSize: 'clamp(26px, 3vw, 36px)', color: 'var(--eduact-black)', marginBottom: '20px' }}>
-              {solution.pageName} from Qaroo India
-            </h2>
-            {solution.fullDescription.split('\n\n').map((para, i) => (
-              <p key={i} style={{ fontSize: '15.5px', lineHeight: 1.8, color: 'var(--eduact-text)', marginBottom: '16px' }}>
-                {para}
-              </p>
-            ))}
-          </div>
+      {/* Overview + key services */}
+      <LinedSection>
+        <div className="reveal" style={{ maxWidth: '860px' }}>
+          <p className="eyebrow">Overview</p>
+          <h2 className="st-title" style={{ fontSize: 'clamp(26px, 3vw, 36px)', color: 'var(--eduact-black)', marginBottom: '20px' }}>
+            {solution.pageName} from Qaroo India
+          </h2>
+          {solution.fullDescription.split('\n\n').map((para, i) => (
+            <p key={i} style={{ fontSize: '15.5px', lineHeight: 1.8, color: 'var(--eduact-text)', marginBottom: '16px' }}>
+              {para}
+            </p>
+          ))}
+        </div>
 
-          {/* Services */}
-          <div className="mt-5 reveal">
-            <SectionTitle eyebrow="What we do" title="Key services" />
-            <CardList items={solution.services} />
-          </div>
-        </Container>
-      </section>
+        <div className="mt-5 reveal">
+          <p className="eyebrow">What We Do</p>
+          <h3 className="st-title" style={{ fontSize: '26px', color: 'var(--eduact-black)', marginBottom: '18px' }}>
+            Key services
+          </h3>
+          <HighlightList items={solution.services} />
+        </div>
+      </LinedSection>
 
-      {/* Business problems + our solution */}
-      <section className="page-section" style={{ background: 'var(--eduact-soft2)' }}>
-        <Container>
-          <Row className="g-5">
-            <Col md={6}>
-              <p className="eyebrow">The challenge</p>
-              <h3 style={{ fontSize: '24px', color: 'var(--eduact-black)', marginBottom: '18px' }}>Business problems we solve</h3>
-              <CheckList items={solution.problems} cols={1} />
+      {/* The challenge + our approach */}
+      <SoftSection>
+        <TwoUp
+          left={{ eyebrow: 'The Challenge', title: 'Business problems we solve', items: solution.problems }}
+          right={{ eyebrow: 'Our Approach', title: 'How we solve them', items: solution.solutions }}
+        />
+      </SoftSection>
+
+      {/* Features + benefits */}
+      <LinedSection>
+        <TwoUp
+          left={{ eyebrow: 'Features', title: 'What you get', items: solution.features }}
+          right={{ eyebrow: 'Benefits', title: 'Why it matters', items: solution.benefits }}
+        />
+      </LinedSection>
+
+      {/* Toolkit */}
+      <SoftSection>
+        <SectionTitle eyebrow="Toolkit" title="Technologies & tools" />
+        <ChipList items={solution.techniques} />
+      </SoftSection>
+
+      {/* Process */}
+      <LinedSection>
+        <SectionTitle
+          eyebrow="How We Work"
+          title="Our process"
+          desc="A clear, practical process from first conversation to measurable results."
+        />
+        <Row className="g-4">
+          {solution.process.map((mod, i) => (
+            <Col md={6} lg={3} key={mod.title}>
+              <div className="eduact-card reveal" style={{ height: '100%' }}>
+                <span className="idx">Step {String(i + 1).padStart(2, '0')}</span>
+                <h3>{mod.title}</h3>
+                <ul style={{ paddingLeft: '18px', margin: 0, listStyle: 'disc' }}>
+                  {mod.items.map((item) => (
+                    <li key={item} style={{ fontSize: '13.5px', color: 'var(--eduact-text)', marginBottom: '5px' }}>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </Col>
-            <Col md={6}>
-              <p className="eyebrow">Our approach</p>
-              <h3 style={{ fontSize: '24px', color: 'var(--eduact-black)', marginBottom: '18px' }}>How we solve them</h3>
-              <CheckList items={solution.solutions} cols={1} />
-            </Col>
-          </Row>
-        </Container>
-      </section>
+          ))}
+        </Row>
+      </LinedSection>
 
-      {/* Features + Benefits */}
-      <section className="page-section">
-        <Container>
-          <Row className="g-5">
-            <Col md={6}>
-              <p className="eyebrow">Features</p>
-              <h3 style={{ fontSize: '24px', color: 'var(--eduact-black)', marginBottom: '18px' }}>What you get</h3>
-              <CheckList items={solution.features} cols={1} />
-            </Col>
-            <Col md={6}>
-              <p className="eyebrow">Benefits</p>
-              <h3 style={{ fontSize: '24px', color: 'var(--eduact-black)', marginBottom: '18px' }}>Why it matters</h3>
-              <CheckList items={solution.benefits} cols={1} />
-            </Col>
-          </Row>
-        </Container>
-      </section>
+      {/* Use cases + industries */}
+      <SoftSection>
+        <TwoUp
+          left={{ eyebrow: 'Where It Applies', title: 'Common use cases', items: solution.useCases }}
+          right={{ eyebrow: 'Industries', title: 'Industries we serve', items: solution.industries }}
+        />
+      </SoftSection>
 
-      {/* Technologies / Tools */}
-      <section className="page-section" style={{ background: 'var(--eduact-soft2)' }}>
-        <Container>
-          <SectionTitle eyebrow="Toolkit" title="Technologies & tools" />
-          <ChipList items={solution.techniques} />
-        </Container>
-      </section>
+      {/* Audience + why choose */}
+      <LinedSection>
+        <TwoUp
+          left={{ eyebrow: 'Who It Is For', title: 'Who we work with', items: solution.audience }}
+          right={{ eyebrow: 'Why Us', title: 'Why choose this solution', items: solution.whyChoose }}
+        />
+      </LinedSection>
 
-      {/* Process / Methodology */}
-      <section className="page-section">
-        <Container>
-          <SectionTitle
-            eyebrow="How we work"
-            title="Our process"
-            desc="A clear, practical process from first conversation to measurable results."
-          />
+      {/* FAQ */}
+      <SoftSection narrow>
+        <SectionTitle eyebrow="FAQ" title="Frequently asked questions" />
+        <Accordion defaultActiveKey="0" style={{ borderRadius: '14px', overflow: 'hidden' }}>
+          {solution.faq.map((f, i) => (
+            <Accordion.Item eventKey={String(i)} key={f.q}>
+              <Accordion.Header>{f.q}</Accordion.Header>
+              <Accordion.Body style={{ fontSize: '14.5px', color: 'var(--eduact-text)' }}>
+                {f.a}
+              </Accordion.Body>
+            </Accordion.Item>
+          ))}
+        </Accordion>
+      </SoftSection>
+
+      {/* Other solutions */}
+      {otherSolutions && otherSolutions.length > 0 && (
+        <LinedSection>
+          <SectionTitle eyebrow="Explore More" title="Other business solutions" />
           <Row className="g-4">
-            {solution.process.map((mod, i) => (
-              <Col md={6} lg={3} key={mod.title}>
+            {otherSolutions.map((s) => (
+              <Col md={6} lg={4} key={s.slug}>
                 <div className="eduact-card reveal" style={{ height: '100%' }}>
-                  <span className="idx">Step {String(i + 1).padStart(2, '0')}</span>
-                  <h4>{mod.title}</h4>
-                  <ul style={{ paddingLeft: '18px', margin: 0, listStyle: 'disc' }}>
-                    {mod.items.map((item) => (
-                      <li key={item} style={{ fontSize: '13.5px', color: 'var(--eduact-text)', marginBottom: '5px' }}>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
+                  <h3>{s.pageName}</h3>
+                  <p>{s.shortDescription}</p>
+                  <Link to={`/business-solutions/${s.slug}`} className="card-link">View solution {'->'}</Link>
                 </div>
               </Col>
             ))}
           </Row>
-        </Container>
-      </section>
-
-      {/* Use cases + Industries */}
-      <section className="page-section" style={{ background: 'var(--eduact-soft2)' }}>
-        <Container>
-          <Row className="g-5">
-            <Col md={6}>
-              <p className="eyebrow">Where it applies</p>
-              <h3 style={{ fontSize: '24px', color: 'var(--eduact-black)', marginBottom: '18px' }}>Common use cases</h3>
-              <CheckList items={solution.useCases} cols={1} />
-            </Col>
-            <Col md={6}>
-              <p className="eyebrow">Industries</p>
-              <h3 style={{ fontSize: '24px', color: 'var(--eduact-black)', marginBottom: '18px' }}>Industries we serve</h3>
-              <CheckList items={solution.industries} cols={1} />
-            </Col>
-          </Row>
-        </Container>
-      </section>
-
-      {/* Audience + Why choose */}
-      <section className="page-section">
-        <Container>
-          <Row className="g-5">
-            <Col md={6}>
-              <p className="eyebrow">Who it is for</p>
-              <h3 style={{ fontSize: '24px', color: 'var(--eduact-black)', marginBottom: '18px' }}>Who we work with</h3>
-              <CheckList items={solution.audience} cols={1} />
-            </Col>
-            <Col md={6}>
-              <p className="eyebrow">Why us</p>
-              <h3 style={{ fontSize: '24px', color: 'var(--eduact-black)', marginBottom: '18px' }}>Why choose this solution</h3>
-              <CheckList items={solution.whyChoose} cols={1} />
-            </Col>
-          </Row>
-        </Container>
-      </section>
-
-      {/* FAQ */}
-      <section className="page-section" style={{ background: 'var(--eduact-soft2)' }}>
-        <Container style={{ maxWidth: '860px' }}>
-          <SectionTitle eyebrow="FAQ" title="Frequently asked questions" />
-          <Accordion defaultActiveKey="0" style={{ borderRadius: '14px', overflow: 'hidden' }}>
-            {solution.faq.map((f, i) => (
-              <Accordion.Item eventKey={String(i)} key={f.q}>
-                <Accordion.Header>{f.q}</Accordion.Header>
-                <Accordion.Body style={{ fontSize: '14.5px', color: 'var(--eduact-text)' }}>
-                  {f.a}
-                </Accordion.Body>
-              </Accordion.Item>
-            ))}
-          </Accordion>
-        </Container>
-      </section>
-
-      {/* Other solutions */}
-      {otherSolutions && otherSolutions.length > 0 && (
-        <section className="page-section">
-          <Container>
-            <SectionTitle eyebrow="Explore more" title="Other business solutions" />
-            <Row className="g-4">
-              {otherSolutions.map((s) => (
-                <Col md={6} lg={4} key={s.slug}>
-                  <div className="eduact-card reveal" style={{ height: '100%' }}>
-                    <h4>{s.pageName}</h4>
-                    <p>{s.shortDescription}</p>
-                    <Link to={`/business-solutions/${s.slug}`} className="card-link">View solution {'->'}</Link>
-                  </div>
-                </Col>
-              ))}
-            </Row>
-          </Container>
-        </section>
+        </LinedSection>
       )}
 
       {/* CTA */}
-      <section className="page-section" style={{ background: 'var(--eduact-base)' }}>
+      <section className="page-section st-cta">
         <Container className="text-center">
           <h2 style={{ fontFamily: 'var(--heading-font)', fontWeight: 800, color: '#fff', fontSize: 'clamp(24px, 3vw, 34px)' }}>
             Ready to get started with {solution.pageName}?
@@ -334,6 +301,16 @@ export default function BusinessSolutionTemplate({ solution, otherSolutions }) {
           </Link>
         </Container>
       </section>
-    </>
+
+      <BrochureGate
+        show={brochureOpen}
+        onHide={() => setBrochureOpen(false)}
+        title={solution.pageName}
+        slug={solution.slug}
+        group="business"
+        subtitle={solution.shortDescription}
+        sections={sections}
+      />
+    </div>
   );
 }

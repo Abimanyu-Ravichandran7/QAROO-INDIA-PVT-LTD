@@ -133,7 +133,12 @@ function App() {
         >
           <NetworkStatus />
           <div id="scroll-progress" />
+          {/* First thing in the tab order, so a keyboard or screen-reader user
+              can jump past the navigation instead of walking every link on
+              every page. Only visible while focused. */}
+          <a className="skip-link" href="#main-content">Skip to main content</a>
           <NavigationBar />
+          <main id="main-content">
             <Suspense
               fallback={
                 <Shimmer />
@@ -157,6 +162,7 @@ function App() {
               <Route path="*" element={<PageWrapper><NotFound /></PageWrapper>} />
             </Routes>
           </Suspense>
+          </main>
           <Footer />
           <button
             id="to-top"

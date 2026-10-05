@@ -38,7 +38,17 @@ const STYLE = `
   @media print { body { background: #fff; } .cover { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
 `;
 
-export function downloadBrochure({ title, subtitle, sections }) {
+/**
+ * Builds a brochure from a programme or solution's own content.
+ *
+ * @param {object} options
+ * @param {boolean} [options.print]
+ *   Open it in a window and raise the print dialog, where the browser's own
+ *   "Save as PDF" writes the file. That is how a PDF is produced here without
+ *   pulling in a PDF library: the document already carries print styles. Left
+ *   off, the brochure downloads as a self-contained HTML file instead.
+ */
+export function downloadBrochure({ title, subtitle, sections, print = false }) {
   const body = (sections || [])
     .filter((s) => s && s.items && s.items.length)
     .map(
@@ -71,6 +81,28 @@ export function downloadBrochure({ title, subtitle, sections }) {
   </div>
 </body>
 </html>`;
+
+  if (print) {
+    const view = window.open('', '_blank', 'noopener,width=900,height=1000');
+    if (view) {
+      view.document.write(html);
+      view.document.close();
+      // Give the document a moment to lay out before the dialog opens, or it
+      // can be measured mid-parse and paginate badly.
+      view.addEventListener('load', () => {
+        view.focus();
+        view.print();
+      });
+      setTimeout(() => {
+        if (!view.closed) {
+          view.focus();
+          view.print();
+        }
+      }, 600);
+      return;
+    }
+    // Popup blocked: fall through and hand over the file instead of nothing.
+  }
 
   const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
   const url = URL.createObjectURL(blob);

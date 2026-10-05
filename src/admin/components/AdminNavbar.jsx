@@ -19,6 +19,16 @@ export default function AdminNavbar({ onMenuClick }) {
     <header className="admin-topbar">
       <button className="admin-menu-btn" onClick={onMenuClick} aria-label="Toggle navigation menu">☰</button>
       <div className="admin-topbar-title">Admin Panel</div>
+      <button
+        type="button"
+        className="admin-cmd-trigger"
+        onClick={() => window.dispatchEvent(new CustomEvent('qaroo:palette'))}
+        title="Search and jump to any section (Ctrl+K)"
+      >
+        <span aria-hidden="true">⌕</span>
+        <span className="admin-cmd-trigger__text">Search or jump to...</span>
+        <kbd>Ctrl</kbd><kbd>K</kbd>
+      </button>
       <div className="admin-topbar-right">
         {inBeta && <span className="admin-badge yellow" title="Beta build - set VITE_BETA_MODE=true in your .env to show/hide">Beta</span>}
         <button

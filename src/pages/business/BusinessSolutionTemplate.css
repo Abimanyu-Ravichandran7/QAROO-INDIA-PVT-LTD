@@ -1,0 +1,221 @@
+/* Style template for the business solution detail pages - the eight pages
+   behind the Business Solutions dropdown.
+ *
+ * This is the same design language as the learning programme pages
+ * (ProgramTemplate.css): gradient-underlined headings, numbered highlight
+ * cards, pill chips that invert on hover, circular ticks, a branded accordion
+ * and a gradient closing band, over a soft blob backdrop with ink lines on
+ * alternating sections.
+ *
+ * Scoped to .solution-template throughout. The hero accents are added to the
+ * shared .page-hero from inside that scope rather than by editing PageHero,
+ * because nine other pages use that component and only these eight should
+ * change.
+ */
+
+.solution-template {
+  position: relative;
+}
+
+.solution-template > section.page-section,
+.solution-template > .lined-section,
+.solution-template > .page-hero {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- hero accents ----------
+   PageHero keeps its red field and atom layer; these add the gold rule along
+   the top, the corner glow and the falloff at the foot, so the band opens the
+   page the same way the programme hero does. */
+.solution-template .page-hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  z-index: 3;
+  background: linear-gradient(90deg, var(--eduact-secondary) 0%, rgba(244, 196, 48, 0.35) 100%);
+}
+/* The corner glow and the foot falloff hang off PageHero's own backdrop layer.
+   That element is already absolute, inset 0 and overflow hidden, so the glow
+   can bleed past the corner and be clipped to the band - and both land behind
+   the copy without adding a single node to the page. The hero's own ::after is
+   taken by the edge falloff in App.css, which is why these live here. */
+.solution-template .page-hero__bg::before,
+.solution-template .page-hero__bg::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+.solution-template .page-hero__bg::before {
+  left: -70px;
+  top: -80px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.09), transparent 65%);
+}
+.solution-template .page-hero__bg::after {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 84px;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.06), transparent);
+}
+
+/* ---------- headings ---------- */
+
+.solution-template .st-title {
+  position: relative;
+  padding-bottom: 14px;
+}
+.solution-template .st-title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 60px;
+  height: 4px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--eduact-base), var(--eduact-secondary));
+}
+
+.solution-template .section-head h2 {
+  position: relative;
+  padding-bottom: 16px;
+}
+.solution-template .section-head h2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 58px;
+  height: 4px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--eduact-base), var(--eduact-secondary));
+}
+
+/* ---------- numbered highlight cards ---------- */
+
+.solution-template .st-highlight {
+  position: relative;
+  border: 1px solid var(--eduact-soft4);
+  border-radius: 14px;
+  padding: 14px 16px 14px 62px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--eduact-black);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(180deg, #ffffff, #fbfbfe);
+  box-shadow: 0 1px 2px rgba(23, 42, 70, 0.04), 0 8px 20px rgba(23, 42, 70, 0.06);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+.solution-template .st-highlight:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(23, 42, 70, 0.1);
+  border-color: rgba(179, 38, 45, 0.28);
+}
+.solution-template .st-medal {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--eduact-base);
+  color: var(--eduact-secondary);
+  font-family: var(--heading-font);
+  font-weight: 800;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.03em;
+}
+
+/* ---------- chips ---------- */
+
+.solution-template .st-chip {
+  display: inline-block;
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--eduact-base);
+  background: var(--eduact-soft3);
+  border: 1px solid rgba(179, 38, 45, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+.solution-template .st-chip:hover {
+  transform: translateY(-2px);
+  background: var(--eduact-base);
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(179, 38, 45, 0.25);
+}
+
+/* ---------- ticks ---------- */
+
+.solution-template .st-tick {
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: var(--eduact-soft3);
+  color: var(--eduact-base) !important;
+  font-weight: 800;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- accordion ---------- */
+
+.solution-template .accordion-item {
+  border: 1px solid var(--eduact-soft4) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  margin-bottom: 10px;
+  background: var(--eduact-white);
+  box-shadow: 0 2px 10px rgba(23, 42, 70, 0.04);
+}
+.solution-template .accordion-button {
+  font-weight: 600;
+  color: var(--eduact-black);
+  background: var(--eduact-white);
+  box-shadow: none !important;
+}
+.solution-template .accordion-button:not(.collapsed) {
+  color: var(--eduact-base);
+  background: var(--eduact-soft3);
+}
+
+/* ---------- closing band ---------- */
+
+.solution-template .st-cta {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 14% 30%, rgba(244, 196, 48, 0.32), transparent 40%),
+    radial-gradient(circle at 88% 80%, rgba(23, 42, 70, 0.5), transparent 55%),
+    var(--eduact-base);
+}
+
+/* ---------- reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .solution-template .st-highlight,
+  .solution-template .st-chip {
+    transition: none;
+  }
+  .solution-template .st-highlight:hover,
+  .solution-template .st-chip:hover {
+    transform: none;
+  }
+}

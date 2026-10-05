@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
+import { Navbar, Nav, Container } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
 import Icon from './Icon';
 import { COMPANY } from '../data/company.js';
@@ -38,6 +38,8 @@ export default function NavigationBar() {
   const [navLinks, setNavLinks] = useState(null);
   const [scrolled, setScrolled] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [openMenu, setOpenMenu] = useState(null);
+  const [pinned, setPinned] = useState(null);
   const location = useLocation();
 
   const cfg = navLinks || DEFAULT_NAVBAR;
@@ -97,11 +99,49 @@ export default function NavigationBar() {
 
   useEffect(() => {
     setExpanded(false);
+    setOpenMenu(null);
+    setPinned(null);
   }, [location.pathname]);
 
   const isActive = (path) => location.pathname === path;
   const [bizCol1, bizCol2] = splitHalf(cfg.businessLinks);
   const [learnCol1, learnCol2] = splitHalf(cfg.learningLinks);
+  const navTitleStyle = { fontWeight: 600, fontSize: '14.5px', color: 'var(--eduact-black)' };
+
+  const toggleMenu = (menu) => {
+    if (pinned === menu) {
+      setOpenMenu(null);
+      setPinned(null);
+    } else {
+      setOpenMenu(menu);
+      setPinned(menu);
+    }
+  };
+
+  const renderDropdown = (menu, title, wrapperClass, content) => {
+    const isOpen = openMenu === menu;
+    return (
+      <div
+        className={`nav-item dropdown ${wrapperClass}`}
+        onMouseEnter={() => { if (pinned !== menu) setOpenMenu(menu); }}
+        onMouseLeave={() => { if (pinned !== menu) setOpenMenu(null); }}
+      >
+        <span
+          className="nav-link dropdown-toggle"
+          role="button"
+          tabIndex={0}
+          aria-expanded={isOpen}
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleMenu(menu); }}
+          style={{ ...navTitleStyle, cursor: 'pointer' }}
+        >
+          {title}
+        </span>
+        <div className={`dropdown-menu ${isOpen ? 'show' : ''}`}>
+          {content}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <>
@@ -127,7 +167,7 @@ export default function NavigationBar() {
         background: 'var(--eduact-white)',
         borderBottom: '1px solid var(--eduact-soft4)',
         padding: scrolled ? '8px 0' : '14px 0',
-        transition: 'padding 0.25s ease, box-shadow 0.25s ease',
+        transition: 'padding 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease',
         boxShadow: scrolled ? '0 8px 24px rgba(23, 42, 70,0.12)' : 'none',
       }}
       variant="light"
@@ -159,219 +199,167 @@ export default function NavigationBar() {
         <Navbar.Collapse id="main-navbar">
           <Nav className="mx-auto" style={{ gap: '4px' }}>
             {/* Business Solutions Mega Dropdown */}
-            <NavDropdown
-              title={<span style={{ fontWeight: 600, fontSize: '14.5px', color: 'var(--eduact-black)' }}>{cfg.businessTitle}</span>}
-              id="business-dropdown"
-              className={location.pathname.startsWith('/business-solutions') ? 'active' : ''}
-            >
-              <div className="mega-grid">
-                <div>
-                  <Link
-                    to="/business-solutions"
-                    className="services-link"
-                    style={{
-                      fontFamily: 'var(--heading-font)',
-                      fontWeight: 700,
-                      fontSize: '11px',
-                      letterSpacing: '0.1em',
-                      textTransform: 'uppercase',
-                      color: 'var(--eduact-base)',
-                      display: 'block',
-                      marginBottom: '10px',
-                      paddingLeft: '12px',
-                      textDecoration: 'none',
-                    }}
-                  >
-                    Services
-                  </Link>
-                  {bizCol1.map((link) => (
-                    <NavDropdown.Item
-                      key={link.label}
-                      as={Link}
-                      to={link.path}
-                      style={{
-                        fontSize: '14px',
-                        padding: '8px 12px',
-                        borderRadius: '6px',
-                        transition:
-                          'background-color 0.18s ease, color 0.18s ease, transform 0.18s cubic-bezier(0.2, 0.7, 0.2, 1)',
-                        color: 'var(--eduact-black)',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = 'rgba(179, 38, 45,0.08)';
-                        e.currentTarget.style.transform = 'translateX(4px)';
-                        e.currentTarget.style.color = 'var(--eduact-base)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'transparent';
-                        e.currentTarget.style.transform = 'none';
-                        e.currentTarget.style.color = 'var(--eduact-black)';
-                      }}
-                    >
-                      {link.label}
-                    </NavDropdown.Item>
-                  ))}
-                </div>
-                <div>
-                  <span style={{
-                    fontFamily: 'var(--heading-font)',
-                    fontWeight: 700,
-                    fontSize: '11px',
-                    letterSpacing: '0.1em',
-                    textTransform: 'uppercase',
-                    color: 'var(--eduact-base)',
-                    display: 'block',
-                    marginBottom: '10px',
-                    paddingLeft: '12px',
-                  }}>&nbsp;</span>
-                  {bizCol2.map((link) => (
-                    <NavDropdown.Item
-                      key={link.label}
-                      as={Link}
-                      to={link.path}
-                      style={{
-                        fontSize: '14px',
-                        padding: '8px 12px',
-                        borderRadius: '6px',
-                        transition:
-                          'background-color 0.18s ease, color 0.18s ease, transform 0.18s cubic-bezier(0.2, 0.7, 0.2, 1)',
-                        color: 'var(--eduact-black)',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = 'rgba(179, 38, 45,0.08)';
-                        e.currentTarget.style.transform = 'translateX(4px)';
-                        e.currentTarget.style.color = 'var(--eduact-base)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'transparent';
-                        e.currentTarget.style.transform = 'none';
-                        e.currentTarget.style.color = 'var(--eduact-black)';
-                      }}
-                    >
-                      {link.label}
-                    </NavDropdown.Item>
-                  ))}
-                </div>
-              </div>
-            </NavDropdown>
+            {renderDropdown('business', cfg.businessTitle,
+              location.pathname.startsWith('/business-solutions') ? 'active' : '',
+              (
+                <>
+                  <Link to="/business-solutions" className="mega-head">Service</Link>
+                  <div className="mega-grid">
+                    <div>
+                      {bizCol1.map((link) => (
+                        <Link
+                          key={link.label}
+                          className="dropdown-item"
+                          to={link.path}
+                          style={{
+                            fontSize: '14px',
+                            padding: '8px 12px',
+                            borderRadius: '6px',
+                            transition:
+                              'background-color 0.18s ease, color 0.18s ease, transform 0.18s cubic-bezier(0.2, 0.7, 0.2, 1)',
+                            color: 'var(--eduact-black)',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'rgba(179, 38, 45,0.08)';
+                            e.currentTarget.style.transform = 'translateX(4px)';
+                            e.currentTarget.style.color = 'var(--eduact-base)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'transparent';
+                            e.currentTarget.style.transform = 'none';
+                            e.currentTarget.style.color = 'var(--eduact-black)';
+                          }}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                    <div>
+                      {bizCol2.map((link) => (
+                        <Link
+                          key={link.label}
+                          className="dropdown-item"
+                          to={link.path}
+                          style={{
+                            fontSize: '14px',
+                            padding: '8px 12px',
+                            borderRadius: '6px',
+                            transition:
+                              'background-color 0.18s ease, color 0.18s ease, transform 0.18s cubic-bezier(0.2, 0.7, 0.2, 1)',
+                            color: 'var(--eduact-black)',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'rgba(179, 38, 45,0.08)';
+                            e.currentTarget.style.transform = 'translateX(4px)';
+                            e.currentTarget.style.color = 'var(--eduact-base)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'transparent';
+                            e.currentTarget.style.transform = 'none';
+                            e.currentTarget.style.color = 'var(--eduact-black)';
+                          }}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              ))}
 
-            {/* Learning Mega Dropdown */}
-            <NavDropdown
-              title={<span style={{ fontWeight: 600, fontSize: '14.5px', color: 'var(--eduact-black)' }}>{cfg.learningTitle}</span>}
-              id="learning-dropdown"
-              className={location.pathname.startsWith('/learning-programs') ? 'active' : ''}
-            >
-              <div className="mega-grid">
-                <div>
-                  <Link
-                    to="/learning-programs"
-                    className="services-link"
-                    style={{
-                      fontFamily: 'var(--heading-font)',
-                      fontWeight: 700,
-                      fontSize: '11px',
-                      letterSpacing: '0.1em',
-                      textTransform: 'uppercase',
-                      color: 'var(--eduact-base)',
-                      display: 'block',
-                      marginBottom: '10px',
-                      paddingLeft: '12px',
-                      textDecoration: 'none',
-                    }}
-                  >
-                    Career Tracks
-                  </Link>
-                  {learnCol1.map((link) => (
-                    <NavDropdown.Item
-                      key={link.label}
-                      as={Link}
-                      to={link.path}
-                      style={{
-                        fontSize: '14px',
-                        padding: '8px 12px',
-                        borderRadius: '6px',
-                        transition:
-                          'background-color 0.18s ease, color 0.18s ease, transform 0.18s cubic-bezier(0.2, 0.7, 0.2, 1)',
-                        color: 'var(--eduact-black)',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = 'rgba(179, 38, 45,0.08)';
-                        e.currentTarget.style.transform = 'translateX(4px)';
-                        e.currentTarget.style.color = 'var(--eduact-base)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'transparent';
-                        e.currentTarget.style.transform = 'none';
-                        e.currentTarget.style.color = 'var(--eduact-black)';
-                      }}
-                    >
-                      {link.label}
-                    </NavDropdown.Item>
-                  ))}
-                </div>
-                <div>
-                  <span style={{
-                    fontFamily: 'var(--heading-font)',
-                    fontWeight: 700,
-                    fontSize: '11px',
-                    letterSpacing: '0.1em',
-                    textTransform: 'uppercase',
-                    color: 'var(--eduact-base)',
-                    display: 'block',
-                    marginBottom: '10px',
-                    paddingLeft: '12px',
-                  }}>&nbsp;</span>
-                  {learnCol2.map((link) => (
-                    <NavDropdown.Item
-                      key={link.label}
-                      as={Link}
-                      to={link.path}
-                      style={{
-                        fontSize: '14px',
-                        padding: '8px 12px',
-                        borderRadius: '6px',
-                        transition:
-                          'background-color 0.18s ease, color 0.18s ease, transform 0.18s cubic-bezier(0.2, 0.7, 0.2, 1)',
-                        color: 'var(--eduact-black)',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = 'rgba(179, 38, 45,0.08)';
-                        e.currentTarget.style.transform = 'translateX(4px)';
-                        e.currentTarget.style.color = 'var(--eduact-base)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'transparent';
-                        e.currentTarget.style.transform = 'none';
-                        e.currentTarget.style.color = 'var(--eduact-black)';
-                      }}
-                    >
-                      {link.label}
-                    </NavDropdown.Item>
-                  ))}
-                </div>
-              </div>
-            </NavDropdown>
+            {/* Learnings Mega Dropdown */}
+            {renderDropdown('learning', cfg.learningTitle,
+              location.pathname.startsWith('/learning-programs') ? 'active' : '',
+              (
+                <>
+                  <Link to="/learning-programs" className="mega-head">Career Tracks</Link>
+                  <div className="mega-grid">
+                    <div>
+                      {learnCol1.map((link) => (
+                        <Link
+                          key={link.label}
+                          className="dropdown-item"
+                          to={link.path}
+                          style={{
+                            fontSize: '14px',
+                            padding: '8px 12px',
+                            borderRadius: '6px',
+                            transition:
+                              'background-color 0.18s ease, color 0.18s ease, transform 0.18s cubic-bezier(0.2, 0.7, 0.2, 1)',
+                            color: 'var(--eduact-black)',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'rgba(179, 38, 45,0.08)';
+                            e.currentTarget.style.transform = 'translateX(4px)';
+                            e.currentTarget.style.color = 'var(--eduact-base)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'transparent';
+                            e.currentTarget.style.transform = 'none';
+                            e.currentTarget.style.color = 'var(--eduact-black)';
+                          }}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                    <div>
+                      {learnCol2.map((link) => (
+                        <Link
+                          key={link.label}
+                          className="dropdown-item"
+                          to={link.path}
+                          style={{
+                            fontSize: '14px',
+                            padding: '8px 12px',
+                            borderRadius: '6px',
+                            transition:
+                              'background-color 0.18s ease, color 0.18s ease, transform 0.18s cubic-bezier(0.2, 0.7, 0.2, 1)',
+                            color: 'var(--eduact-black)',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'rgba(179, 38, 45,0.08)';
+                            e.currentTarget.style.transform = 'translateX(4px)';
+                            e.currentTarget.style.color = 'var(--eduact-base)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'transparent';
+                            e.currentTarget.style.transform = 'none';
+                            e.currentTarget.style.color = 'var(--eduact-black)';
+                          }}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              ))}
 
             {/* CSR Projects Dropdown */}
-            <NavDropdown
-              title={<span style={{ fontWeight: 600, fontSize: '14.5px', color: 'var(--eduact-black)' }}>{cfg.csrTitle}</span>}
-              id="csr-dropdown"
-              className={isActive('/csr-projects') || isActive('/mou-directory') ? 'active' : ''}
-            >
-              {cfg.csrLinks.map((link, i) => (
-                <div key={link.label + i}>
-                  {i > 0 && <NavDropdown.Divider style={{ borderColor: 'rgba(179, 38, 45,0.15)' }} />}
-                  <NavDropdown.Item as={Link} to={link.path} style={{
-                    fontSize: '14px',
-                    padding: '10px 16px',
-                    fontWeight: i === 0 ? 400 : 700,
-                    color: i === 0 ? 'var(--eduact-black)' : 'var(--eduact-base)',
-                  }}>
-                    {link.label}
-                  </NavDropdown.Item>
-                </div>
+            {renderDropdown('csr', cfg.csrTitle,
+              isActive('/csr-projects') || isActive('/mou-directory') ? 'active' : '',
+              (
+                <>
+                  {cfg.csrLinks.map((link, i) => (
+                    <div key={link.label + i}>
+                      {i > 0 && <div className="dropdown-divider" style={{ borderColor: 'rgba(179, 38, 45,0.15)' }} />}
+                      <Link
+                        to={link.path}
+                        className="dropdown-item"
+                        style={{
+                          fontSize: '14px',
+                          padding: '10px 16px',
+                          fontWeight: i === 0 ? 400 : 700,
+                          color: i === 0 ? 'var(--eduact-black)' : 'var(--eduact-base)',
+                        }}
+                      >
+                        {link.label}
+                      </Link>
+                    </div>
+                  ))}
+                </>
               ))}
-            </NavDropdown>
 
             {cfg.navLinks.map((link) => (
               <Nav.Link
@@ -410,7 +398,8 @@ export default function NavigationBar() {
         .navbar-light .navbar-nav .nav-link {
           position: relative;
           border-radius: 8px;
-          transition: background 0.22s ease, color 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
+          transition: background 0.25s ease, color 0.25s ease, transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+          will-change: transform;
         }
         .navbar-light .navbar-nav .nav-link:hover,
         .navbar-light .navbar-nav .nav-link:focus {
@@ -420,12 +409,26 @@ export default function NavigationBar() {
           box-shadow: 0 2px 8px rgba(23, 42, 70,0.08);
         }
         .dropdown-menu {
+          display: block;
           background: #fff;
           border: 1px solid var(--eduact-soft4);
           border-radius: 14px;
           box-shadow: 0 20px 50px rgba(23, 42, 70,0.15);
           padding: 12px;
-          margin-top: 8px !important;
+          margin-top: 0;
+          opacity: 0;
+          visibility: hidden;
+          pointer-events: none;
+          transform: translate(-50%, 10px) scale(0.98);
+          transform-origin: top center;
+          transition: opacity 0.22s ease, transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.26s;
+        }
+        .navbar .dropdown-menu.show {
+          opacity: 1;
+          visibility: visible;
+          pointer-events: auto;
+          transform: translate(-50%, 0) scale(1);
+          transition: opacity 0.22s ease, transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear;
         }
         .dropdown-item {
           color: var(--eduact-black);
@@ -435,14 +438,50 @@ export default function NavigationBar() {
           background: rgba(179, 38, 45,0.08);
           color: var(--eduact-base);
         }
-        .dropdown-toggle::after {
+        .navbar .dropdown-toggle::after {
           vertical-align: middle;
           margin-left: 6px;
           border-top-color: rgba(23, 42, 70,0.6);
+          transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-top-color 0.25s ease;
         }
-        .services-link:hover {
-          color: var(--eduact-base) !important;
-          text-decoration: underline !important;
+        .navbar .dropdown-toggle[aria-expanded="true"]::after {
+          transform: rotate(180deg);
+        }
+        .mega-head {
+          display: block;
+          width: max-content;
+          margin: 2px auto 12px;
+          font-family: var(--heading-font);
+          font-weight: 800;
+          font-size: 11px;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #fff;
+          background: linear-gradient(120deg, var(--eduact-base), #8a1820);
+          padding: 8px 20px;
+          border-radius: 999px;
+          text-decoration: none;
+          box-shadow: 0 8px 18px -8px rgba(179, 38, 45, 0.55);
+          transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.26s ease, filter 0.26s ease;
+        }
+        .mega-head::after {
+          content: '→';
+          margin-left: 8px;
+          transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .mega-head:hover {
+          filter: brightness(1.06);
+          transform: translateY(-1px);
+          box-shadow: 0 12px 22px -10px rgba(179, 38, 45, 0.65);
+        }
+        .mega-head:hover::after {
+          transform: translateX(4px);
+        }
+        .navbar-toggler {
+          transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .navbar-toggler:hover {
+          transform: scale(1.05);
         }
         .mega-grid {
           display: grid;
@@ -464,12 +503,26 @@ export default function NavigationBar() {
             padding: 2px;
           }
         }
+        @media (min-width: 992px) {
+          .navbar .dropdown-menu {
+            left: 50%;
+            margin-top: 0;
+          }
+          .navbar .nav-item {
+            position: relative;
+          }
+        }
         @media (max-width: 991px) {
           .dropdown-menu {
+            left: 0;
             min-width: 100% !important;
             box-shadow: none;
             border: 1px solid var(--eduact-soft4);
             background: var(--eduact-white);
+            transform: translate(0, 10px) scale(0.99);
+          }
+          .navbar .dropdown-menu.show {
+            transform: translate(0, 0) scale(1);
           }
           .dropdown-item {
             color: var(--eduact-black);

@@ -159,7 +159,7 @@ export default function About() {
         </div>
 
         {/* Our Journey - timeline */}
-        <section className="page-section dark" style={{ borderRadius: '0', marginTop: '64px' }}>
+        <section className="page-section dark" style={{ borderRadius: '32px', marginTop: '64px', padding: '56px 0', overflow: 'hidden' }}>
           <Container>
             <Row className="g-5">
               <Col lg={5}>

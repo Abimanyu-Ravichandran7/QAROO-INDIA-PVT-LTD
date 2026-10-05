@@ -10,6 +10,8 @@ import { contentApi } from '../api/contentApi.js';
 import { CAREERS_PAGE } from '../data/careers.js';
 import './careers/Careers.css';
 import PageHero from '../components/PageHero';
+import PageBackdrop from '../components/PageBackdrop.jsx';
+import LinedSection from '../components/LinedSection.jsx';
 
 const SITE = 'https://www.qarootech.in';
 
@@ -94,7 +96,9 @@ export default function Careers() {
     : null;
 
   return (
-    <>
+    <div className="careers-page">
+      <PageBackdrop />
+
       <Seo
         title={content.seoTitle}
         description={content.seoDescription}
@@ -121,7 +125,7 @@ export default function Careers() {
         </p>
       </PageHero>
 
-      <Container className="page-section">
+      <LinedSection>
         <div className="section-head reveal">
           <div>
             <p className="eyebrow">Where we hire</p>
@@ -203,7 +207,7 @@ export default function Careers() {
             </Row>
           )}
         </div>
-      </Container>
+      </LinedSection>
 
       {/* Recruitment process */}
       <section className="page-section dark">
@@ -240,7 +244,7 @@ export default function Careers() {
       </section>
 
       {/* What we look for */}
-      <Container className="page-section">
+      <LinedSection>
         <div className="section-head reveal">
           <div>
             <p className="eyebrow">Beyond the CV</p>
@@ -258,7 +262,7 @@ export default function Careers() {
             </Col>
           ))}
         </Row>
-      </Container>
+      </LinedSection>
 
       {/* Growth path */}
       <section className="page-section dark" style={{ paddingTop: 0 }}>
@@ -283,7 +287,7 @@ export default function Careers() {
 
       {/* FAQ */}
       {content.faq?.length ? (
-        <Container className="page-section" style={{ maxWidth: '820px' }}>
+        <LinedSection maxWidth='820px'>
           <div className="section-head reveal">
             <div>
               <p className="eyebrow">FAQ</p>
@@ -298,7 +302,7 @@ export default function Careers() {
               </details>
             ))}
           </div>
-        </Container>
+        </LinedSection>
       ) : null}
 
       {/* CTA */}
@@ -328,6 +332,6 @@ export default function Careers() {
           </p>
         </Container>
       </div>
-    </>
+    </div>
   );
 }

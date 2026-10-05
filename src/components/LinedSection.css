@@ -1,0 +1,27 @@
+/* Ink-line section and the soft blob backdrop, shared by the learning,
+   business solution and careers pages. */
+
+.lined-section {
+  position: relative;
+  /* The waves bleed past the section; this keeps them inside its band. */
+  overflow: hidden;
+}
+
+/* InkLines is absolute at z-index 0, so the content has to be lifted or it is
+   painted underneath. */
+.lined-section__inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- page backdrop ----------
+   Fixed and full-viewport, so the blobs drift behind the page as it scrolls
+   rather than scrolling with one section. It is last in the DOM at z-index 0,
+   which means every section carrying content has to be lifted above it - each
+   page does that for its own structure. */
+.page-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}

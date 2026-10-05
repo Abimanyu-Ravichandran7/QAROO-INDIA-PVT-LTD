@@ -3,8 +3,22 @@ import { adminApi } from '../../api/adminApi.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import PermissionGuard from '../components/PermissionGuard.jsx';
 import PasswordInput from '../components/forms/PasswordInput.jsx';
+import DetailModal from '../components/DetailModal.jsx';
+import RecordView from '../components/RecordView.jsx';
 import { ShimmerPanel, EmptyState, ErrorState } from '../../components/ui/States';
 import { useToast } from '../../context/ToastContext';
+
+const VIEW_LABELS = [
+  ['name', 'Name'],
+  ['email', 'Email'],
+  ['role', 'Role'],
+  ['isEmailVerified', 'Email verified'],
+  ['isApproved', 'Approved'],
+  ['isDisabled', 'Disabled'],
+  ['permissions', 'Permissions'],
+  ['createdAt', 'Created'],
+  ['updatedAt', 'Updated'],
+];
 
 const PERM_GROUPS = [
   { label: 'Dashboard', perms: [{ k: 'dashboard.view', label: 'View Dashboard' }] },
@@ -292,6 +306,7 @@ export default function AdminManagement() {
   const [creating, setCreating] = useState(false);
   const [createMsg, setCreateMsg] = useState('');
   const [verifyMsg, setVerifyMsg] = useState('');
+  const [viewId, setViewId] = useState(null);
   const toast = useToast();
 
   const fetchAdmins = useCallback(async () => {
@@ -325,6 +340,8 @@ export default function AdminManagement() {
     if (a.isDisabled) return <span className="admin-badge grey">Disabled</span>;
     return <span className="admin-badge green">Active</span>;
   };
+
+  const view = admins.find((a) => a._id === viewId) || null;
 
   return (
     <PermissionGuard permission="admin.read">
@@ -389,6 +406,7 @@ export default function AdminManagement() {
                 </td>
                 <td>
                   <div className="actions">
+                    <button type="button" className="admin-icon-btn act-view" onClick={() => setViewId(a._id)}>View</button>
                     {a.role !== 'superadmin' && (
                       <>
                         {!a.isApproved && <button className="admin-icon-btn success" onClick={() => act(() => adminApi.approve(a._id), null, `${a.name} approved.`)}>Approve</button>}
@@ -421,6 +439,10 @@ export default function AdminManagement() {
           onCancel={() => setVerifyFor(null)}
         />
       )}
+
+      <DetailModal show={!!viewId} onHide={() => setViewId(null)} title="Admin user details" subtitle={view?.name}>
+        {view && <RecordView record={view} labels={VIEW_LABELS} exclude={['passwordHash', 'otpCode', 'otpExpires']} />}
+      </DetailModal>
     </PermissionGuard>
   );
 }
