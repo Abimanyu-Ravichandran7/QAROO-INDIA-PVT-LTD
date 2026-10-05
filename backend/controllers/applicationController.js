@@ -1,4 +1,5 @@
 import JobApplication from '../models/JobApplication.js';
+import { pageOf } from '../utils/pagination.js';
 import JobPosting from '../models/JobPosting.js';
 import { storeResume, resumeFilePath, deleteResume } from '../services/resumeStorage.js';
 import { escapeRegex } from '../utils/escapeRegex.js';
@@ -68,23 +69,25 @@ const submitApplication = async (req, res, next) => {
       }
     }
 
+    // Bounded before storage: this endpoint is public and the JSON body limit is
+    // 15MB, so the text fields are capped the same way the resume is.
     const application = await JobApplication.create({
       job: job?._id || null,
       jobTitle: job?.title || '',
       jobSlug: job?.slug || '',
-      name,
-      fatherName: fatherName || '',
-      email,
-      phone,
-      parentMobile: parentMobile || '',
-      address: address || '',
-      qualification: qualification || '',
-      experience: experience || '',
+      name: String(name).slice(0, 120),
+      fatherName: String(fatherName || '').slice(0, 120),
+      email: String(email).slice(0, 200),
+      phone: String(phone).slice(0, 40),
+      parentMobile: String(parentMobile || '').slice(0, 40),
+      address: String(address || '').slice(0, 1000),
+      qualification: String(qualification || '').slice(0, 500),
+      experience: String(experience || '').slice(0, 2000),
       declaration: true,
       resumeUrl: stored.url,
       resumePath: stored.path,
       resumeMime: stored.mime,
-      resumeName: resumeName || '',
+      resumeName: String(resumeName || '').slice(0, 255),
     });
 
     res.status(201).json({
@@ -120,9 +123,11 @@ const listApplications = async (req, res, next) => {
         { jobTitle: { $regex: escapeRegex(search), $options: 'i' } },
       ];
     }
-    const applications = await JobApplication.find(query).sort('-createdAt');
+    const { limit, skip } = pageOf(req);
+    const total = await JobApplication.countDocuments(query);
+    const applications = await JobApplication.find(query).sort('-createdAt').skip(skip).limit(limit);
     const roles = await JobApplication.distinct('jobTitle');
-    res.json({ success: true, count: applications.length, data: { applications, roles } });
+    res.json({ success: true, count: applications.length, total, data: { applications, roles } });
   } catch (err) {
     next(err);
   }

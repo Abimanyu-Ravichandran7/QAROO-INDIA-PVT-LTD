@@ -38,6 +38,11 @@ export const ALL_PERMISSIONS = [
   'applications.delete',
 
   'contact.read',
+  // Enforced by POST /api/contact/:id/remarks and by the Contact page content
+  // update in pageRoutes. Without it in this list the permission cannot be
+  // granted to anyone, so saving remarks and editing the Contact page were
+  // reachable only by a Super Admin (who bypasses every check).
+  'contact.update',
   'contact.delete',
 
   'admin.create',

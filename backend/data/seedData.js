@@ -244,7 +244,7 @@ export const PAGE_CONTENT = {
       { title: 'Head Office - Coimbatore', lines: ['No.3A, 3rd Floor, Sri Ram Towers,', 'Lakshmi Mills Junction, P N Palayam,', 'Coimbatore - 641 037'] },
       { title: 'Branch Office - Chennai', lines: ['No.13/4, Chavadi Street,', 'Pallavaram, Chennai - 600 043'] },
     ],
-    contact: { email: 'qarootech@gmail.com', phones: ['+91 90439 27967', '+91 90439 97967', '+91 99449 91217'] },
+    contact: { email: 'support@qaroo.in', phones: ['+91 90439 27967', '+91 90439 97967', '+91 99449 91217'] },
     hours: { days: 'Monday - Saturday', time: '9:00 AM - 6:00 PM IST' },
   },
   business: {
@@ -284,14 +284,14 @@ export const PAGE_CONTENT = {
   footer: {
     brandName: 'Qaroo India Private Limited',
     tagline: 'Business solutions and career-ready learning, from One Team in Tamil Nadu.',
-    email: 'qarootech@gmail.com',
+    email: 'support@qaroo.in',
     phones: ['+91 90439 27967', '+91 90439 97967'],
     socials: [
       { platform: 'instagram', url: 'https://instagram.com/qarootech' },
       { platform: 'linkedin', url: 'https://linkedin.com/company/qarootech' },
       { platform: 'facebook', url: 'https://facebook.com/qarootech' },
       { platform: 'youtube', url: 'https://youtube.com/@qarootech' },
-      { platform: 'email', url: 'qarootech@gmail.com' },
+      { platform: 'email', url: 'support@qaroo.in' },
     ],
     copyright: 'All rights reserved.',
   },

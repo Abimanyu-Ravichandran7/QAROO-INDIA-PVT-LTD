@@ -2,10 +2,11 @@ import mongoose from 'mongoose';
 
 const clientErrorSchema = new mongoose.Schema(
   {
-    message: { type: String, default: '' },
-    stack: { type: String, default: '' },
-    url: { type: String, default: '' },
-    userAgent: { type: String, default: '' },
+    // The controller already slices these; the schema states the same bounds.
+    message: { type: String, default: '', maxlength: 2000 },
+    stack: { type: String, default: '', maxlength: 8000 },
+    url: { type: String, default: '', maxlength: 2000 },
+    userAgent: { type: String, default: '', maxlength: 500 },
     extra: { type: mongoose.Schema.Types.Mixed, default: {} },
   },
   { timestamps: true }

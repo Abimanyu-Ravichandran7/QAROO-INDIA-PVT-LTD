@@ -6,6 +6,7 @@ import {
   getMessage,
   markRead,
   resolveMessage,
+  saveRemarks,
   deleteMessage,
 } from '../controllers/contactController.js';
 import { protect } from '../middleware/authMiddleware.js';
@@ -36,6 +37,7 @@ router.get('/', requirePermission('contact.read'), listMessages);
 router.get('/:id', requirePermission('contact.read'), getMessage);
 router.post('/:id/read', requirePermission('contact.read'), markRead);
 router.post('/:id/resolve', requirePermission('contact.read'), resolveMessage);
+router.post('/:id/remarks', requirePermission('contact.update'), saveRemarks);
 router.delete('/:id', requirePermission('contact.delete'), deleteMessage);
 
 export default router;

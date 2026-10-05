@@ -50,12 +50,12 @@ const register = async (req, res, next) => {
 
     let admin;
     try {
-      admin = await createPending(mayBootstrap ? true : null);
+      admin = await createPending(mayBootstrap ? true : undefined);
     } catch (err) {
       // Another concurrent registration claimed the bootstrap slot: fall back
       // to a plain pending admin instead of failing the request.
       if (err && err.code === 11000 && /bootstrap/i.test(String(err.message))) {
-        admin = await createPending(null);
+        admin = await createPending(undefined);
       } else {
         throw err;
       }

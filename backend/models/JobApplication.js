@@ -10,16 +10,17 @@ const jobApplicationSchema = new mongoose.Schema(
     jobSlug: { type: String, default: '' },
 
     // Candidate
-    name: { type: String, required: [true, 'Name is required'], trim: true },
-    fatherName: { type: String, default: '', trim: true },
-    email: { type: String, required: [true, 'Email is required'], lowercase: true, trim: true },
+    // Capped in the schema too - this model is written from a public endpoint.
+    name: { type: String, required: [true, 'Name is required'], trim: true, maxlength: 120 },
+    fatherName: { type: String, default: '', trim: true, maxlength: 120 },
+    email: { type: String, required: [true, 'Email is required'], lowercase: true, trim: true, maxlength: 200 },
     // 'phone' is the candidate's own mobile - kept under this name because
     // records already exist under it.
-    phone: { type: String, default: '', trim: true },
-    parentMobile: { type: String, default: '', trim: true },
-    address: { type: String, default: '' },
-    qualification: { type: String, default: '' },
-    experience: { type: String, default: '' },
+    phone: { type: String, default: '', trim: true, maxlength: 40 },
+    parentMobile: { type: String, default: '', trim: true, maxlength: 40 },
+    address: { type: String, default: '', maxlength: 1000 },
+    qualification: { type: String, default: '', maxlength: 500 },
+    experience: { type: String, default: '', maxlength: 2000 },
 
     // The candidate confirmed their details are true. Stored rather than merely
     // enforced in the form, so there is a record of the agreement.
@@ -31,7 +32,7 @@ const jobApplicationSchema = new mongoose.Schema(
     resumeUrl: { type: String, default: '' },
     resumePath: { type: String, default: '' },
     resumeMime: { type: String, default: '' },
-    resumeName: { type: String, default: '' },
+    resumeName: { type: String, default: '', maxlength: 255 },
     // Legacy: the form no longer collects a link, but records created while it
     // did keep theirs so nothing already submitted is lost.
     resumeLink: { type: String, default: '' },
@@ -47,7 +48,7 @@ const jobApplicationSchema = new mongoose.Schema(
     // no, and "not recorded" must not read as "did not attend".
     interviewAttended: { type: String, enum: ['', 'yes', 'no'], default: '' },
     // Free-text remarks on where the candidate stands.
-    notes: { type: String, default: '' },
+    notes: { type: String, default: '', maxlength: 5000 },
   },
   // createdAt is the application date - stored automatically, nothing for the
   // candidate or an admin to fill in.

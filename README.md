@@ -112,9 +112,9 @@ Super Admin bypasses all permission checks. Granular permissions are defined in 
 | POST | `/api/auth/login` | Login (sets cookies) |
 | POST | `/api/auth/refresh` | Refresh access token |
 | POST | `/api/auth/logout` | Logout |
-| POST | `/api/auth/verify-email` | Verify email via token |
+| GET | `/api/auth/verify-email/:token` | Verify email via token |
 | POST | `/api/auth/forgot-password` | Request password reset |
-| POST | `/api/auth/reset-password` | Reset password |
+| POST | `/api/auth/reset-password/:token` | Reset password |
 | GET/POST/PUT/DELETE | `/api/admins` | Admin management (Super Admin) |
 | GET/POST/PUT/DELETE | `/api/mous` | MOU directory CRUD |
 | GET | `/api/mous/categories` | MOU category dropdown list |
@@ -129,6 +129,15 @@ Super Admin bypasses all permission checks. Granular permissions are defined in 
 | GET/PUT/DELETE | `/api/contact` | Admin message management |
 | POST | `/api/client-errors` | Report a frontend crash (public) |
 | GET | `/api/client-errors` | List frontend crashes (Super Admin) |
+| GET/POST/PUT/DELETE | `/api/careers` | Job posting CRUD |
+| GET | `/api/careers/by-slug/:slug` | Public job detail by slug |
+| POST | `/api/applications` | Submit a job application (public, rate-limited) |
+| GET/POST/DELETE | `/api/applications` | Admin application management |
+| GET | `/api/applications/:id/resume` | Download a resume (permission-gated) |
+| GET | `/api/auth/me` | Current admin profile |
+| POST | `/api/auth/change-password` | Change password (email OTP) |
+| POST | `/api/{mous,csr,learning,business-solutions,careers}/:id/publish` | Toggle published/draft |
+| GET | `/api/{learning,business-solutions}/by-slug/:slug` | Public detail by slug |
 | GET | `/api/health` | Health check |
 
 ## Verification

@@ -1,4 +1,6 @@
 import JobPosting from '../models/JobPosting.js';
+import { pageOf } from '../utils/pagination.js';
+import { hasPermission } from '../utils/permissions.js';
 import JobApplication from '../models/JobApplication.js';
 import { slugify } from '../utils/slug.js';
 import { escapeRegex } from '../utils/escapeRegex.js';
@@ -73,16 +75,19 @@ const listJobs = async (req, res, next) => {
     const { status, search } = req.query;
     const query = {};
     // Visitors only ever see published vacancies; admins can filter.
-    if (!req.admin) query.status = 'published';
-    if (status && status !== 'all' && req.admin) query.status = status;
+    const seeDrafts = hasPermission(req.admin, 'careers.read');
+    if (!seeDrafts) query.status = 'published';
+    if (status && status !== 'all' && seeDrafts) query.status = status;
     if (search) {
       query.$or = [
         { title: { $regex: escapeRegex(search), $options: 'i' } },
         { department: { $regex: escapeRegex(search), $options: 'i' } },
       ];
     }
-    const jobs = await JobPosting.find(query).sort('displayOrder createdAt');
-    res.json({ success: true, count: jobs.length, data: { jobs } });
+    const { limit, skip } = pageOf(req);
+    const total = await JobPosting.countDocuments(query);
+    const jobs = await JobPosting.find(query).sort('displayOrder createdAt').skip(skip).limit(limit);
+    res.json({ success: true, count: jobs.length, total, data: { jobs } });
   } catch (err) {
     next(err);
   }
@@ -92,7 +97,7 @@ const getJobBySlug = async (req, res, next) => {
   try {
     const slug = String(req.params.slug || '').toLowerCase();
     const query = { slug };
-    if (!req.admin) query.status = 'published';
+    if (!hasPermission(req.admin, 'careers.read')) query.status = 'published';
     const job = await JobPosting.findOne(query);
     if (!job) return res.status(404).json({ success: false, message: 'Job not found' });
     res.json({ success: true, data: { job } });

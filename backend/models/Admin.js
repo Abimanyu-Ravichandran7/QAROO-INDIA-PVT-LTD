@@ -31,7 +31,13 @@ const adminSchema = new mongoose.Schema(
     // Sparse-unique bootstrap marker: at most ONE admin can ever hold it, which
     // atomically decides the "first registrant" even under concurrent races.
     // The holder is promoted to Super Admin once they verify their email.
-    bootstrap: { type: Boolean, default: null, sparse: true },
+    // Deliberately has NO default: a sparse index only skips documents where the
+    // path is absent, not ones holding an explicit null. With `default: null`
+    // every ordinary admin wrote a null and the unique index would reject the
+    // second one - which never showed up only because the index was declared
+    // twice (here and below) and so never applied as unique. The marker is set
+    // to `true` for the first registrant and left off everyone else.
+    bootstrap: { type: Boolean },
   },
   { timestamps: true }
 );

@@ -1,4 +1,6 @@
 import BusinessSolution from '../models/BusinessSolution.js';
+import { pageOf } from '../utils/pagination.js';
+import { hasPermission } from '../utils/permissions.js';
 import { uploadImage } from '../services/imageService.js';
 import { slugify } from '../utils/slug.js';
 import { escapeRegex } from '../utils/escapeRegex.js';
@@ -69,19 +71,26 @@ const listSolutions = async (req, res, next) => {
   try {
     const { status, search } = req.query;
     const query = {};
-    if (!req.admin) query.status = 'published';
-    if (status && status !== 'all' && req.admin) query.status = status;
+    const seeDrafts = hasPermission(req.admin, 'business.read');
+    if (!seeDrafts) query.status = 'published';
+    if (status && status !== 'all' && seeDrafts) query.status = status;
     if (search) {
       query.$or = [
         { title: { $regex: escapeRegex(search), $options: 'i' } },
         { pageName: { $regex: escapeRegex(search), $options: 'i' } },
       ];
     }
+    // Bounded, with the matching total alongside, so a caller can always tell
+    // whether it is looking at the whole set. See utils/pagination.js.
+    const { limit, skip } = pageOf(req);
+    const total = await BusinessSolution.countDocuments(query);
     const solutions = await BusinessSolution.find(query)
       .populate('createdBy', 'name')
       .populate('updatedBy', 'name')
-      .sort({ displayOrder: 1, createdAt: -1 });
-    res.json({ success: true, count: solutions.length, data: { solutions } });
+      .sort({ displayOrder: 1, createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+    res.json({ success: true, count: solutions.length, total, data: { solutions } });
   } catch (err) {
     next(err);
   }
@@ -102,6 +111,11 @@ const getSolution = async (req, res, next) => {
   try {
     const solution = await BusinessSolution.findById(req.params.id);
     if (!solution) return res.status(404).json({ success: false, message: 'Solution not found' });
+    // optionalAuth route: without this an unauthenticated caller holding an id
+    // could read an unpublished solution.
+    if (!hasPermission(req.admin, 'business.read') && solution.status !== 'published') {
+      return res.status(404).json({ success: false, message: 'Solution not found' });
+    }
     res.json({ success: true, data: { solution } });
   } catch (err) {
     next(err);

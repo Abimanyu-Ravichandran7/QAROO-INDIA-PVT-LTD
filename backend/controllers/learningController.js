@@ -1,4 +1,6 @@
 import LearningProgram from '../models/LearningProgram.js';
+import { pageOf } from '../utils/pagination.js';
+import { hasPermission } from '../utils/permissions.js';
 import { uploadImage } from '../services/imageService.js';
 import { slugify } from '../utils/slug.js';
 import { escapeRegex } from '../utils/escapeRegex.js';
@@ -71,8 +73,9 @@ const listPrograms = async (req, res, next) => {
   try {
     const { status, search } = req.query;
     const query = {};
-    if (!req.admin) query.status = 'published';
-    if (status && status !== 'all' && req.admin) query.status = status;
+    const seeDrafts = hasPermission(req.admin, 'learning.read');
+    if (!seeDrafts) query.status = 'published';
+    if (status && status !== 'all' && seeDrafts) query.status = status;
     if (search) {
       query.$or = [
         { title: { $regex: escapeRegex(search), $options: 'i' } },
@@ -80,11 +83,17 @@ const listPrograms = async (req, res, next) => {
         { category: { $regex: escapeRegex(search), $options: 'i' } },
       ];
     }
+    // Bounded, with the matching total alongside, so a caller can always tell
+    // whether it is looking at the whole set. See utils/pagination.js.
+    const { limit, skip } = pageOf(req);
+    const total = await LearningProgram.countDocuments(query);
     const programs = await LearningProgram.find(query)
       .populate('createdBy', 'name')
       .populate('updatedBy', 'name')
-      .sort({ displayOrder: 1, createdAt: -1 });
-    res.json({ success: true, count: programs.length, data: { programs } });
+      .sort({ displayOrder: 1, createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+    res.json({ success: true, count: programs.length, total, data: { programs } });
   } catch (err) {
     next(err);
   }
@@ -106,6 +115,11 @@ const getProgram = async (req, res, next) => {
   try {
     const program = await LearningProgram.findById(req.params.id);
     if (!program) return res.status(404).json({ success: false, message: 'Program not found' });
+    // This route is optionalAuth so the admin can load a draft to edit. Without
+    // this check an unauthenticated caller holding an id could read one too.
+    if (!hasPermission(req.admin, 'learning.read') && program.status !== 'published') {
+      return res.status(404).json({ success: false, message: 'Program not found' });
+    }
     res.json({ success: true, data: { program } });
   } catch (err) {
     next(err);

@@ -1,4 +1,6 @@
 import CSRProject from '../models/CSRProject.js';
+import { pageOf } from '../utils/pagination.js';
+import { hasPermission } from '../utils/permissions.js';
 import { uploadImage } from '../services/imageService.js';
 import { CSR_CATEGORIES } from '../../src/data/csrCategories.js';
 import { escapeRegex } from '../utils/escapeRegex.js';
@@ -31,9 +33,10 @@ const listCSR = async (req, res, next) => {
   try {
     const { year, status, search } = req.query;
     const query = {};
-    if (!req.admin) query.status = 'published';
+    const seeDrafts = hasPermission(req.admin, 'csr.read');
+    if (!seeDrafts) query.status = 'published';
     if (year) query.year = year;
-    if (status && status !== 'all' && req.admin) query.status = status;
+    if (status && status !== 'all' && seeDrafts) query.status = status;
     if (search) {
       query.$or = [
         { title: { $regex: escapeRegex(search), $options: 'i' } },
@@ -41,11 +44,17 @@ const listCSR = async (req, res, next) => {
         { tag: { $regex: escapeRegex(search), $options: 'i' } },
       ];
     }
+    // Bounded, with the matching total alongside, so a caller can always tell
+    // whether it is looking at the whole set. See utils/pagination.js.
+    const { limit, skip } = pageOf(req);
+    const total = await CSRProject.countDocuments(query);
     const projects = await CSRProject.find(query)
       .populate('createdBy', 'name')
       .populate('updatedBy', 'name')
-      .sort('-year');
-    res.json({ success: true, count: projects.length, data: { projects } });
+      .sort('-year')
+      .skip(skip)
+      .limit(limit);
+    res.json({ success: true, count: projects.length, total, data: { projects } });
   } catch (err) {
     next(err);
   }
@@ -55,7 +64,7 @@ const getCSR = async (req, res, next) => {
   try {
     const project = await CSRProject.findById(req.params.id);
     if (!project) return res.status(404).json({ success: false, message: 'Project not found' });
-    if (!req.admin && project.status !== 'published') {
+    if (!hasPermission(req.admin, 'csr.read') && project.status !== 'published') {
       return res.status(404).json({ success: false, message: 'Project not found' });
     }
     res.json({ success: true, data: { project } });
