@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { safeHref } from '../utils/safeHref.js';
 import { Link } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import { COMPANY } from '../data/company.js';
@@ -74,7 +75,7 @@ const SOCIAL_SVG = {
 };
 
 function SocialIcon({ platform, url }) {
-  const href = platform === 'email' ? mailtoHref(url) : url;
+  const href = platform === 'email' ? mailtoHref(url) : safeHref(url);
   const icon = SOCIAL_SVG[platform];
   if (!icon || !url) return null;
   return (

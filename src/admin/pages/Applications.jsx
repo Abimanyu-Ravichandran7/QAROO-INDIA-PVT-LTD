@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { safeHref } from '../../utils/safeHref.js';
 import { Modal } from 'react-bootstrap';
 import { applicationApi } from '../../api/applicationApi.js';
 import { useAuth } from '../context/AuthContext.jsx';
@@ -265,7 +266,7 @@ export default function Applications() {
                         Resume
                       </button>
                     ) : a.resumeLink ? (
-                      <a href={a.resumeLink} target="_blank" rel="noopener noreferrer" className="admin-icon-btn act-edit">Link</a>
+                      <a href={safeHref(a.resumeLink)} target="_blank" rel="noopener noreferrer" className="admin-icon-btn act-edit">Link</a>
                     ) : (
                       '-'
                     )}
@@ -340,7 +341,7 @@ export default function Applications() {
                       {detail.resumeName || 'Open resume'}
                     </button>
                   ) : detail.resumeLink ? (
-                    <a href={detail.resumeLink} target="_blank" rel="noopener noreferrer">Candidate link</a>
+                    <a href={safeHref(detail.resumeLink)} target="_blank" rel="noopener noreferrer">Candidate link</a>
                   ) : 'Not provided'}
                 </dd>
               </dl>

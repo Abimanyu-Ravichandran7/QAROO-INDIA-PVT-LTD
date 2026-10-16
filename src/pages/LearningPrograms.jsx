@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { safeHref } from '../utils/safeHref.js';
 import { Link } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import Stepper, { Step } from '../components/Stepper';
@@ -220,7 +221,7 @@ export default function LearningPrograms() {
             <p className="eyebrow" style={{ textAlign: 'center' }}>Useful Links</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center', marginTop: '16px' }}>
               {links.map((url, i) => (
-                <a key={i} href={url} target="_blank" rel="noopener noreferrer"
+                <a key={i} href={safeHref(url)} target="_blank" rel="noopener noreferrer"
                    className="btn-eduact" style={{ fontSize: '14px', padding: '10px 18px' }}>
                   {url.replace(/^https?:\/\//, '').replace(/\/$/, '') || url}
                 </a>
