@@ -308,6 +308,7 @@ export default function BusinessSolutionTemplate({ solution, otherSolutions }) {
         title={solution.pageName}
         slug={solution.slug}
         group="business"
+        href={solution.brochure}
         subtitle={solution.shortDescription}
         sections={sections}
       />

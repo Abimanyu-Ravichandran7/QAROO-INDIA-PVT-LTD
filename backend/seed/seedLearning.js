@@ -1,5 +1,6 @@
 import LearningProgram from '../models/LearningProgram.js';
 import { PROGRAMS } from '../../src/data/programs.js';
+import { brochureFor } from './assets.js';
 
 // Seeds/updates learning programs from the existing rich content source so the
 // data-driven frontend has full course + SEO data. Uses slug-based upsert so it
@@ -15,6 +16,9 @@ export async function seedLearning(admin) {
     skills: p.learn || [],
     category: 'Career Track',
     image: '',
+    // Only set when the file is really in public/, so a record never points
+    // at a brochure that 404s.
+    brochure: brochureFor('learning', p.slug),
     status: 'published',
     displayOrder: i + 1,
 

@@ -89,8 +89,7 @@ export const PROGRAMS = [
     ],
     certification:
       'Certification is provided after successful completion of the training according to the applicable program structure.',
-    placement:
-      'Placement and career support may include resume preparation, interview preparation, career guidance, technical mentoring, portfolio/project preparation, job-oriented training and placement assistance.',
+    placement: '95% placement rate. Placement and career support may include resume preparation, interview preparation, career guidance, technical mentoring, portfolio/project preparation, job-oriented training and placement assistance.',
     modes: ['Classroom training', 'Online training', 'Hybrid learning', 'Weekday batches', 'Weekend batches', 'Evening batches'],
     faq: [
       { q: 'What is Data Science?', a: 'Data Science is the process of collecting, processing and analyzing data using programming, statistics and analytical techniques to generate useful insights and support better decisions.' },
@@ -178,8 +177,7 @@ export const PROGRAMS = [
     ],
     certification:
       'Students can receive certification after successful completion of the applicable Full Stack Development training program.',
-    placement:
-      'Placement support may include resume building, technical interview preparation, mock interviews, career counselling, project guidance, portfolio preparation and placement assistance.',
+    placement: '95% placement rate. Placement support may include resume building, technical interview preparation, mock interviews, career counselling, project guidance, portfolio preparation and placement assistance.',
     modes: ['Classroom training', 'Online training', 'Flexible batches', 'Weekday batches', 'Weekend batches'],
     faq: [
       { q: 'What is Full Stack Development?', a: 'Full Stack Development involves building both the front-end and backend portions of a web application.' },
@@ -278,8 +276,7 @@ export const PROGRAMS = [
     ],
     certification:
       'Certification can be provided after successful completion of the applicable UI/UX Design training program.',
-    placement:
-      'Career and placement support may include portfolio building, resume preparation, mock interviews, career guidance, soft-skill development, job-oriented preparation and placement assistance.',
+    placement: '95% placement rate. Career and placement support may include portfolio building, resume preparation, mock interviews, career guidance, soft-skill development, job-oriented preparation and placement assistance.',
     modes: ['Classroom learning', 'Online learning', 'Flexible schedules', 'Weekday batches', 'Weekend batches'],
     faq: [
       { q: 'What is UI/UX Design?', a: 'UI Design focuses on the visual interface of a digital product, while UX Design focuses on the complete experience users have while interacting with the product.' },
@@ -366,8 +363,7 @@ export const PROGRAMS = [
     ],
     certification:
       'Certification can be provided after successful completion of the applicable Cyber Security & Ethical Hacking training program.',
-    placement:
-      'Placement and career support may include resume building, technical interview preparation, career counselling, mock interviews, practical project guidance and placement assistance.',
+    placement: '95% placement rate. Placement and career support may include resume building, technical interview preparation, career counselling, mock interviews, practical project guidance and placement assistance.',
     modes: ['Classroom learning', 'Online learning', 'Flexible batches'],
     faq: [
       { q: 'What is Cybersecurity?', a: 'Cybersecurity focuses on protecting computer systems, networks, applications and digital information from unauthorized access and cyber threats.' },
@@ -459,8 +455,7 @@ export const PROGRAMS = [
     ],
     certification:
       'Students can receive certification after successful completion of the applicable Artificial Intelligence and Machine Learning training program.',
-    placement:
-      'Career support may include resume preparation, portfolio creation, mock interviews, technical interview preparation, career guidance, project mentoring and placement assistance.',
+    placement: '95% placement rate. Career support may include resume preparation, portfolio creation, mock interviews, technical interview preparation, career guidance, project mentoring and placement assistance.',
     modes: ['Classroom training', 'Live online instructor-led training', 'Online learning', 'Flexible batches'],
     faq: [
       { q: 'What is Artificial Intelligence?', a: 'Artificial Intelligence is the field of developing systems capable of performing tasks that normally require human intelligence.' },
@@ -551,8 +546,7 @@ export const PROGRAMS = [
     ],
     certification:
       'Certification can be provided after successful completion of the applicable Graphic Design & Animation training program.',
-    placement:
-      'Career support may include portfolio development, resume preparation, interview preparation, career guidance, project mentoring and placement assistance.',
+    placement: '95% placement rate. Career support may include portfolio development, resume preparation, interview preparation, career guidance, project mentoring and placement assistance.',
     modes: ['Classroom training', 'Online learning', 'Evening courses', 'Flexible schedules', 'Weekday batches', 'Weekend batches'],
     faq: [
       { q: 'Can beginners learn Graphic Design?', a: 'Yes. Beginners can start with color theory, typography, composition and design fundamentals before learning professional design tools.' },
@@ -614,7 +608,7 @@ export const PROGRAMS = [
     audience: [],
     benefits: [],
     certification: '',
-    placement: '',
+    placement: '95% placement rate.',
     modes: [],
     faq: [],
   },
@@ -692,8 +686,7 @@ export const PROGRAMS = [
     ],
     certification:
       'Certification can be provided after successful completion of the applicable Software Testing training program.',
-    placement:
-      'Career support may include resume preparation, technical interview preparation, mock interviews, career counselling, practical project guidance and placement assistance.',
+    placement: '95% placement rate. Career support may include resume preparation, technical interview preparation, mock interviews, career counselling, practical project guidance and placement assistance.',
     modes: ['Classroom training', 'Online training', 'Flexible batches'],
     faq: [
       { q: 'What is Software Testing?', a: 'Software Testing is the process of checking a software application to identify defects and ensure that it works according to expected requirements.' },

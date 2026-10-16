@@ -169,7 +169,7 @@ export const CSR_PROJECTS = {
     { tag: 'Digital Empowerment', title: 'Community Digital Literacy', desc: 'Digital literacy initiative supported by Infosys Foundation, aimed at bringing basic computer skills and internet awareness to underserved communities in rural Tamil Nadu.', partner: 'Infosys Foundation', location: 'Rural Tamil Nadu', beneficiaries: '1000+ community members' },
     { tag: 'Institution Partnership', title: 'College Industry Connect', desc: 'Structured industry-institute interaction programs including guest lectures, workshops, and industrial visits to expose students to real-world business environments.', partner: 'SNS College of Engineering', location: 'Coimbatore', beneficiaries: '200+ engineering students' },
     { tag: 'Career Training', title: 'Banking & IT Skills Program', desc: 'Specialized training in banking operations and IT skills for students from arts and science backgrounds, improving their employability in the BFSI sector.', partner: 'NSP Career Point', location: 'Puducherry & Tamil Nadu', beneficiaries: '150+ students' },
-    { tag: 'Skill University', title: 'Work-Integrated Degree Support', desc: 'Collaboration with skill universities to provide work-linked education programs combining classroom learning with on-the-job training and industry projects.', partner: 'Medhavi Skills University', location: 'Multi-location', beneficiaries: '100+ degree students' },
+    { tag: 'Skill University', title: 'Work-Integrated Degree Support', desc: 'Collaboration with skill universities to provide work-linked education programs combining classroom learning with on-the-job training and industry projects.', partner: 'SCOPE Global Skills University', location: 'Multi-location', beneficiaries: '100+ degree students' },
   ],
   '25-26': [
     { tag: 'Skill Development', title: 'Advanced Workforce Training 2.0', desc: 'Next-generation skilling programs focusing on emerging technologies like AI, cloud computing, and data analytics for mid-career professionals and fresh graduates.', partner: 'EduBridge & AISECT', location: 'Tamil Nadu', beneficiaries: 'Target: 750+ students' },
@@ -219,6 +219,20 @@ export const PAGE_CONTENT = {
     ],
   },
   about: {
+    // About.jsx reads `partners` from here and only falls back to
+    // src/data/partners.js when the database has none, so these are what the
+    // public page shows and what an admin can edit under Website Content.
+    // Logo paths point at files in public/logos.
+    partners: [
+      { name: 'Infosys Foundation', image: '/logos/infosys-foundation-logo-blue.svg', desc: 'Supports underprivileged communities across India through initiatives in education, healthcare, rural development, arts, and destitute care.' },
+      { name: 'EduBridge', image: '/logos/edubridge.png', desc: "India's leading workforce development platform that helps learners build careers through training and career services with top corporates." },
+      { name: 'Atos Prayas Foundation', image: '/logos/Atos-Logo.jpg', desc: 'The CSR arm of Atos, offering education, vocational training, and skill development programs for underprivileged communities.' },
+      { name: 'AISECT', image: '/logos/aisect.png', desc: "India's leading social enterprise driving inclusive growth in rural and semi-urban areas through skill development, education, and ICT-based services." },
+      { name: 'Canara Bank', image: '/logos/canarabank.png', desc: 'Nationalised Indian public sector bank supporting financial inclusion initiatives.' },
+      { name: 'SNS College of Engineering', image: '/logos/sns.png', desc: 'AICTE-approved institution affiliated with Anna University, Chennai.' },
+      { name: 'Nayago Educational Trust', image: '/logos/nayago.jpg', desc: 'Youth-focused NGO building global awareness and interpersonal skills since 2017.' },
+      { name: 'Narayana Engineering College Nellore', image: '/logos/narayana.png', desc: 'Premier self-financing institution in Andhra Pradesh, established in 1998.' },
+    ],
     visionTitle: 'To be a catalyst for digital transformation',
     visionBody: 'Empowering businesses and individuals through innovative software solutions, creative design, and impactful learning experiences. We believe technology should solve real problems and education should lead to real careers.',
     missionTitle: 'Three pillars that drive everything',
@@ -237,6 +251,9 @@ export const PAGE_CONTENT = {
       { num: '9', label: 'Active partners' },
       { num: '2', label: 'Office locations' },
       { num: '1500', label: 'Students impacted' },
+      // Last on purpose: the first two entries are replaced at render time by
+      // the live MoU and CSR counts, keyed on position.
+      { num: '95%', label: 'Placement rate' },
     ],
   },
   contact: {

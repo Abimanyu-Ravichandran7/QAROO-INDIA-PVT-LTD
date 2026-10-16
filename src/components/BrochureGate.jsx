@@ -28,10 +28,12 @@ import './BrochureGate.css';
  * @param {string} props.title record name, shown and recorded
  * @param {string} [props.slug] used to look for a published PDF
  * @param {'learning'|'business'} [props.group] which folder to look in
+ * @param {string} [props.href] the record's own brochure path, preferred over
+ *   the slug convention - this is what the seeded `brochure` field supplies
  * @param {string} [props.subtitle] sub-heading for the generated brochure
  * @param {Array} [props.sections] body of the generated brochure
  */
-export default function BrochureGate({ show, onHide, title, slug, group, subtitle, sections }) {
+export default function BrochureGate({ show, onHide, title, slug, group, href, subtitle, sections }) {
   const [form, setForm] = useState({ name: '', email: '', phone: '', city: '' });
   const [agreed, setAgreed] = useState(false);
   const [sending, setSending] = useState(false);
@@ -43,28 +45,30 @@ export default function BrochureGate({ show, onHide, title, slug, group, subtitl
   const deliver = async () => {
     // A published PDF wins over the generated document. HEAD rather than GET
     // so a missing file costs nothing, and any failure just falls through.
-    if (slug) {
-      // The grouped path first, then the old flat one, so a file that has not
-      // been moved into a group folder still resolves.
-      const candidates = group ? [`/brochures/${group}/${slug}.pdf`, `/brochures/${slug}.pdf`] : [`/brochures/${slug}.pdf`];
-      for (const href of candidates) {
-        try {
-          // The content type is checked as well as the status: the SPA fallback
-          // answers a missing file with index.html and a 200, so `ok` alone
-          // would hand the visitor a web page named .pdf.
-          const res = await fetch(href, { method: 'HEAD' });
-          if (res.ok && (res.headers.get('content-type') || '').includes('pdf')) {
-            const link = document.createElement('a');
-            link.href = href;
-            link.download = `Qaroo-${title.replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-')}-Brochure.pdf`;
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-            return;
-          }
-        } catch {
-          /* try the next candidate, then the generated brochure */
+    // The record's own path first - it is the one the database holds - then the
+    // folder convention, then the old flat layout.
+    const candidates = [
+      href,
+      group && slug ? `/brochures/${group}/${slug}.pdf` : null,
+      slug ? `/brochures/${slug}.pdf` : null,
+    ].filter(Boolean);
+    for (const candidate of candidates) {
+      try {
+        // The content type is checked as well as the status: the SPA fallback
+        // answers a missing file with index.html and a 200, so `ok` alone
+        // would hand the visitor a web page named .pdf.
+        const res = await fetch(candidate, { method: 'HEAD' });
+        if (res.ok && (res.headers.get('content-type') || '').includes('pdf')) {
+          const link = document.createElement('a');
+          link.href = candidate;
+          link.download = `Qaroo-${title.replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-')}-Brochure.pdf`;
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          return;
         }
+      } catch {
+        /* try the next candidate, then the generated brochure */
       }
     }
     downloadBrochure({ title, subtitle, sections, print: true });

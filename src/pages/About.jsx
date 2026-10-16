@@ -30,6 +30,7 @@ const DEFAULT_ABOUT = {
     { num: 12, label: 'CSR projects delivered' },
     { num: 2, label: 'Office locations' },
     { num: 1500, label: 'Students impacted' },
+    { num: '95%', label: 'Placement rate' },
   ],
 };
 

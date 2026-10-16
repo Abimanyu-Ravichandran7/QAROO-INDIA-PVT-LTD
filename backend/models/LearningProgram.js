@@ -11,6 +11,12 @@ const learningProgramSchema = new mongoose.Schema(
     skills: [{ type: String }],
     category: { type: String, default: '' },
     image: { type: String, default: '' },
+    // Path to the published brochure, so the download is driven by the record
+    // rather than by a filename convention the frontend has to guess. Relative
+    // to the site root (e.g. /brochures/learning/<slug>.pdf); left empty when
+    // no document has been published, and the UI then falls back to the
+    // brochure it generates from this record's own content.
+    brochure: { type: String, default: '' },
     status: { type: String, enum: ['draft', 'published'], default: 'published' },
     displayOrder: { type: Number, default: 0 },
 

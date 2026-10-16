@@ -331,6 +331,7 @@ export default function ProgramTemplate({ program, otherPrograms }) {
         title={program.pageName}
         slug={program.slug}
         group="learning"
+        href={program.brochure}
         subtitle={program.shortDescription}
         sections={sections}
       />

@@ -19,9 +19,28 @@
 }
 
 /* Architectural frame around service cards */
+/* Height has to be carried the whole way down for the cards in a row to match.
+   Bootstrap already makes the columns equal height and TiltCard passes that on,
+   but this wrapper sat between them with an auto height - so .eduact-card's own
+   `height: 100%` resolved against content height and every card ended up as
+   tall as its own description. */
 .business-template .af-card-wrap {
   position: relative;
   border-radius: 16px;
+  height: 100%;
+}
+
+/* With the card now filling the wrapper, its content stacks: a short
+   description leaves space at the foot instead of shortening the card. */
+.business-template .af-card-wrap > .eduact-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.business-template .af-card-wrap > .eduact-card > p {
+  /* Takes the slack, so the cards' text blocks start at the same line. */
+  flex: 1 1 auto;
+  margin-bottom: 0;
 }
 .business-template .af-card-wrap::before,
 .business-template .af-card-wrap::after {
