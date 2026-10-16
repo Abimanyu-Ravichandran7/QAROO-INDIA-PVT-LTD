@@ -30,15 +30,21 @@ import { MongoClient } from 'mongodb';
 import { EJSON } from 'bson';
 
 // An Atlas mongodb+srv:// URI needs a DNS SRV lookup, and Node uses its own
-// resolver rather than the OS one. In some environments (containers, sandboxes)
-// that resolver is left pointing at 127.0.0.1 with nothing behind it, so every
-// lookup fails with ECONNREFUSED while curl and the rest of the system are
-// fine. Set DNS_SERVERS to borrow a working resolver, e.g.
-//   DNS_SERVERS=192.168.1.1 node tools/migrate-to-atlas.mjs restore
-if (process.env.DNS_SERVERS) {
-  const servers = process.env.DNS_SERVERS.split(',').map((s) => s.trim()).filter(Boolean);
-  dns.setServers(servers);
-  console.log(`dns   : using ${servers.join(', ')}`);
+// resolver rather than the OS one. Some routers/networks refuse that lookup
+// (querySrv ECONNREFUSED) even though the rest of the system resolves fine, so
+// when an SRV URI is in play we borrow a public resolver by default. Override
+// with DNS_SERVERS=192.168.1.1 or DNS_SERVERS=off to use the system resolver.
+{
+  const usesSrv = (process.env.MONGODB_URI || '').startsWith('mongodb+srv://')
+    || (process.env.ATLAS_URI || '').startsWith('mongodb+srv://');
+  const setting = process.env.DNS_SERVERS ?? (usesSrv ? '8.8.8.8,1.1.1.1' : '');
+  if (setting && setting.toLowerCase() !== 'off') {
+    const servers = setting.split(',').map((s) => s.trim()).filter(Boolean);
+    if (servers.length) {
+      dns.setServers(servers);
+      console.log(`dns   : using ${servers.join(', ')}`);
+    }
+  }
 }
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
