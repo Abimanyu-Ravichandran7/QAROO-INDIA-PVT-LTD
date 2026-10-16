@@ -35,16 +35,17 @@ export default function CSRForm({ initial, onSubmit, submitting }) {
       {submitting && <div className="admin-alert info">Saving...</div>}
 
       <div className="admin-card">
-        <h2>Project Details</h2>
+        <h2>Year &amp; Category</h2>
         <div className="form-grid">
           <div className="field">
-            <label>Year *</label>
-            <input type="text" value={form.year} onChange={(e) => set('year', e.target.value)} placeholder="24-25" required />
+            <label htmlFor="csr-year">Year *</label>
+            <input id="csr-year" type="text" value={form.year} onChange={(e) => set('year', e.target.value)} placeholder="24-25" required />
           </div>
           <div className="field">
-            <label>Category / Tag</label>
+            <label htmlFor="csr-category-tag">Category / Tag</label>
             {newTagMode ? (
               <input
+                id="csr-category-tag"
                 type="text"
                 value={form.tag}
                 onChange={(e) => set('tag', e.target.value)}
@@ -52,6 +53,7 @@ export default function CSRForm({ initial, onSubmit, submitting }) {
               />
             ) : (
               <select
+                id="csr-category-tag"
                 value={form.tag}
                 onChange={(e) => {
                   if (e.target.value === ADD_NEW) {
@@ -84,40 +86,43 @@ export default function CSRForm({ initial, onSubmit, submitting }) {
             )}
           </div>
         </div>
+        <h2>Publishing</h2>
         <div className="form-grid">
           <div className="field">
-            <label>Status</label>
-            <select value={form.status} onChange={(e) => set('status', e.target.value)}>
+            <label htmlFor="csr-status">Status</label>
+            <select id="csr-status" value={form.status} onChange={(e) => set('status', e.target.value)}>
               <option value="published">Published</option>
               <option value="draft">Draft</option>
             </select>
           </div>
           <div className="field">
-            <label>Image</label>
-            <ImageInput value={form.image} onChange={(v) => set('image', v)} />
+            <label htmlFor="csr-image">Image</label>
+            <ImageInput id="csr-image" label="Image" value={form.image} onChange={(v) => set('image', v)} />
           </div>
         </div>
+        <h2>About the Project</h2>
         <div className="field">
-          <label>Project Title *</label>
-          <input type="text" value={form.title} onChange={(e) => set('title', e.target.value)} required />
+          <label htmlFor="csr-project-title">Project Title *</label>
+          <input id="csr-project-title" type="text" value={form.title} onChange={(e) => set('title', e.target.value)} required />
         </div>
         <div className="field">
-          <label>Description</label>
-          <textarea rows={3} value={form.desc} onChange={(e) => set('desc', e.target.value)} />
+          <label htmlFor="csr-description">Description</label>
+          <textarea id="csr-description" rows={3} value={form.desc} onChange={(e) => set('desc', e.target.value)} />
         </div>
+        <h2>Partner &amp; Reach</h2>
         <div className="form-grid">
           <div className="field">
-            <label>Partner</label>
-            <input type="text" value={form.partner} onChange={(e) => set('partner', e.target.value)} />
+            <label htmlFor="csr-partner">Partner</label>
+            <input id="csr-partner" type="text" value={form.partner} onChange={(e) => set('partner', e.target.value)} />
           </div>
           <div className="field">
-            <label>Location</label>
-            <input type="text" value={form.location} onChange={(e) => set('location', e.target.value)} />
+            <label htmlFor="csr-location">Location</label>
+            <input id="csr-location" type="text" value={form.location} onChange={(e) => set('location', e.target.value)} />
           </div>
         </div>
         <div className="field">
-          <label>Beneficiaries</label>
-          <input type="text" value={form.beneficiaries} onChange={(e) => set('beneficiaries', e.target.value)} placeholder="500+ students" />
+          <label htmlFor="csr-beneficiaries">Beneficiaries</label>
+          <input id="csr-beneficiaries" type="text" value={form.beneficiaries} onChange={(e) => set('beneficiaries', e.target.value)} placeholder="500+ students" />
         </div>
       </div>
 

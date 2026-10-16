@@ -107,12 +107,13 @@ export default function MOUForm({ initial, onSubmit, submitting }) {
       {submitting && <div className="admin-alert info">Saving...</div>}
 
       <div className="admin-card">
-        <h2>Details</h2>
+        <h2>Category &amp; Status</h2>
         <div className="form-grid">
           <div className="field">
-            <label>MOU Category / Tag</label>
+            <label htmlFor="mou-mou-category-tag">MOU Category / Tag</label>
             {newTagMode ? (
               <input
+                id="mou-mou-category-tag"
                 type="text"
                 value={form.tag}
                 onChange={(e) => set('tag', e.target.value)}
@@ -120,6 +121,7 @@ export default function MOUForm({ initial, onSubmit, submitting }) {
               />
             ) : (
               <select
+                id="mou-mou-category-tag"
                 value={form.tag}
                 onChange={(e) => {
                   if (e.target.value === ADD_NEW) {
@@ -152,24 +154,25 @@ export default function MOUForm({ initial, onSubmit, submitting }) {
             )}
           </div>
           <div className="field">
-            <label>Status</label>
-            <select value={form.status} onChange={(e) => set('status', e.target.value)}>
+            <label htmlFor="mou-status">Status</label>
+            <select id="mou-status" value={form.status} onChange={(e) => set('status', e.target.value)}>
               <option value="draft">Draft</option>
               <option value="published">Published</option>
             </select>
           </div>
         </div>
+        <h2>Partner</h2>
         <div className="field">
-          <label>MOU Name *</label>
-          <input type="text" value={form.name} onChange={(e) => set('name', e.target.value)} placeholder="Partner Organization Name" required />
+          <label htmlFor="mou-mou-name">MOU Name *</label>
+          <input id="mou-mou-name" type="text" value={form.name} onChange={(e) => set('name', e.target.value)} placeholder="Partner Organization Name" required />
         </div>
         <div className="field">
-          <label>Short Description</label>
-          <textarea rows={2} value={form.blurb} onChange={(e) => set('blurb', e.target.value)} placeholder="One-line summary shown on the card" />
+          <label htmlFor="mou-short-description">Short Description</label>
+          <textarea id="mou-short-description" rows={2} value={form.blurb} onChange={(e) => set('blurb', e.target.value)} placeholder="One-line summary shown on the card" />
         </div>
         <div className="field">
-          <label>Logo</label>
-          <ImageInput value={form.logo} onChange={(v) => set('logo', v)} />
+          <label htmlFor="mou-logo">Logo</label>
+          <ImageInput id="mou-logo" label="Logo" value={form.logo} onChange={(v) => set('logo', v)} />
           <small className="admin-hint">Shown on the MOU card. Upload a file or paste a URL/path (e.g. /logos/your-logo.png).</small>
         </div>
       </div>
@@ -197,15 +200,15 @@ export default function MOUForm({ initial, onSubmit, submitting }) {
           </div>
 
           <div className="field">
-            <label>Heading</label>
-            <input type="text" value={section.heading} onChange={(e) => setSection(si, 'heading', e.target.value)} placeholder="What Is It?" />
+            <label htmlFor="mou-heading">Heading</label>
+            <input id="mou-heading" type="text" value={section.heading} onChange={(e) => setSection(si, 'heading', e.target.value)} placeholder="What Is It?" />
           </div>
 
           <div className="field">
-            <label>Paragraphs</label>
+            <label htmlFor="mou-paragraphs">Paragraphs</label>
             {section.paragraphs.map((p, pi) => (
               <div key={pi} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                <textarea rows={2} value={p} onChange={(e) => setParagraph(si, pi, e.target.value)} />
+                <textarea id="mou-paragraphs" rows={2} value={p} onChange={(e) => setParagraph(si, pi, e.target.value)} />
                 <button type="button" className="admin-icon-btn danger" onClick={() => removeParagraph(si, pi)}>×</button>
               </div>
             ))}
@@ -213,10 +216,10 @@ export default function MOUForm({ initial, onSubmit, submitting }) {
           </div>
 
           <div className="field">
-            <label>List Items</label>
+            <label htmlFor="mou-list-items">List Items</label>
             {section.list.map((li, liIdx) => (
               <div key={liIdx} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                <input type="text" value={li} onChange={(e) => setListItem(si, liIdx, e.target.value)} />
+                <input id="mou-list-items" type="text" value={li} onChange={(e) => setListItem(si, liIdx, e.target.value)} />
                 <button type="button" className="admin-icon-btn danger" onClick={() => removeListItem(si, liIdx)}>×</button>
               </div>
             ))}
@@ -224,10 +227,10 @@ export default function MOUForm({ initial, onSubmit, submitting }) {
           </div>
 
           <div className="field">
-            <label>{'Pathway (e.g. College -> Training -> Employment)'}</label>
+            <label htmlFor="mou-pathway">{'Pathway (e.g. College -> Training -> Employment)'}</label>
             {section.pathway.map((pw, pi) => (
               <div key={pi} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                <input type="text" value={pw} onChange={(e) => setPathway(si, pi, e.target.value)} placeholder="Step" />
+                <input id="mou-pathway" type="text" value={pw} onChange={(e) => setPathway(si, pi, e.target.value)} placeholder="Step" />
                 <button type="button" className="admin-icon-btn danger" onClick={() => removePathway(si, pi)}>×</button>
               </div>
             ))}
@@ -235,8 +238,8 @@ export default function MOUForm({ initial, onSubmit, submitting }) {
           </div>
 
           <div className="field">
-            <label>Note</label>
-            <textarea rows={2} value={section.note} onChange={(e) => setSection(si, 'note', e.target.value)} placeholder="Warning / caution note" />
+            <label htmlFor="mou-note">Note</label>
+            <textarea id="mou-note" rows={2} value={section.note} onChange={(e) => setSection(si, 'note', e.target.value)} placeholder="Warning / caution note" />
           </div>
         </div>
       ))}

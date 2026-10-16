@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 
 export default function PasswordInput({
   label,
@@ -11,11 +11,15 @@ export default function PasswordInput({
   hint,
 }) {
   const [show, setShow] = useState(false);
+  // Generated, because this component renders several times on a page (current
+  // password, new, confirm) and a fixed id would tie every label to the first.
+  const id = useId();
   return (
     <div className="field">
-      {label && <label>{label}</label>}
+      {label && <label htmlFor={id}>{label}</label>}
       <div className="admin-password-wrap">
         <input
+          id={id}
           type={show ? 'text' : 'password'}
           value={value}
           onChange={onChange}

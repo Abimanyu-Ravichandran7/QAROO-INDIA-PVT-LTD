@@ -1,6 +1,10 @@
-import { useRef, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 
-export default function ImageInput({ value = '', onChange, allowUrl = true, accept = 'image/*' }) {
+export default function ImageInput({ value = '', onChange, allowUrl = true, accept = 'image/*', id, label }) {
+  // The caller passes an id when it has its own <label htmlFor>; otherwise one
+  // is generated so the URL field is never left unnamed.
+  const autoId = useId();
+  const fieldId = id || autoId;
   const inputRef = useRef(null);
   const [drag, setDrag] = useState(false);
 
@@ -23,6 +27,14 @@ export default function ImageInput({ value = '', onChange, allowUrl = true, acce
         onDrop={(e) => { e.preventDefault(); setDrag(false); readFile(e.dataTransfer.files && e.dataTransfer.files[0]); }}
         role="button"
         tabIndex={0}
+        aria-label={label ? `${label}: choose an image file` : 'Choose an image file'}
+        onKeyDown={(e) => {
+          // role="button" has to answer Enter and Space like a real button.
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (inputRef.current) inputRef.current.click();
+          }
+        }}
       >
         {value ? (
           <img src={value} alt="preview" className="image-input__preview" />
@@ -38,6 +50,7 @@ export default function ImageInput({ value = '', onChange, allowUrl = true, acce
         ref={inputRef}
         type="file"
         accept={accept}
+        aria-label={label ? `${label}: upload a file` : 'Upload an image file'}
         hidden
         onChange={(e) => readFile(e.target.files && e.target.files[0])}
       />
@@ -60,8 +73,9 @@ export default function ImageInput({ value = '', onChange, allowUrl = true, acce
       {allowUrl ? (
         <div className="admin-form" style={{ marginTop: '8px' }}>
           <div className="field">
-            <label>...or paste an image URL</label>
+            <label htmlFor={`${fieldId}-url`}>...or paste an image URL</label>
             <input
+              id={`${fieldId}-url`}
               type="text"
               value={isFile ? '' : value}
               placeholder="https://..."

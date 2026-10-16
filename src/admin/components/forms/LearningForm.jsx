@@ -70,41 +70,41 @@ export default function LearningForm({ initial, onSubmit, submitting }) {
         <h2>Basic Information</h2>
         <div className="form-grid">
           <div className="field">
-            <label>Status</label>
-            <select value={form.status} onChange={(e) => set('status', e.target.value)}>
+            <label htmlFor="learning-status">Status</label>
+            <select id="learning-status" value={form.status} onChange={(e) => set('status', e.target.value)}>
               <option value="published">Published</option>
               <option value="draft">Draft</option>
             </select>
           </div>
           <div className="field">
-            <label>Display Order</label>
-            <input type="number" value={form.displayOrder} onChange={(e) => set('displayOrder', Number(e.target.value))} placeholder="1" />
+            <label htmlFor="learning-display-order">Display Order</label>
+            <input id="learning-display-order" type="number" value={form.displayOrder} onChange={(e) => set('displayOrder', Number(e.target.value))} placeholder="1" />
           </div>
         </div>
         <div className="field">
-          <label>Program Title *</label>
-          <input type="text" value={form.title} onChange={(e) => onTitle(e.target.value)} required />
+          <label htmlFor="learning-program-title">Program Title *</label>
+          <input id="learning-program-title" type="text" value={form.title} onChange={(e) => onTitle(e.target.value)} required />
         </div>
         <div className="field">
-          <label>Slug (auto-generated from title; leave empty to auto-generate)</label>
-          <input type="text" value={form.slug} onChange={(e) => onSlug(e.target.value)} placeholder="cloud-computing" />
+          <label htmlFor="learning-slug">Slug (auto-generated from title; leave empty to auto-generate)</label>
+          <input id="learning-slug" type="text" value={form.slug} onChange={(e) => onSlug(e.target.value)} placeholder="cloud-computing" />
           <p className="hint">Public URL: /learning-programs/{form.slug || '<slug>'}</p>
         </div>
         <div className="field">
-          <label>Short Description</label>
-          <textarea rows={2} value={form.shortDescription} onChange={(e) => set('shortDescription', e.target.value)} />
+          <label htmlFor="learning-short-description">Short Description</label>
+          <textarea id="learning-short-description" rows={2} value={form.shortDescription} onChange={(e) => set('shortDescription', e.target.value)} />
         </div>
         <div className="field">
-          <label>Full Description</label>
-          <textarea rows={4} value={form.fullDescription} onChange={(e) => set('fullDescription', e.target.value)} />
+          <label htmlFor="learning-full-description">Full Description</label>
+          <textarea id="learning-full-description" rows={4} value={form.fullDescription} onChange={(e) => set('fullDescription', e.target.value)} />
         </div>
         <div className="field">
-          <label>Program Image</label>
-          <ImageInput value={form.image} onChange={(v) => set('image', v)} />
+          <label htmlFor="learning-program-image">Program Image</label>
+          <ImageInput id="learning-program-image" label="Program Image" value={form.image} onChange={(v) => set('image', v)} />
         </div>
         <div className="field">
-          <label>CTA Text</label>
-          <input type="text" value={form.cta} onChange={(e) => set('cta', e.target.value)} />
+          <label htmlFor="learning-cta-text">CTA Text</label>
+          <input id="learning-cta-text" type="text" value={form.cta} onChange={(e) => set('cta', e.target.value)} />
         </div>
       </div>
 
@@ -119,12 +119,12 @@ export default function LearningForm({ initial, onSubmit, submitting }) {
         <StringListEditor label="Course Benefits" value={form.benefits} onChange={(v) => set('benefits', v)} />
         <div className="form-grid">
           <div className="field">
-            <label>Certification</label>
-            <textarea rows={2} value={form.certification} onChange={(e) => set('certification', e.target.value)} />
+            <label htmlFor="learning-certification">Certification</label>
+            <textarea id="learning-certification" rows={2} value={form.certification} onChange={(e) => set('certification', e.target.value)} />
           </div>
           <div className="field">
-            <label>Placement Support</label>
-            <textarea rows={2} value={form.placement} onChange={(e) => set('placement', e.target.value)} />
+            <label htmlFor="learning-placement-support">Placement Support</label>
+            <textarea id="learning-placement-support" rows={2} value={form.placement} onChange={(e) => set('placement', e.target.value)} />
           </div>
         </div>
         <StringListEditor label="Learning Modes" value={form.modes} onChange={(v) => set('modes', v)} />

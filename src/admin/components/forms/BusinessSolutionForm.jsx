@@ -76,41 +76,41 @@ export default function BusinessSolutionForm({ initial, onSubmit, submitting }) 
         <h2>Basic Information</h2>
         <div className="form-grid">
           <div className="field">
-            <label>Status</label>
-            <select value={form.status} onChange={(e) => set('status', e.target.value)}>
+            <label htmlFor="solution-status">Status</label>
+            <select id="solution-status" value={form.status} onChange={(e) => set('status', e.target.value)}>
               <option value="published">Published</option>
               <option value="draft">Draft</option>
             </select>
           </div>
           <div className="field">
-            <label>Display Order</label>
-            <input type="number" value={form.displayOrder} onChange={(e) => set('displayOrder', Number(e.target.value))} placeholder="1" />
+            <label htmlFor="solution-display-order">Display Order</label>
+            <input id="solution-display-order" type="number" value={form.displayOrder} onChange={(e) => set('displayOrder', Number(e.target.value))} placeholder="1" />
           </div>
         </div>
         <div className="field">
-          <label>Solution Title *</label>
-          <input type="text" value={form.title} onChange={(e) => onTitle(e.target.value)} required />
+          <label htmlFor="solution-solution-title">Solution Title *</label>
+          <input id="solution-solution-title" type="text" value={form.title} onChange={(e) => onTitle(e.target.value)} required />
         </div>
         <div className="field">
-          <label>Slug (auto-generated from title; leave empty to auto-generate)</label>
-          <input type="text" value={form.slug} onChange={(e) => onSlug(e.target.value)} placeholder="crm-solutions" />
+          <label htmlFor="solution-slug">Slug (auto-generated from title; leave empty to auto-generate)</label>
+          <input id="solution-slug" type="text" value={form.slug} onChange={(e) => onSlug(e.target.value)} placeholder="crm-solutions" />
           <p className="hint">Public URL: /business-solutions/{form.slug || '<slug>'}</p>
         </div>
         <div className="field">
-          <label>Short Description</label>
-          <textarea rows={2} value={form.shortDescription} onChange={(e) => set('shortDescription', e.target.value)} />
+          <label htmlFor="solution-short-description">Short Description</label>
+          <textarea id="solution-short-description" rows={2} value={form.shortDescription} onChange={(e) => set('shortDescription', e.target.value)} />
         </div>
         <div className="field">
-          <label>Full Description</label>
-          <textarea rows={4} value={form.fullDescription} onChange={(e) => set('fullDescription', e.target.value)} />
+          <label htmlFor="solution-full-description">Full Description</label>
+          <textarea id="solution-full-description" rows={4} value={form.fullDescription} onChange={(e) => set('fullDescription', e.target.value)} />
         </div>
         <div className="field">
-          <label>Solution Image</label>
-          <ImageInput value={form.image} onChange={(v) => set('image', v)} />
+          <label htmlFor="solution-solution-image">Solution Image</label>
+          <ImageInput id="solution-solution-image" label="Solution Image" value={form.image} onChange={(v) => set('image', v)} />
         </div>
         <div className="field">
-          <label>CTA Text</label>
-          <input type="text" value={form.cta} onChange={(e) => set('cta', e.target.value)} />
+          <label htmlFor="solution-cta-text">CTA Text</label>
+          <input id="solution-cta-text" type="text" value={form.cta} onChange={(e) => set('cta', e.target.value)} />
         </div>
       </div>
 

@@ -2959,3 +2959,141 @@ body.admin-dark .admin-cmd-trigger kbd { background: #221e2b; }
   .dash-stat:hover { transform: none; }
   .ft-feed a:hover { padding-left: 8px; }
 }
+
+/* ============================================================
+   ADMIN FORMS - headings, grouped fieldsets, reactive fields
+   ============================================================
+   The forms were the one part of the admin the earlier visual layer never
+   reached: a flat stack of labels and inputs with no sense of where one group
+   of related fields ended and the next began. This gives each section a
+   numbered heading, puts the repeating list editors in a visible group, and
+   makes a field respond when it is focused - all of it on the existing
+   markup, so no form had to be restructured to get it. */
+
+/* ---- section headings ----
+   Every form already emits <h2> per section; they were unstyled. The counter
+   numbers them in document order, so a long form reads as steps rather than
+   one undifferentiated column. */
+.admin-form {
+  counter-reset: formsection;
+}
+.admin-form h2 {
+  counter-increment: formsection;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  color: var(--admin-dark);
+  margin: 30px 0 16px;
+  padding-bottom: 11px;
+  border-bottom: 1px solid var(--ft-line, rgba(23, 42, 70, 0.09));
+}
+.admin-form h2:first-of-type { margin-top: 4px; }
+.admin-form h2::before {
+  content: counter(formsection, decimal-leading-zero);
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--admin-base), var(--admin-dark));
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(var(--admin-base-rgb), 0.28);
+}
+/* A hairline that runs from the heading's accent, so the eye follows the group. */
+.admin-form h2::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(var(--admin-base-rgb), 0.3), transparent);
+}
+
+/* ---- grouped list editors ----
+   StringListEditor / ModuleListEditor / FaqListEditor are now real fieldsets
+   with a legend, which both names the group for a screen reader and gives the
+   rows a visible boundary they never had. */
+.admin-form .admin-fieldset {
+  border: 1px solid var(--ft-line, rgba(23, 42, 70, 0.09));
+  border-radius: 14px;
+  padding: 14px 16px 16px;
+  margin: 0 0 18px;
+  background:
+    linear-gradient(180deg, rgba(var(--admin-base-rgb), 0.022), transparent 52px);
+  min-width: 0;
+}
+.admin-form .admin-fieldset > legend {
+  float: none;
+  width: auto;
+  padding: 3px 10px;
+  margin-bottom: 10px;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--admin-base);
+  background: var(--admin-soft, rgba(var(--admin-base-rgb), 0.07));
+  border: 1px solid rgba(var(--admin-base-rgb), 0.16);
+  border-radius: 999px;
+}
+body.admin-dark .admin-form .admin-fieldset > legend {
+  background: rgba(var(--admin-base-rgb), 0.16);
+  color: #ff9d96;
+}
+
+/* ---- fields that react ----
+   A required field is marked, the label lifts to the brand colour on focus,
+   and the control gets a ring. Focus-within rather than :focus so the whole
+   row responds, including the image picker and password toggle. */
+.admin-form .field { position: relative; }
+.admin-form .field:focus-within > label {
+  color: var(--admin-base);
+}
+.admin-form input[type="text"],
+.admin-form input[type="email"],
+.admin-form input[type="password"],
+.admin-form input[type="number"],
+.admin-form input[type="tel"],
+.admin-form select,
+.admin-form textarea {
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+.admin-form input:focus,
+.admin-form select:focus,
+.admin-form textarea:focus {
+  box-shadow: 0 0 0 4px rgba(var(--admin-base-rgb), 0.1);
+}
+/* A required control shows a quiet mark rather than relying on the asterisk in
+   the label text alone. */
+.admin-form input:required,
+.admin-form select:required,
+.admin-form textarea:required {
+  border-left: 2px solid rgba(var(--admin-base-rgb), 0.4);
+}
+.admin-form input:required:valid,
+.admin-form textarea:required:valid {
+  border-left-color: rgba(34, 192, 138, 0.55);
+}
+
+/* ---- add-row button ---- */
+.admin-form .admin-add-btn {
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+.admin-form .admin-add-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(var(--admin-base-rgb), 0.45);
+}
+
+/* ---- reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  .admin-form input,
+  .admin-form select,
+  .admin-form textarea,
+  .admin-form .admin-add-btn { transition: none; }
+  .admin-form .admin-add-btn:hover { transform: none; }
+}
