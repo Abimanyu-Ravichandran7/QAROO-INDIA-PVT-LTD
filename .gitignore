@@ -30,3 +30,6 @@ compass-connections.json
 # Stray / backup leftovers
 *.bak
 ChatGPT Image*.png
+
+# Database dumps - contain job applications and contact messages (personal data)
+backend/backups/

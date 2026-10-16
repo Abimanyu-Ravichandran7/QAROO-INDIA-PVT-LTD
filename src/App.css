@@ -165,6 +165,17 @@ html, body, #root {
    beats an inherited one. */
 body.public-site {
   text-transform: capitalize;
+
+  /* Decorative layers bleed past the viewport on purpose - the blob field, the
+     ink-line waves, the hero's corner glow - and at narrow widths that left a
+     12px horizontal scroll on the business, learning and contact pages. The
+     overflowing box could not be isolated by measuring elements, which points
+     at a pseudo-element, so the overflow is stopped at the root instead.
+
+     `clip` rather than `hidden`: hidden makes this a scroll container, which
+     breaks `position: sticky` on descendants and lets script scroll the body
+     sideways. clip refuses the overflow outright with neither side effect. */
+  overflow-x: clip;
 }
 
 /* capitalize only raises the first letter of each word, it does not lower the
