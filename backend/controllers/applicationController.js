@@ -1,10 +1,14 @@
 import JobApplication from '../models/JobApplication.js';
 import { pageOf } from '../utils/pagination.js';
 import JobPosting from '../models/JobPosting.js';
-import { storeResume, resumeFilePath, deleteResume } from '../services/resumeStorage.js';
+import {
+  storeResume,
+  resumeFilePath,
+  deleteResume,
+  MAX_RESUME_BYTES,
+} from '../services/resumeStorage.js';
 import { escapeRegex } from '../utils/escapeRegex.js';
 
-const MAX_RESUME_BYTES = 5 * 1024 * 1024;
 const ALLOWED_RESUME = /^data:application\/(pdf|msword|vnd\.openxmlformats-officedocument\.wordprocessingml\.document);base64,/i;
 
 /**
@@ -60,7 +64,10 @@ const submitApplication = async (req, res, next) => {
       // base64 inflates by ~4/3; check the decoded size.
       const base64 = resumeFile.slice(resumeFile.indexOf(',') + 1);
       if (Math.floor((base64.length * 3) / 4) > MAX_RESUME_BYTES) {
-        return res.status(400).json({ success: false, message: 'Resume must be under 5MB' });
+        return res.status(400).json({
+          success: false,
+          message: `Resume must be under ${Math.round(MAX_RESUME_BYTES / (1024 * 1024))}MB`,
+        });
       }
       try {
         stored = await storeResume(resumeFile);

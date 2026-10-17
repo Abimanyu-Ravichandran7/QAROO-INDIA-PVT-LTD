@@ -24,9 +24,49 @@ const validateEnv = () => {
     );
   }
 
+  // Length alone is a weak test: a memorable phrase reaches 32 characters while
+  // carrying far less entropy than 32 random ones.
+  if (JWT_SECRET && String(JWT_SECRET).length >= 32 && new Set(String(JWT_SECRET)).size < 24) {
+    warnings.push(
+      'JWT_SECRET is long enough but has few distinct characters, which suggests a ' +
+        'passphrase rather than a random value. Generate one with: ' +
+        'node -e "console.log(require(\'crypto\').randomBytes(48).toString(\'hex\'))"'
+    );
+  }
+
   if (NODE_ENV === 'production') {
-    if (!CLIENT_URL || /^https?:\/\/localhost(?::\d+)?$/.test(CLIENT_URL)) {
+    // CLIENT_URL is a comma-separated allowlist, so every entry has to be
+    // checked on its own. Testing the whole string against a single-origin
+    // pattern silently passes a list of localhost origins, which then fails as
+    // a CORS rejection on the first real request instead of at startup.
+    const origins = String(CLIENT_URL || '')
+      .split(',')
+      .map((o) => o.trim())
+      .filter(Boolean);
+
+    if (!origins.length) {
       errors.push('CLIENT_URL must point at the real frontend origin in production.');
+    } else {
+      const local = origins.filter((o) => /^https?:\/\/(localhost|127\.0\.0\.1|\[?::1\]?)(:\d+)?$/i.test(o));
+      if (local.length === origins.length) {
+        errors.push(
+          `CLIENT_URL only contains local origins (${local.join(', ')}). Set it to the real ` +
+            'frontend origin, e.g. CLIENT_URL=https://www.example.com,https://example.com'
+        );
+      } else if (local.length) {
+        warnings.push(
+          `CLIENT_URL still allows local origins in production: ${local.join(', ')}. ` +
+            'Remove them so only the live site can make credentialed requests.'
+        );
+      }
+
+      const insecure = origins.filter((o) => /^http:\/\//i.test(o) && !local.includes(o));
+      if (insecure.length) {
+        errors.push(
+          `CLIENT_URL contains non-HTTPS origins (${insecure.join(', ')}). Secure cookies are ` +
+            'only sent over HTTPS, so admin login cannot work from an http:// origin.'
+        );
+      }
     }
     if (!MONGODB_URI || MONGODB_URI === LOCAL_DB) {
       errors.push('MONGODB_URI must point at a real database in production.');

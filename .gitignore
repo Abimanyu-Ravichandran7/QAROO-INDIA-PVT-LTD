@@ -33,3 +33,11 @@ ChatGPT Image*.png
 
 # Database dumps - contain job applications and contact messages (personal data)
 backend/backups/
+
+# Environment files. Only backend/.env was listed before, so a root .env or a
+# backend/.env.production would have been committed. Patterns without a slash
+# match at any depth; the negations keep the checked-in templates tracked.
+.env
+.env.*
+!.env.example
+!.env.*.example

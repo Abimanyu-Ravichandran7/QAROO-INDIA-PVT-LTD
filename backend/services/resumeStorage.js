@@ -18,6 +18,13 @@ const MIME_EXT = {
 export const RESUME_MIMES = Object.keys(MIME_EXT);
 
 /**
+ * Largest resume accepted, decoded. Comfortably above any real CV.
+ * Owned here rather than in the controller so the route that accepts the upload
+ * and the service that writes it cannot drift to two different limits.
+ */
+export const MAX_RESUME_BYTES = 5 * 1024 * 1024;
+
+/**
  * Stores a resume and returns where it went.
  *
  * Cloudinary is used when it is configured; otherwise the file is written to
@@ -34,6 +41,17 @@ export async function storeResume(dataUrl) {
 
   const mime = match[1].toLowerCase();
   if (!MIME_EXT[mime]) throw new Error('Resume must be a PDF or Word document');
+
+  // Checked before the upload, not after: the global 15mb JSON body limit is the
+  // only other bound, and it rejects with a bare 413 that tells the applicant
+  // nothing. Base64 carries ~4 bytes per 3, so compare against the encoded
+  // length rather than decoding an oversized payload into memory first.
+  const approxBytes = Math.floor((match[2].length * 3) / 4);
+  if (approxBytes > MAX_RESUME_BYTES) {
+    throw new Error(
+      `Resume must be ${Math.round(MAX_RESUME_BYTES / (1024 * 1024))}MB or smaller`
+    );
+  }
 
   // Try remote storage first, so configuring Cloudinary later needs no code change.
   const remote = await uploadDocument(dataUrl, 'qaroo/resumes');

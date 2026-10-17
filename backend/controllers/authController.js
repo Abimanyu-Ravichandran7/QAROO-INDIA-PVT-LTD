@@ -1,6 +1,13 @@
 import jwt from 'jsonwebtoken';
 import Admin from '../models/Admin.js';
-import { generateVerificationToken, generateOTP } from '../utils/generateToken.js';
+import {
+  generateVerificationToken,
+  generateOTP,
+  authCookieOptions,
+  clearAuthCookies,
+  ACCESS_COOKIE_MAX_AGE,
+  REFRESH_COOKIE_MAX_AGE,
+} from '../utils/generateToken.js';
 import {
   sendVerificationEmail,
   sendPasswordChangeOtpEmail,
@@ -108,10 +115,9 @@ const login = async (req, res, next) => {
       { algorithm: 'HS256', expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' }
     );
 
-    const isProd = process.env.NODE_ENV === 'production';
-    const base = { httpOnly: true, secure: isProd, sameSite: 'lax', path: '/' };
-    res.cookie('accessToken', accessToken, { ...base, maxAge: 15 * 60 * 1000 });
-    res.cookie('refreshToken', refreshToken, { ...base, maxAge: 7 * 24 * 60 * 60 * 1000 });
+    const base = authCookieOptions();
+    res.cookie('accessToken', accessToken, { ...base, maxAge: ACCESS_COOKIE_MAX_AGE });
+    res.cookie('refreshToken', refreshToken, { ...base, maxAge: REFRESH_COOKIE_MAX_AGE });
 
     res.json({ success: true, message: 'Login successful', data: { admin, accessToken } });
   } catch (err) {
@@ -138,9 +144,7 @@ const refresh = async (req, res, next) => {
     // Re-apply the same gate as login: a rejected or unverified admin must not
     // keep minting access tokens from an older refresh token.
     if (!admin.isEmailVerified || !admin.isApproved) {
-      const clear = { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: '/' };
-      res.clearCookie('accessToken', clear);
-      res.clearCookie('refreshToken', clear);
+      clearAuthCookies(res);
       return res.status(401).json({ success: false, message: 'Account no longer available' });
     }
     const accessToken = jwt.sign(
@@ -148,13 +152,7 @@ const refresh = async (req, res, next) => {
       process.env.JWT_SECRET,
       { algorithm: 'HS256', expiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m' }
     );
-    res.cookie('accessToken', accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 15 * 60 * 1000,
-    });
+    res.cookie('accessToken', accessToken, { ...authCookieOptions(), maxAge: ACCESS_COOKIE_MAX_AGE });
     res.json({ success: true, data: { accessToken } });
   } catch (err) {
     next(err);
@@ -162,8 +160,7 @@ const refresh = async (req, res, next) => {
 };
 
 const logout = (req, res) => {
-  res.clearCookie('accessToken', { httpOnly: true, path: '/' });
-  res.clearCookie('refreshToken', { httpOnly: true, path: '/' });
+  clearAuthCookies(res);
   res.json({ success: true, message: 'Logged out successfully' });
 };
 
@@ -189,8 +186,7 @@ const deleteMe = async (req, res, next) => {
       return res.status(403).json({ success: false, message: 'Super Admin accounts cannot be deleted this way' });
     }
     await Admin.deleteOne({ _id: admin._id });
-    res.clearCookie('accessToken', { httpOnly: true, path: '/' });
-    res.clearCookie('refreshToken', { httpOnly: true, path: '/' });
+    clearAuthCookies(res);
     res.json({ success: true, message: 'Your account has been deleted' });
   } catch (err) {
     next(err);
