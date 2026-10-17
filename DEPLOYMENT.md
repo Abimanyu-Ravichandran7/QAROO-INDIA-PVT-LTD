@@ -45,12 +45,13 @@ back.
 
 ---
 
-## 2. Pick one hosting shape
+## 2. Hosting shape
 
-Three configs are in the repo because three shapes are possible. **Only one
-applies**; the others are inert.
+**Chosen: Shape A.** The repo is configured for it and `dist/` is already built
+against it. The other two sections are kept for reference; `vercel.json` is
+inert under Shape A and can be deleted whenever you want.
 
-### Shape A — split hosting (recommended for your setup)
+### Shape A — split hosting (chosen)
 
 Static site on GoDaddy cPanel, API on a Node host, both under `qaroo.in`.
 
@@ -156,8 +157,14 @@ change `backend/data/seedData.js` and re-seed deliberately.
 
 ## 4. Frontend
 
-`API_BASE` is used as `` `${BASE}/auth/refresh` ``, so the variable must
-**include `/api`**. This is the single easiest thing to get wrong:
+Already configured and built. `.env.production` (gitignored) holds:
+
+```
+VITE_API_BASE_URL=https://api.qaroo.in/api
+```
+
+`API_BASE` is used as `` `${BASE}/auth/refresh` ``, so it must **include
+`/api`**. This is the single easiest thing to get wrong:
 
 ```bash
 # correct
@@ -166,11 +173,7 @@ VITE_API_BASE_URL=https://api.qaroo.in/api
 VITE_API_BASE_URL=https://api.qaroo.in
 ```
 
-Build and upload:
-
-```bash
-VITE_API_BASE_URL=https://api.qaroo.in/api npm run build
-```
+To rebuild later, `npm run build` picks that file up automatically.
 
 Upload the **contents** of `dist/` to `public_html/`, including the dotfile
 `.htaccess` — SPA deep links such as `/learning-programs/full-stack-development`
@@ -202,7 +205,28 @@ SMTP authentication succeeds.
 
 ---
 
-## 6. Rotate these
+## 6. Admin accounts
+
+Two super admins exist, both verified and approved:
+
+| Login | Mailbox |
+| --- | --- |
+| `support@qaroo.in` | the authenticated sender — reset codes deliver |
+| `anunithamr@gmail.com` | external, delivers independently |
+
+The first was `admin@qaroo.in` until a password-reset code to it bounced with
+`550 Recipient not found` — that mailbox was never created. It has been renamed
+to `support@qaroo.in` (same password), and `ADMIN_EMAIL` updated to match so
+re-seeding cannot recreate the dead address.
+
+If you later want a distinct `admin@` identity, create the mailbox or a
+forwarder in GoDaddy *first*, then change `ADMIN_EMAIL`. `tools/preflight.mjs`
+warns whenever `ADMIN_EMAIL` is a different mailbox from the authenticated
+sender on the same domain, which is the condition that caused the bounce.
+
+---
+
+## 7. Rotate these
 
 Both were typed into a chat transcript during development and should be
 considered disclosed:
@@ -216,7 +240,7 @@ considered disclosed:
 
 ---
 
-## 7. Known, accepted
+## 8. Known, accepted
 
 - **New admins are emailed a plaintext password.** `initialPassword` holds it
   until approval, then it is cleared. It is `select: false` and stripped from

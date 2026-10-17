@@ -59,7 +59,7 @@ export default function AdminLogin() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="admin@qaroo.in"
+              placeholder="support@qaroo.in"
             />
           </div>
           <PasswordInput
