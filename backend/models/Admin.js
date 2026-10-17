@@ -20,6 +20,13 @@ const adminSchema = new mongoose.Schema(
     isDisabled: { type: Boolean, default: false },
     verificationToken: { type: String, default: null },
     verificationTokenExpires: { type: Date, default: null },
+    // Password reset has its own token, kept apart from verificationToken.
+    // Sharing one field let either link do both jobs: a verification email
+    // could set the account's password, so forwarding an invite was an account
+    // takeover. Stored as a SHA-256 digest, so a database disclosure does not
+    // hand over usable reset links.
+    resetTokenHash: { type: String, default: null, select: false },
+    resetTokenExpires: { type: Date, default: null, select: false },
     verificationOTP: { type: String, default: null },
     verificationOTPExpires: { type: Date, default: null },
     // Temporary plaintext credential used for the first-login confirmation email.
@@ -69,6 +76,8 @@ adminSchema.methods.toJSON = function () {
   delete obj.passwordOTP;
   delete obj.passwordOTPExpires;
   delete obj.passwordOTPAttempts;
+  delete obj.resetTokenHash;
+  delete obj.resetTokenExpires;
   return obj;
 };
 

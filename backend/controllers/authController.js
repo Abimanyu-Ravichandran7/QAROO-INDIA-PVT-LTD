@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import crypto from 'node:crypto';
 import Admin from '../models/Admin.js';
+import { clientUrl } from '../config/site.js';
 import {
   generateVerificationToken,
   generateOTP,
@@ -235,11 +236,13 @@ const forgotPassword = async (req, res, next) => {
     const { email } = req.body || {};
     const admin = await Admin.findOne({ email: (email || '').toLowerCase() });
     if (admin) {
-      admin.verificationToken = generateVerificationToken();
-      admin.verificationTokenExpires = new Date(Date.now() + 60 * 60 * 1000);
+      // The raw token only ever exists here and in the email; the database
+      // keeps its digest.
+      const rawToken = generateVerificationToken();
+      admin.resetTokenHash = hashResetToken(rawToken);
+      admin.resetTokenExpires = new Date(Date.now() + 60 * 60 * 1000);
       await admin.save();
-      const baseUrl = process.env.CLIENT_URL || 'http://localhost:5173';
-      const link = `${baseUrl}/admin/reset-password?token=${admin.verificationToken}`;
+      const link = clientUrl(`/admin/reset-password?token=${rawToken}`);
       try {
         const sent = await sendPasswordResetEmail(admin.email, admin.name, link);
         console.log(`[Password reset] To: ${admin.email} sent: ${!sent.skipped}`);
@@ -261,17 +264,29 @@ const resetPassword = async (req, res, next) => {
     if (!password || password.length < 8) {
       return res.status(422).json({ success: false, message: 'Password must be at least 8 characters' });
     }
-    const admin = await Admin.findOne({ verificationToken: token });
+    // Looked up by digest, and only against the reset field - a verification
+    // token must not be usable to set a password.
+    if (!token) {
+      return res.status(400).json({ success: false, message: 'Invalid or expired reset token' });
+    }
+    const admin = await Admin.findOne({ resetTokenHash: hashResetToken(token) })
+      .select('+resetTokenHash +resetTokenExpires');
     if (!admin) {
       return res.status(400).json({ success: false, message: 'Invalid or expired reset token' });
     }
-    if (admin.verificationTokenExpires && admin.verificationTokenExpires < new Date()) {
+    if (admin.resetTokenExpires && admin.resetTokenExpires < new Date()) {
+      admin.resetTokenHash = null;
+      admin.resetTokenExpires = null;
+      await admin.save();
       return res.status(400).json({ success: false, message: 'Reset token has expired' });
     }
     admin.password = password;
-    admin.verificationToken = null;
-    admin.verificationTokenExpires = null;
+    admin.resetTokenHash = null;
+    admin.resetTokenExpires = null;
     await admin.save();
+    // The reset is only meaningful if any session opened with the old password
+    // cannot continue on this browser.
+    clearAuthCookies(res);
     res.json({ success: true, message: 'Password reset successfully. You can now log in.' });
   } catch (err) {
     next(err);
@@ -280,6 +295,16 @@ const resetPassword = async (req, res, next) => {
 
 /** Guesses allowed against any single emailed code before it is discarded. */
 const MAX_OTP_ATTEMPTS = 5;
+
+/**
+ * Digest of a password-reset token, as stored.
+ *
+ * A reset token is a password equivalent for the window it is alive, so the
+ * database holds only its hash. No salt and no bcrypt: the token is 32 random
+ * bytes, so it is not guessable and there is nothing for a rainbow table to
+ * precompute - and a plain digest keeps the lookup a single indexed query.
+ */
+const hashResetToken = (token) => crypto.createHash('sha256').update(String(token)).digest('hex');
 
 /**
  * Compares two one-time codes without leaking their contents through timing.

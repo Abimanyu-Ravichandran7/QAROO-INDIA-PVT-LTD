@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { clientUrl } from '../config/site.js';
 
 let transporter = null;
 
@@ -54,8 +55,7 @@ export async function sendMail({ to, subject, text, html }) {
 }
 
 export async function sendVerificationEmail(email, token) {
-  const baseUrl = process.env.CLIENT_URL || 'http://localhost:5173';
-  const link = `${baseUrl}/admin/verify-email?token=${token}`;
+  const link = clientUrl(`/admin/verify-email?token=${token}`);
   const subject = 'Verify your Qaroo Admin account';
   const text = `Verify your Qaroo Admin account\n\nClick here to verify your email:\n${link}`;
   const html = `<p>Verify your Qaroo Admin account</p><p><a href="${link}">Click here to verify your email</a></p><p>If the link does not work, copy this into your browser:<br/>${link}</p>`;
@@ -63,8 +63,7 @@ export async function sendVerificationEmail(email, token) {
 }
 
 export async function sendApprovalEmail(email, name) {
-  const baseUrl = process.env.CLIENT_URL || 'http://localhost:5173';
-  const loginUrl = `${baseUrl}/admin/login`;
+  const loginUrl = clientUrl('/admin/login');
   const subject = 'Your Qaroo Admin account has been approved';
   const text = `Hi ${name || 'there'},\n\nYour Qaroo Admin account has been approved. You can now log in here:\n${loginUrl}\n\nWelcome aboard!`;
   const html = `<p>Hi ${name || 'there'},</p><p>Your Qaroo Admin account has been <strong>approved</strong>. You can now log in here:</p><p><a href="${loginUrl}">${loginUrl}</a></p><p>Welcome aboard!</p>`;
@@ -89,8 +88,7 @@ export async function sendAdminVerificationOTPEmail(creatorEmail, creatorName, u
 // Sent to the NEW user after the Super Admin successfully verifies their account via OTP.
 // Includes the login credentials (username + password) so the user can sign in.
 export async function sendVerificationSuccessEmail(email, name, initialPassword) {
-  const baseUrl = process.env.CLIENT_URL || 'http://localhost:5173';
-  const loginUrl = `${baseUrl}/admin/login`;
+  const loginUrl = clientUrl('/admin/login');
   const subject = 'Your Qaroo Admin account is verified - sign in with these credentials';
   const cred =
     initialPassword

@@ -18,19 +18,22 @@ import { requireVerifiedApproved } from '../middleware/adminMiddleware.js';
 
 const router = Router();
 
-router.post('/register', register);
-router.post('/login', login);
-router.post('/refresh', refresh);
-router.post('/logout', logout);
-router.get('/me', protect, requireVerifiedApproved, getMe);
-router.delete('/me', protect, deleteMe);
-router.get('/verify-email/:token', optionalAuth, verifyEmail);
-router.post('/forgot-password', forgotPassword);
-router.post('/reset-password/:token', resetPassword);
-// A password change is authorised by the emailed code alone, so these two are
-// held well below the shared /api/auth allowance of 100 per window. The code
-// itself also has a per-code attempt limit in the controller; this bounds how
-// fast fresh codes can be requested, and stops a mailbox being flooded.
+// All four of these are credential-recovery endpoints, which the shared
+// /api/auth allowance of 100 per window is far too generous for: each one
+// either sends mail to an address the caller names, or lets the caller guess at
+// a secret. They are declared together, and above the routes, because a
+// `const` referenced by a router.post() call higher up the file would throw.
+
+/** Sends mail to a caller-named address, so it can flood a mailbox. */
+const forgotLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many reset requests. Try again in 15 minutes.' },
+});
+
+/** Sends an OTP to the signed-in admin's own mailbox. */
 const otpSendLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
@@ -39,6 +42,11 @@ const otpSendLimiter = rateLimit({
   message: { success: false, message: 'Too many verification codes requested. Try again in 15 minutes.' },
 });
 
+/**
+ * Guards the endpoints where a caller submits a secret: the 6-digit OTP and the
+ * reset token. The OTP also has a per-code attempt limit in the controller;
+ * this bounds the rate across codes and from a single address.
+ */
 const otpVerifyLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 20,
@@ -46,6 +54,17 @@ const otpVerifyLimiter = rateLimit({
   legacyHeaders: false,
   message: { success: false, message: 'Too many attempts. Try again in 15 minutes.' },
 });
+
+router.post('/register', register);
+router.post('/login', login);
+router.post('/refresh', refresh);
+router.post('/logout', logout);
+router.get('/me', protect, requireVerifiedApproved, getMe);
+router.delete('/me', protect, deleteMe);
+router.get('/verify-email/:token', optionalAuth, verifyEmail);
+
+router.post('/forgot-password', forgotLimiter, forgotPassword);
+router.post('/reset-password/:token', otpVerifyLimiter, resetPassword);
 
 // Protected password change, authorised by an email OTP sent to the admin's
 // registered address. The current password is deliberately not required: proving

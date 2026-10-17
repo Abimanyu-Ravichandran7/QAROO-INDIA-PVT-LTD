@@ -566,3 +566,102 @@ test('requesting a code issues one and resets the allowance', async () => {
   assert.equal(st.attempts, 0, 'a fresh code must start with a full allowance');
   assert.ok(st.expires > new Date(), 'the code should be in date');
 });
+
+// ------------------------------------------------- password reset by link ----
+
+// Two things are pinned here. First, the reset token lives in its own field:
+// it used to share verificationToken with email verification, which meant a
+// verification link could set an account's password - so forwarding an invite
+// was an account takeover. Second, only the digest is stored, so reading the
+// database does not yield usable reset links.
+
+import crypto from 'node:crypto';
+
+const sha256 = (v) => crypto.createHash('sha256').update(String(v)).digest('hex');
+
+const plantResetToken = async (email, rawToken, expiresInMs = 60 * 60 * 1000) => {
+  await Admin.updateOne(
+    { email },
+    { $set: { resetTokenHash: sha256(rawToken), resetTokenExpires: new Date(Date.now() + expiresInMs) } }
+  );
+};
+
+test('forgot-password stores only a digest, and not in the verification field', async () => {
+  const c = client();
+  const res = await c('POST', '/api/auth/forgot-password', { email: NOPERMS.email });
+  assert.equal(res.status, 200);
+
+  const a = await Admin.findOne({ email: NOPERMS.email }).select('+resetTokenHash +resetTokenExpires');
+  assert.match(String(a.resetTokenHash), /^[0-9a-f]{64}$/, 'a sha-256 digest should be stored');
+  assert.ok(a.resetTokenExpires > new Date(), 'the token should be in date');
+  // The whole point of the split: verification is untouched by a reset request.
+  assert.equal(a.verificationToken, null, 'a reset must not populate verificationToken');
+});
+
+test('a reset token sets a new password and is single-use', async () => {
+  const raw = 'reset-token-aaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+  await plantResetToken(NOPERMS.email, raw);
+
+  const c = client();
+  const res = await c('POST', `/api/auth/reset-password/${raw}`, { password: 'ResetPass!2345' });
+  assert.equal(res.status, 200, JSON.stringify(res.data));
+
+  const fresh = client();
+  const good = await fresh('POST', '/api/auth/login', { email: NOPERMS.email, password: 'ResetPass!2345' });
+  assert.equal(good.status, 200, 'the new password should authenticate');
+
+  // Replay must fail: the token is cleared on use.
+  const again = await c('POST', `/api/auth/reset-password/${raw}`, { password: 'Another!23456' });
+  assert.equal(again.status, 400, 'a reset token must not be reusable');
+});
+
+test('an email-verification token cannot be used to reset a password', async () => {
+  // This is the takeover path that the shared field allowed.
+  const verifyToken = 'verification-token-bbbbbbbbbbbbbbbbbbbb';
+  await Admin.updateOne(
+    { email: NOPERMS.email },
+    {
+      $set: { verificationToken: verifyToken, verificationTokenExpires: new Date(Date.now() + 3600e3) },
+      $unset: { resetTokenHash: '', resetTokenExpires: '' },
+    }
+  );
+
+  const c = client();
+  const res = await c('POST', `/api/auth/reset-password/${verifyToken}`, { password: 'Hijacked!2345' });
+  assert.equal(res.status, 400, 'a verification token must not reset a password');
+
+  // And the password really did not change.
+  const fresh = client();
+  const still = await fresh('POST', '/api/auth/login', { email: NOPERMS.email, password: 'ResetPass!2345' });
+  assert.equal(still.status, 200, 'the password must be unchanged');
+});
+
+test('an expired reset token is refused and cleared', async () => {
+  const raw = 'expired-token-cccccccccccccccccccccccccc';
+  await plantResetToken(NOPERMS.email, raw, -1000);
+
+  const c = client();
+  const res = await c('POST', `/api/auth/reset-password/${raw}`, { password: 'TooLate!23456' });
+  assert.equal(res.status, 400);
+  assert.match(res.data.message, /expired/i);
+
+  const a = await Admin.findOne({ email: NOPERMS.email }).select('+resetTokenHash');
+  assert.equal(a.resetTokenHash, null, 'an expired token should be cleared');
+});
+
+test('the emailed reset link is one origin, not the whole CORS allowlist', async () => {
+  // Regression: the link was built by interpolating CLIENT_URL, which is a
+  // comma-separated allowlist, producing
+  // "http://localhost:5173,http://localhost:5174,...:5174/admin/reset-password".
+  const { clientUrl } = await import('../config/site.js?reset-link-test');
+  const before = process.env.CLIENT_URL;
+  process.env.CLIENT_URL = 'https://www.example.com,https://example.com,http://localhost:5173';
+  try {
+    const link = clientUrl('/admin/reset-password?token=abc');
+    assert.equal(link, 'https://www.example.com/admin/reset-password?token=abc');
+    assert.ok(!link.includes(','), 'a link must never contain a comma');
+    assert.equal(new URL(link).origin, 'https://www.example.com');
+  } finally {
+    process.env.CLIENT_URL = before;
+  }
+});
