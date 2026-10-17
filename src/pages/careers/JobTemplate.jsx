@@ -9,8 +9,9 @@ import './Careers.css';
 import PageHero from '../../components/PageHero';
 import PageBackdrop from '../../components/PageBackdrop.jsx';
 import LinedSection from '../../components/LinedSection.jsx';
+import { SITE_URL } from '../../data/site.js';
 
-const SITE = 'https://www.qarootech.in';
+const SITE = SITE_URL;
 
 /** Only render a block when the posting actually fills it. */
 function ListBlock({ heading, items }) {

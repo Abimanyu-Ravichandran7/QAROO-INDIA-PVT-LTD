@@ -17,7 +17,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const SITE = 'https://www.qarootech.in';
+import { SITE_URL } from '../src/data/site.js';
+
+const SITE = SITE_URL;
 const OUT = path.join(ROOT, 'public/sitemap.xml');
 
 const { BUSINESS_SOLUTIONS } = await import(`file:///${ROOT.replace(/\\/g, '/')}/src/data/businessSolutions.js`);

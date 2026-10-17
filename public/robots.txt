@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin
 
-Sitemap: https://www.qarootech.in/sitemap.xml
+Sitemap: https://www.qaroo.in/sitemap.xml

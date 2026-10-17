@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
+import { SITE_URL } from '../data/site.js';
 
 const DEFAULT_TITLE = 'Qaroo India Private Limited - Business Solutions & Career-Ready Learning';
 const DEFAULT_DESC =
   'Qaroo India Private Limited builds digital solutions for businesses - CRM, marketing, design, software, strategy - and career-ready IT learning programs. Coimbatore & Chennai.';
-const DEFAULT_OG_IMAGE = 'https://www.qarootech.in/logos/qaroo-logo.jpg';
+const DEFAULT_OG_IMAGE = `${SITE_URL}/logos/qaroo-logo.jpg`;
 
 function setMeta(attrName, attrKey, content) {
   let el = document.head.querySelector(`meta[${attrName}="${attrKey}"]`);
@@ -19,7 +20,7 @@ export default function Seo({ title, description, path, image, jsonLd, jsonLdId 
   useEffect(() => {
     const t = title || DEFAULT_TITLE;
     const d = description || DEFAULT_DESC;
-    const url = `https://www.qarootech.in${path || '/'}`;
+    const url = `${SITE_URL}${path || '/'}`;
     const ogImage = image || DEFAULT_OG_IMAGE;
 
     document.title = t;

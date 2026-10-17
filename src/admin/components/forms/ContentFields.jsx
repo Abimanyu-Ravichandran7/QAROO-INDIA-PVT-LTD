@@ -138,7 +138,7 @@ export function SeoFields({ get, set }) {
       </div>
       <div className="field">
         <label htmlFor={`${uid}-canonical`}>Canonical URL</label>
-        <input id={`${uid}-canonical`} type="text" value={f('canonicalUrl') || ''} onChange={(e) => s('canonicalUrl')(e.target.value)} placeholder="https://www.qarootech.in/learning-programs/slug" />
+        <input id={`${uid}-canonical`} type="text" value={f('canonicalUrl') || ''} onChange={(e) => s('canonicalUrl')(e.target.value)} placeholder="https://www.qaroo.in/learning-programs/slug" />
       </div>
       <div className="field">
         <label htmlFor={`${uid}-og-image-url`}>OG / Share Image</label>

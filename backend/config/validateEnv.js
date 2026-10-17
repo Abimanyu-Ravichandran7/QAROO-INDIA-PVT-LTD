@@ -25,8 +25,19 @@ const validateEnv = () => {
   }
 
   // Length alone is a weak test: a memorable phrase reaches 32 characters while
-  // carrying far less entropy than 32 random ones.
-  if (JWT_SECRET && String(JWT_SECRET).length >= 32 && new Set(String(JWT_SECRET)).size < 24) {
+  // carrying far less entropy than 32 random ones. Counting distinct characters
+  // is not the test either - hex has only 16 symbols, so a 96-character random
+  // hex secret scores lower than a passphrase. Machine-generated encodings are
+  // recognised by their alphabet and exempted; anything else is judged on how
+  // varied it is.
+  const secretLooksGenerated = (v) =>
+    (/^[0-9a-f]{32,}$/i.test(v) && v.length >= 32) || /^[A-Za-z0-9+/_-]{43,}={0,2}$/.test(v);
+  if (
+    JWT_SECRET &&
+    String(JWT_SECRET).length >= 32 &&
+    !secretLooksGenerated(String(JWT_SECRET)) &&
+    new Set(String(JWT_SECRET)).size < 24
+  ) {
     warnings.push(
       'JWT_SECRET is long enough but has few distinct characters, which suggests a ' +
         'passphrase rather than a random value. Generate one with: ' +

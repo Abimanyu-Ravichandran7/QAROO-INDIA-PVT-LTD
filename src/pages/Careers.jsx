@@ -12,8 +12,9 @@ import './careers/Careers.css';
 import PageHero from '../components/PageHero';
 import PageBackdrop from '../components/PageBackdrop.jsx';
 import LinedSection from '../components/LinedSection.jsx';
+import { SITE_URL } from '../data/site.js';
 
-const SITE = 'https://www.qarootech.in';
+const SITE = SITE_URL;
 
 export default function Careers() {
   const [content, setContent] = useState(CAREERS_PAGE);

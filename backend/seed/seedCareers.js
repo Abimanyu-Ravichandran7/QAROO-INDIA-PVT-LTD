@@ -1,6 +1,7 @@
 import JobPosting from '../models/JobPosting.js';
 import PageContent from '../models/PageContent.js';
 import { JOB_POSTINGS, CAREERS_PAGE } from '../../src/data/careers.js';
+import { SITE_URL } from '../config/site.js';
 
 // Seeds/updates job postings and the shared careers page copy from the content
 // source. Slug-based upsert, so it is safe to re-run and never deletes records
@@ -38,7 +39,7 @@ export async function seedCareers(admin) {
     ogTitle: j.seoTitle || '',
     ogDescription: j.seoDescription || '',
     ogImage: '',
-    canonicalUrl: `https://www.qarootech.in/careers/${j.slug}`,
+    canonicalUrl: `${SITE_URL}/careers/${j.slug}`,
 
     createdBy: admin ? admin._id : null,
     updatedBy: admin ? admin._id : null,

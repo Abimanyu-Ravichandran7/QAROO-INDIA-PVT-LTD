@@ -1,6 +1,7 @@
 import LearningProgram from '../models/LearningProgram.js';
 import { PROGRAMS } from '../../src/data/programs.js';
 import { brochureFor } from './assets.js';
+import { SITE_URL } from '../config/site.js';
 
 // Seeds/updates learning programs from the existing rich content source so the
 // data-driven frontend has full course + SEO data. Uses slug-based upsert so it
@@ -42,7 +43,7 @@ export async function seedLearning(admin) {
     ogTitle: p.metaTitle || '',
     ogDescription: p.metaDescription || '',
     ogImage: '',
-    canonicalUrl: `https://www.qarootech.in/learning-programs/${p.slug}`,
+    canonicalUrl: `${SITE_URL}/learning-programs/${p.slug}`,
 
     createdBy: admin ? admin._id : null,
     updatedBy: admin ? admin._id : null,

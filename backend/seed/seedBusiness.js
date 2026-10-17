@@ -1,6 +1,7 @@
 import BusinessSolution from '../models/BusinessSolution.js';
 import { BUSINESS_SOLUTIONS } from '../../src/data/businessSolutions.js';
 import { brochureFor } from './assets.js';
+import { SITE_URL } from '../config/site.js';
 
 // Seeds/updates business solutions from the existing rich content source so the
 // data-driven frontend has full solution + SEO data. Slug-based upsert is safe
@@ -38,7 +39,7 @@ export async function seedBusiness(admin) {
     ogTitle: s.metaTitle || '',
     ogDescription: s.metaDescription || '',
     ogImage: '',
-    canonicalUrl: `https://www.qarootech.in/business-solutions/${s.slug}`,
+    canonicalUrl: `${SITE_URL}/business-solutions/${s.slug}`,
 
     createdBy: admin ? admin._id : null,
     updatedBy: admin ? admin._id : null,
