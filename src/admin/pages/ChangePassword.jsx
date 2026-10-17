@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { authApi } from '../../api/authApi.js';
@@ -9,8 +9,8 @@ export default function ChangePassword() {
   const { admin, hasPermission, logout } = useAuth();
   const navigate = useNavigate();
   const toast = useToast();
+  const uid = useId();
   const [deleting, setDeleting] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [otp, setOtp] = useState('');
@@ -49,7 +49,7 @@ export default function ChangePassword() {
     }
     setSaving(true);
     try {
-      await authApi.changePassword({ currentPassword, newPassword, otp });
+      await authApi.changePassword({ newPassword, otp });
       await logout();
       navigate('/admin/login', { replace: true });
       toast.success('Password changed successfully. Please sign in with your new password.');
@@ -83,8 +83,8 @@ export default function ChangePassword() {
     <div>
       <h1>Change Password</h1>
       <p className="page-sub">
-        Change your password. A verification code is emailed to your registered admin email address to
-        confirm the change.
+        Change your password. A verification code is emailed to your registered admin email address -
+        entering it authorises the change, so your current password is not needed.
       </p>
 
       <div className="admin-card" style={{ maxWidth: '520px', marginTop: '16px' }}>
@@ -96,6 +96,7 @@ export default function ChangePassword() {
             <p className="hint" style={{ marginBottom: '14px' }}>
               Click the button below to email a 6-digit verification code to{' '}
               <strong>your registered admin email</strong>. Then enter it along with your new password.
+              You will be signed out once the password changes.
             </p>
             <div className="actions">
               <button className="admin-btn" onClick={sendCode} disabled={sending}>
@@ -105,14 +106,6 @@ export default function ChangePassword() {
           </div>
         ) : (
           <form className="admin-form" onSubmit={submit}>
-            <PasswordInput
-              label="Current Password"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              autoComplete="current-password"
-              required
-              placeholder="••••••••"
-            />
             <div className="form-grid">
               <PasswordInput
                 label="New Password"
@@ -132,9 +125,12 @@ export default function ChangePassword() {
               />
             </div>
             <div className="field">
-              <label>6-digit verification code</label>
+              <label htmlFor={`${uid}-otp`}>6-digit verification code</label>
               <input
+                id={`${uid}-otp`}
                 type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
                 maxLength={6}

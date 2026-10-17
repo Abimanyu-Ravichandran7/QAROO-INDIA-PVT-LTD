@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import crypto from 'node:crypto';
 import Admin from '../models/Admin.js';
 import {
   generateVerificationToken,
@@ -277,13 +278,34 @@ const resetPassword = async (req, res, next) => {
   }
 };
 
+/** Guesses allowed against any single emailed code before it is discarded. */
+const MAX_OTP_ATTEMPTS = 5;
+
+/**
+ * Compares two one-time codes without leaking their contents through timing.
+ *
+ * `===` on a secret returns as soon as two characters differ, which is a
+ * measurable signal. Lengths are compared first because timingSafeEqual throws
+ * on a mismatch, and a length difference is not worth hiding - the form makes
+ * the expected length obvious anyway.
+ */
+const otpMatches = (stored, supplied) => {
+  const a = Buffer.from(String(stored ?? ''), 'utf8');
+  const b = Buffer.from(String(supplied ?? ''), 'utf8');
+  if (a.length === 0 || a.length !== b.length) return false;
+  return crypto.timingSafeEqual(a, b);
+};
+
 // Logged-in admin requests a password change => OTP emailed to their registered admin email.
 const sendPasswordChangeOtp = async (req, res, next) => {
   try {
-    const admin = await Admin.findById(req.admin?._id);
+    const admin = await Admin.findById(req.admin?._id).select('+passwordOTPAttempts');
     if (!admin) return res.status(404).json({ success: false, message: 'Admin not found' });
     const otp = generateOTP();
     admin.passwordOTP = otp;
+    // A fresh code starts with a full allowance; otherwise a resend would
+    // inherit the previous code's exhausted counter.
+    admin.passwordOTPAttempts = 0;
     admin.passwordOTPExpires = new Date(Date.now() + 10 * 60 * 1000);
     await admin.save();
     try {
@@ -301,29 +323,64 @@ const sendPasswordChangeOtp = async (req, res, next) => {
 // Completes the password change after email-OTP verification.
 const changePassword = async (req, res, next) => {
   try {
-    const { currentPassword, newPassword, otp } = req.body || {};
+    const { newPassword, otp } = req.body || {};
     if (!newPassword || newPassword.length < 8) {
       return res.status(422).json({ success: false, message: 'New password must be at least 8 characters' });
     }
     if (!otp) {
       return res.status(400).json({ success: false, message: 'Verification code is required' });
     }
-    const admin = await Admin.findById(req.admin?._id).select('+passwordOTP +passwordOTPExpires');
+    const admin = await Admin.findById(req.admin?._id)
+      .select('+passwordOTP +passwordOTPExpires +passwordOTPAttempts');
     if (!admin) return res.status(404).json({ success: false, message: 'Admin not found' });
-    const ok = await admin.matchPassword(currentPassword || '');
-    if (!ok) {
-      return res.status(400).json({ success: false, message: 'Current password is incorrect' });
+
+    if (!admin.passwordOTP) {
+      return res.status(400).json({ success: false, message: 'No verification code has been requested. Request one first.' });
     }
-    if (!admin.passwordOTP || String(admin.passwordOTP) !== String(otp)) {
-      return res.status(400).json({ success: false, message: 'Invalid verification code' });
-    }
+
+    // Expiry before correctness, so a stale code is never reported as wrong and
+    // cannot burn an attempt.
     if (admin.passwordOTPExpires && admin.passwordOTPExpires < new Date()) {
+      admin.passwordOTP = null;
+      admin.passwordOTPExpires = null;
+      admin.passwordOTPAttempts = 0;
+      await admin.save();
       return res.status(400).json({ success: false, message: 'Verification code has expired. Request a new one.' });
     }
+
+    if (!otpMatches(admin.passwordOTP, otp)) {
+      admin.passwordOTPAttempts = (admin.passwordOTPAttempts || 0) + 1;
+      const left = MAX_OTP_ATTEMPTS - admin.passwordOTPAttempts;
+      if (left <= 0) {
+        // Discard the code rather than lock the account: the holder can request
+        // a fresh one, while a guesser only ever gets MAX_OTP_ATTEMPTS tries at
+        // any single code.
+        admin.passwordOTP = null;
+        admin.passwordOTPExpires = null;
+        admin.passwordOTPAttempts = 0;
+        await admin.save();
+        return res.status(400).json({
+          success: false,
+          message: 'Too many incorrect codes. That code is no longer valid - request a new one.',
+        });
+      }
+      await admin.save();
+      return res.status(400).json({
+        success: false,
+        message: `Invalid verification code. ${left} attempt${left === 1 ? '' : 's'} remaining.`,
+      });
+    }
+
     admin.password = newPassword;
     admin.passwordOTP = null;
     admin.passwordOTPExpires = null;
+    admin.passwordOTPAttempts = 0;
     await admin.save();
+
+    // The change is only meaningful if the old session cannot continue, and the
+    // client signs out straight after this, so clear the cookies server-side
+    // too rather than relying on it.
+    clearAuthCookies(res);
     res.json({ success: true, message: 'Password changed successfully.' });
   } catch (err) {
     next(err);

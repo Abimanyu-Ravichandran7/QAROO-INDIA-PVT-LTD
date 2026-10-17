@@ -434,3 +434,135 @@ test('an unknown route returns a 404 payload, not HTML', async () => {
   assert.equal(res.status, 404);
   assert.equal(res.data.success, false);
 });
+
+// ------------------------------------------- password change (OTP only) ------
+
+// The current password is deliberately not part of this flow: holding the
+// registered mailbox is the factor. These tests pin that down, and pin down the
+// brute-force bound that has to come with it, since the code is the only thing
+// standing between a live session and a new password.
+
+const OTP_USER = { email: 'otp@test.local', password: 'OtpUser!2345' };
+
+/** Plants a known code, bypassing the mail send and its rate limit. */
+const plantOtp = async (email, code, expiresInMs = 10 * 60 * 1000) => {
+  await Admin.updateOne(
+    { email },
+    { $set: { passwordOTP: code, passwordOTPExpires: new Date(Date.now() + expiresInMs), passwordOTPAttempts: 0 } }
+  );
+};
+
+const otpStateOf = async (email) => {
+  const a = await Admin.findOne({ email }).select('+passwordOTP +passwordOTPExpires +passwordOTPAttempts');
+  return { otp: a.passwordOTP, attempts: a.passwordOTPAttempts, expires: a.passwordOTPExpires };
+};
+
+test('a password change needs only the emailed code, not the current password', async () => {
+  await Admin.create({
+    name: 'OtpUser', email: OTP_USER.email, password: OTP_USER.password,
+    role: 'admin', permissions: [], isEmailVerified: true, isApproved: true,
+  });
+  const c = await loginAs(OTP_USER);
+  await plantOtp(OTP_USER.email, '123456');
+
+  const res = await c('POST', '/api/auth/change-password', {
+    newPassword: 'BrandNewPass!99',
+    otp: '123456',
+  });
+  assert.equal(res.status, 200, JSON.stringify(res.data));
+
+  // The new password works and the old one does not.
+  const fresh = client();
+  const good = await fresh('POST', '/api/auth/login', { email: OTP_USER.email, password: 'BrandNewPass!99' });
+  assert.equal(good.status, 200, 'new password should authenticate');
+  const stale = client();
+  const bad = await stale('POST', '/api/auth/login', { email: OTP_USER.email, password: OTP_USER.password });
+  assert.equal(bad.status, 401, 'old password must stop working');
+
+  // The code is consumed, so it cannot be replayed.
+  const after = await otpStateOf(OTP_USER.email);
+  assert.equal(after.otp, null, 'the used code must be cleared');
+  assert.equal(after.attempts, 0);
+});
+
+test('a password change is refused when no code was requested', async () => {
+  const c = await loginAs(NOPERMS);
+  await Admin.updateOne({ email: NOPERMS.email }, { $set: { passwordOTP: null, passwordOTPExpires: null } });
+  const res = await c('POST', '/api/auth/change-password', { newPassword: 'Whatever!2345', otp: '000000' });
+  assert.equal(res.status, 400);
+  assert.match(res.data.message, /no verification code/i);
+});
+
+test('a wrong code is refused and counts against the allowance', async () => {
+  const c = await loginAs(LIMITED);
+  await plantOtp(LIMITED.email, '222222');
+
+  const res = await c('POST', '/api/auth/change-password', { newPassword: 'NopeNope!2345', otp: '999999' });
+  assert.equal(res.status, 400);
+  assert.match(res.data.message, /invalid verification code/i);
+  assert.match(res.data.message, /4 attempts remaining/i);
+
+  const st = await otpStateOf(LIMITED.email);
+  assert.equal(st.attempts, 1, 'the attempt must be recorded');
+  assert.equal(st.otp, '222222', 'a wrong guess must not discard a still-valid code');
+
+  // And the password is untouched.
+  const fresh = client();
+  const still = await fresh('POST', '/api/auth/login', { email: LIMITED.email, password: LIMITED.password });
+  assert.equal(still.status, 200, 'password must be unchanged after a failed attempt');
+});
+
+test('a code is discarded after five wrong guesses', async () => {
+  const c = await loginAs(LIMITED);
+  await plantOtp(LIMITED.email, '333333');
+
+  let last;
+  for (let i = 0; i < 5; i += 1) {
+    last = await c('POST', '/api/auth/change-password', { newPassword: 'StillNope!2345', otp: '111111' });
+    assert.equal(last.status, 400);
+  }
+  assert.match(last.data.message, /no longer valid/i);
+
+  const st = await otpStateOf(LIMITED.email);
+  assert.equal(st.otp, null, 'the code must be discarded, not left guessable');
+
+  // The correct code no longer works either - it is genuinely gone.
+  const after = await c('POST', '/api/auth/change-password', { newPassword: 'StillNope!2345', otp: '333333' });
+  assert.equal(after.status, 400);
+  assert.match(after.data.message, /no verification code/i);
+});
+
+test('an expired code is refused without burning an attempt', async () => {
+  const c = await loginAs(LIMITED);
+  await plantOtp(LIMITED.email, '444444', -1000); // already expired
+
+  const res = await c('POST', '/api/auth/change-password', { newPassword: 'Expired!23456', otp: '444444' });
+  assert.equal(res.status, 400);
+  assert.match(res.data.message, /expired/i);
+
+  const st = await otpStateOf(LIMITED.email);
+  assert.equal(st.otp, null, 'an expired code should be cleared');
+  assert.equal(st.attempts, 0, 'expiry must not consume the attempt allowance');
+});
+
+test('a short new password is refused before the code is checked', async () => {
+  const c = await loginAs(LIMITED);
+  await plantOtp(LIMITED.email, '555555');
+  const res = await c('POST', '/api/auth/change-password', { newPassword: 'short', otp: '555555' });
+  assert.equal(res.status, 422);
+  const st = await otpStateOf(LIMITED.email);
+  assert.equal(st.otp, '555555', 'a rejected password must leave the code usable');
+});
+
+test('requesting a code issues one and resets the allowance', async () => {
+  const c = await loginAs(LIMITED);
+  await Admin.updateOne({ email: LIMITED.email }, { $set: { passwordOTPAttempts: 4 } });
+
+  const res = await c('POST', '/api/auth/change-password/send-otp');
+  assert.equal(res.status, 200, JSON.stringify(res.data));
+
+  const st = await otpStateOf(LIMITED.email);
+  assert.match(String(st.otp), /^\d{6}$/, 'a six-digit code should be stored');
+  assert.equal(st.attempts, 0, 'a fresh code must start with a full allowance');
+  assert.ok(st.expires > new Date(), 'the code should be in date');
+});

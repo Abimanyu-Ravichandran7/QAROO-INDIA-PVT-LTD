@@ -27,6 +27,11 @@ const adminSchema = new mongoose.Schema(
     initialPassword: { type: String, default: '', select: false },
     passwordOTP: { type: String, default: null, select: false },
     passwordOTPExpires: { type: Date, default: null, select: false },
+    // The OTP is the only factor protecting a password change, so guessing has
+    // to be bounded per code rather than only per IP: a 6-digit code is a
+    // million combinations, which an IP-based limit alone would eventually let
+    // through across windows. The code is discarded once this runs out.
+    passwordOTPAttempts: { type: Number, default: 0, select: false },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', default: null },
     // Sparse-unique bootstrap marker: at most ONE admin can ever hold it, which
     // atomically decides the "first registrant" even under concurrent races.
@@ -63,6 +68,7 @@ adminSchema.methods.toJSON = function () {
   delete obj.initialPassword;
   delete obj.passwordOTP;
   delete obj.passwordOTPExpires;
+  delete obj.passwordOTPAttempts;
   return obj;
 };
 
